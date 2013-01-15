@@ -1,0 +1,95 @@
+//
+//  HysteriaPlayer.h
+//
+//  Version 1.0
+//
+//  Created by Saiday on 01/14/2013.
+//  Copyright 2013 StreetVoice
+//
+// This code is distributed under the terms and conditions of the MIT license. 
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+#import <AVFoundation/AVFoundation.h>
+
+typedef AVPlayerItem * (^ BlockItemGetter)(NSUInteger);
+typedef void (^ PlayerReadyToPlay)();
+typedef void (^ PlayerRateChanged)();
+typedef void (^ CurrentItemChanged)(AVPlayerItem *);
+typedef void (^ ItemReadyToPlay)();
+
+
+typedef enum
+{
+    HysteriaPauseReasonPlaying = 0,
+    HysteriaPauseReasonManul,
+    HysteriaPauseReasonUnknown
+}
+HysteriaPauseReason;
+
+
+@interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
+{
+    
+}
+
+@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
+@property (nonatomic, strong, readonly) NSMutableArray *playerItems;
+@property (nonatomic) BOOL PAUSE_REASON_manul;
+@property (nonatomic) BOOL PLAYMODE_isRepeat;
+@property (nonatomic) BOOL PLAYMODE_isShuffle;
+@property (nonatomic) BOOL PLAYMODE_isRepeatOne;
+@property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
+@property (nonatomic, readonly) BOOL isInEmptySound;
+
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay;
+- (void)setupWithGetterBlock:(BlockItemGetter) itemBlock ItemsCount:(NSUInteger) count;
+- (void)setItemsCount:(NSUInteger)count;
+
+- (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
+- (void)removeAllItems;
+- (void)removeQueuesAtPlayer;
+- (void)removeItemAtIndex:(NSUInteger)index;
+- (void)moveItemFromIndex:(NSUInteger)from toIndex:(NSUInteger)to;
+- (void)play;
+- (void)pause;
+- (void)playPrevious;
+- (void)playNext;
+- (void)seekToTime:(double)CMTime;
+
+- (NSDictionary *)getPlayerTime;
+- (BOOL)isPlaying;
+- (AVPlayerItem *)getCurrentItem;
+- (HysteriaPauseReason)pauseReason;
+
+- (void)deprecatePlayer;
+
+/*
+ * Tells OS this application starts one or more long-running tasks, should end background task when completed.
+ */
+- (void)longTimeBufferBackground;
+- (void)longTimeBufferBackgroundCompleted;
+
+/*
+ * Indicating Playeritem's play order
+ */
+- (void)setHysteriaOrder:(AVPlayerItem *)item Key:(NSNumber *)order;
+- (NSNumber *)getHysteriaOrder:(AVPlayerItem *)item;
+
+@end
