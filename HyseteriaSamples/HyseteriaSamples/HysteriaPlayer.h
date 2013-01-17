@@ -28,7 +28,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-typedef AVPlayerItem * (^ BlockItemGetter)(NSUInteger);
+typedef NSString * (^ BlockItemGetter)(NSUInteger);
 typedef void (^ PlayerReadyToPlay)();
 typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *);

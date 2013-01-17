@@ -194,7 +194,7 @@ static const void *Hysteriatag = &Hysteriatag;
     dispatch_async(HBGQueue, ^{
         AVPlayerItem *item;
         if (blockItemGetter) {
-            item = blockItemGetter(startAt);
+            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(startAt)]];
         }else{
             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
             return ;
@@ -242,7 +242,7 @@ static const void *Hysteriatag = &Hysteriatag;
                 dispatch_async(HBGQueue, ^{
                     AVPlayerItem *item;
                     if (blockItemGetter) {
-                        item = blockItemGetter(nowIndex + 1);
+                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(nowIndex + 1)]];
                     }else{
                         NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                         return ;
@@ -272,7 +272,7 @@ static const void *Hysteriatag = &Hysteriatag;
                     dispatch_async(HBGQueue, ^{
                         AVPlayerItem *item;
                         if (blockItemGetter) {
-                            item = blockItemGetter(0);
+                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(0)]];
                         }else{
                             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                             return ;

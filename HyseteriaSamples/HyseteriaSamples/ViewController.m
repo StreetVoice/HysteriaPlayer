@@ -51,10 +51,8 @@
                           }
                       }];
     
-    [hysteriaPlayer setupWithGetterBlock:^AVPlayerItem *(NSUInteger index) {
-        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:[mp3Array objectAtIndex:index]]];
-        return playerItem;
-        NSLog(@"wtf");
+    [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+        return [mp3Array objectAtIndex:index];
         
     } ItemsCount:[mp3Array count]];
     
