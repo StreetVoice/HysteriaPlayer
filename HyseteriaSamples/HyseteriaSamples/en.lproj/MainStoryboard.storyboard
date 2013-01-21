@@ -12,13 +12,28 @@
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-3i-vcv">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="43" id="7HV-K5-HkG"/>
-                                    <constraint firstAttribute="width" constant="73" id="YTJ-sB-aRn"/>
-                                </constraints>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bEM-8T-La3">
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="1EQ-vn-Gvt"/>
+                                    <barButtonItem image="PreviousButton" style="plain" id="BKx-WL-zzn">
+                                        <connections>
+                                            <action selector="playPreviouse:" destination="2" id="lhZ-UC-xly"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="alw-a5-7dl"/>
+                                    <barButtonItem image="playButton" style="plain" id="WMH-Rc-vru"/>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="1I8-Rn-qeg"/>
+                                    <barButtonItem image="NextButton" style="plain" id="IAP-4w-sZg">
+                                        <connections>
+                                            <action selector="playNext:" destination="2" id="tj1-nO-EaB"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="1df-fW-AsB"/>
+                                </items>
+                            </toolbar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bq3-gq-r9j">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" image="PreviousButton@2x.png">
+                                <state key="normal" title="Play Static MP3 Array">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -26,31 +41,12 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="playPreviouse:" destination="2" eventType="touchUpInside" id="7GJ-3r-bAO"/>
+                                    <action selector="playStaticArray:" destination="2" eventType="touchUpInside" id="upw-zO-bGc"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZMA-fT-xqW">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="73" id="D4Z-n8-7AC"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" size="button"/>
-                                <state key="normal" title="Play">
-                                    <color key="titleColor" red="0.19607843137254902" green="0.30980392156862746" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="play_pause:" destination="2" eventType="touchUpInside" id="8qi-Y9-e75"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztp-KU-2Oj">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="73" id="WOf-Xi-zrm"/>
-                                </constraints>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ky-ju-hz1">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" image="NextButton@2x.png">
+                                <state key="normal" title="Play Selected MP3">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -58,36 +54,81 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="playNext:" destination="2" eventType="touchUpInside" id="cyb-5l-GxL"/>
+                                    <action selector="playSelected:" destination="2" eventType="touchUpInside" id="0X9-Yi-dlp"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="tUi-3i-vcv" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="36" id="11u-sA-Ifd"/>
-                            <constraint firstItem="ZMA-fT-xqW" firstAttribute="top" secondItem="ztp-KU-2Oj" secondAttribute="top" type="default" id="4uq-1y-QLp"/>
-                            <constraint firstAttribute="trailing" secondItem="ztp-KU-2Oj" secondAttribute="trailing" constant="33" id="4wB-zF-nkC"/>
-                            <constraint firstItem="ZMA-fT-xqW" firstAttribute="centerX" secondItem="3" secondAttribute="centerX" type="default" id="7ET-60-7oe"/>
-                            <constraint firstItem="tUi-3i-vcv" firstAttribute="bottom" secondItem="ZMA-fT-xqW" secondAttribute="bottom" type="default" id="V3f-uk-VEu"/>
-                            <constraint firstAttribute="bottom" secondItem="tUi-3i-vcv" secondAttribute="bottom" constant="204" id="due-2B-hTv"/>
-                            <constraint firstItem="ztp-KU-2Oj" firstAttribute="bottom" secondItem="ZMA-fT-xqW" secondAttribute="bottom" type="default" id="mPx-kM-kId"/>
-                            <constraint firstItem="tUi-3i-vcv" firstAttribute="top" secondItem="ZMA-fT-xqW" secondAttribute="top" type="default" id="sNm-97-gWE"/>
+                            <constraint firstItem="Bq3-gq-r9j" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="T44-nj-TSS"/>
+                            <constraint firstItem="bEM-8T-La3" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="VvQ-g1-c9B"/>
+                            <constraint firstAttribute="trailing" secondItem="Bq3-gq-r9j" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="Y5r-NS-u7S"/>
+                            <constraint firstItem="1ky-ju-hz1" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="jlW-iP-fiQ"/>
+                            <constraint firstItem="bEM-8T-La3" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="k7t-jA-wR0"/>
+                            <constraint firstItem="Bq3-gq-r9j" firstAttribute="top" secondItem="3" secondAttribute="top" constant="20" symbolic="YES" type="default" id="mr4-s8-Hao"/>
+                            <constraint firstItem="bEM-8T-La3" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="qCX-k2-vgH"/>
+                            <constraint firstAttribute="trailing" secondItem="1ky-ju-hz1" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="qD7-Gv-gHi"/>
+                            <constraint firstItem="1ky-ju-hz1" firstAttribute="top" secondItem="Bq3-gq-r9j" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="yQ9-VA-k89"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="nextButton" destination="ztp-KU-2Oj" id="IIq-yx-uL0"/>
-                        <outlet property="playPauseButton" destination="ZMA-fT-xqW" id="9aw-je-V2s"/>
-                        <outlet property="previousButton" destination="tUi-3i-vcv" id="uFM-LY-lId"/>
+                        <outlet property="firstButton" destination="Bq3-gq-r9j" id="gXI-5I-yo3"/>
+                        <outlet property="nextButton" destination="IAP-4w-sZg" id="WmC-HO-9Yg"/>
+                        <outlet property="pauseButton" destination="ist-Jl-1F9" id="ewU-OJ-MlR"/>
+                        <outlet property="playButton" destination="jP6-dG-c4j" id="g6t-Rc-Fg0"/>
+                        <outlet property="previousButton" destination="BKx-WL-zzn" id="dus-Ie-yVj"/>
+                        <outlet property="refreshIndicator" destination="CLc-9W-OXK" id="5SP-s6-97L"/>
+                        <outlet property="secondButton" destination="1ky-ju-hz1" id="qtp-8W-dDw"/>
+                        <outlet property="toolbar" destination="bEM-8T-La3" id="qn1-RJ-MPt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
+                <barButtonItem image="pauseButton" style="plain" id="ist-Jl-1F9">
+                    <connections>
+                        <action selector="play_pause:" destination="2" id="hhG-dY-NQS"/>
+                    </connections>
+                </barButtonItem>
+                <barButtonItem image="playButton" style="plain" id="jP6-dG-c4j">
+                    <connections>
+                        <action selector="play_pause:" destination="2" id="60Q-LL-AoX"/>
+                    </connections>
+                </barButtonItem>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" animating="YES" style="whiteLarge" id="CLc-9W-OXK">
+                    <rect key="frame" x="0.0" y="0.0" width="37" height="37"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </activityIndicatorView>
             </objects>
         </scene>
     </scenes>
     <resources>
-        <image name="NextButton@2x.png" width="44" height="50"/>
-        <image name="PreviousButton@2x.png" width="44" height="50"/>
+        <image name="NextButton" width="16" height="16"/>
+        <image name="PreviousButton" width="16" height="16"/>
+        <image name="pauseButton" width="16" height="16"/>
+        <image name="playButton" width="16" height="16"/>
     </resources>
+    <classes>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="ViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="playNext:"/>
+                <relationship kind="action" name="playPreviouse:"/>
+                <relationship kind="action" name="playSelected:"/>
+                <relationship kind="action" name="playStaticArray:"/>
+                <relationship kind="action" name="play_pause:"/>
+                <relationship kind="outlet" name="firstButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="nextButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="pauseButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="playButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="previousButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="refreshIndicator" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="secondButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
