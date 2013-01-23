@@ -229,7 +229,6 @@ static const void *Hysteriatag = &Hysteriatag;
             return;
         }
         if (nowIndex + 1 < items_count) {
-            NSLog(@"%i < %i",nowIndex + 1, items_count);
             for (AVPlayerItem *item in playerItems) {
                 NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
                 if (checkIndex == nowIndex +1) {

@@ -7,12 +7,15 @@
 //
 
 #import "ViewController.h"
+#import "AFJSONRequestOperation.h"
 
 @interface ViewController ()
 {
     NSArray *mp3Array;
     
     UIBarButtonItem *mRefresh;
+    
+    __block NSMutableArray *itunesPreviewUrls;
 }
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *playButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *pauseButton;
@@ -37,7 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self initView];
+    [self initDefaults];
      mp3Array = [NSArray arrayWithObjects:
                          @"http://dc394.4shared.com/img/243065174/bec1a18a/dlink__2Fdownload_2FGlObVQyO_3Fdsid_3D48kq5a.654a9e37903de1dcc657fe31569bf5d7/preview.mp3",
                          @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
@@ -67,10 +70,11 @@
 
 }
 
-- (void)initView
+- (void)initDefaults
 {
     mRefresh = [[UIBarButtonItem alloc] initWithCustomView:refreshIndicator];
     [mRefresh setWidth:30];
+
 
 }
 
@@ -106,7 +110,31 @@
 
 - (IBAction)playSelected:(id)sender
 {
+    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749,5723&entity=song&limit=5&sort=recent";
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    itunesPreviewUrls = [NSMutableArray array];
     
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
+        NSArray *JSONArray = [JSON objectForKey:@"results"];
+        for (NSDictionary *obj in JSONArray) {
+            if ([obj objectForKey:@"previewUrl"] != nil) {
+                [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
+                NSLog(@"count is %i",itunesPreviewUrls.count);
+            }
+        }
+        
+        [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+            NSLog(@"count is %i",itunesPreviewUrls.count);
+            return [itunesPreviewUrls objectAtIndex:index];
+        } ItemsCount:[itunesPreviewUrls count]];
+        
+        [hysteriaPlayer fetchAndPlayPlayerItem:0];
+        [hysteriaPlayer setPLAYMODE_isRepeat:YES];
+        
+    }failure:nil];
+    
+    [operation start];
 }
 
 - (IBAction)play_pause:(id)sender
