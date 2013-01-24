@@ -37,6 +37,11 @@
 @implementation ViewController
 @synthesize playButton, pauseButton, nextButton, previousButton, toolbar, firstButton, secondButton, refreshIndicator;
 
+
+#pragma mark -
+#pragma mark ===========   Hysteria Players  =========
+#pragma mark -
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -68,33 +73,6 @@
                       }];
     
 
-}
-
-- (void)initDefaults
-{
-    mRefresh = [[UIBarButtonItem alloc] initWithCustomView:refreshIndicator];
-    [mRefresh setWidth:30];
-
-
-}
-
-- (void)syncPlayPauseButtons
-{
-    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
-
-    switch ([hysteriaPlayer pauseReason]) {
-        case HysteriaPauseReasonUnknown:
-            [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];
-            break;
-        case HysteriaPauseReasonManul:
-            [toolbarItems replaceObjectAtIndex:3 withObject:playButton];
-            break;
-        case HysteriaPauseReasonPlaying:
-            [toolbarItems replaceObjectAtIndex:3 withObject:pauseButton];
-        default:
-            break;
-    }
-    toolbar.items = toolbarItems;
 }
 
 - (IBAction)playStaticArray:(id)sender
@@ -190,6 +168,38 @@
 {
     [hysteriaPlayer playPrevious];
 }
+
+#pragma mark -
+#pragma mark ===========   Additions  =========
+#pragma mark -
+
+- (void)initDefaults
+{
+    mRefresh = [[UIBarButtonItem alloc] initWithCustomView:refreshIndicator];
+    [mRefresh setWidth:30];
+
+
+}
+
+- (void)syncPlayPauseButtons
+{
+    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
+
+    switch ([hysteriaPlayer pauseReason]) {
+        case HysteriaPauseReasonUnknown:
+            [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];
+            break;
+        case HysteriaPauseReasonManul:
+            [toolbarItems replaceObjectAtIndex:3 withObject:playButton];
+            break;
+        case HysteriaPauseReasonPlaying:
+            [toolbarItems replaceObjectAtIndex:3 withObject:pauseButton];
+        default:
+            break;
+    }
+    toolbar.items = toolbarItems;
+}
+
 
 - (void)didReceiveMemoryWarning
 {
