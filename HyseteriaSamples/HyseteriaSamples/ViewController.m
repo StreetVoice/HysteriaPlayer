@@ -99,6 +99,7 @@
 
 - (IBAction)playStaticArray:(id)sender
 {
+    [hysteriaPlayer removeAllItems];
     [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
         return [mp3Array objectAtIndex:index];
         
@@ -110,6 +111,7 @@
 
 - (IBAction)playSelected:(id)sender
 {
+    [hysteriaPlayer removeAllItems];
     NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749,5723&entity=song&limit=5&sort=recent";
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
