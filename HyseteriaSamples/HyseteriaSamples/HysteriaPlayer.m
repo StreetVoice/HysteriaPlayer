@@ -1,6 +1,5 @@
 //
 //  HysteriaPlayer.m
-//  Liuda-iOS
 //
 //  Created by saiday on 13/1/8.
 //
