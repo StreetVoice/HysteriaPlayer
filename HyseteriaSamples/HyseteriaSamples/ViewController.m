@@ -106,7 +106,7 @@
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPLAYMODE_isRepeat:YES];
+    [hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
 - (IBAction)playSelected:(id)sender
@@ -132,7 +132,7 @@
         } ItemsCount:[itunesPreviewUrls count]];
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
-        [hysteriaPlayer setPLAYMODE_isRepeat:YES];
+        [hysteriaPlayer setPLAYMODE_Repeat:YES];
         
     }failure:nil];
     
@@ -143,10 +143,10 @@
 {
     if ([hysteriaPlayer isPlaying])
     {
-        [hysteriaPlayer setPAUSE_REASON_manul:YES];
+        [hysteriaPlayer setPAUSE_REASON_ForcePause:YES];
         [hysteriaPlayer pause];
     }else{
-        [hysteriaPlayer setPAUSE_REASON_manul:NO];
+        [hysteriaPlayer setPAUSE_REASON_ForcePause:NO];
         [hysteriaPlayer play];
     }
 }

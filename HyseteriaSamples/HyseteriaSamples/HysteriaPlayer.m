@@ -35,7 +35,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @end
 
 @implementation HysteriaPlayer
-@synthesize audioPlayer,playerItems,PAUSE_REASON_manul,PLAYMODE_isRepeat,PLAYMODE_isRepeatOne,PLAYMODE_isShuffle,NETWORK_ERROR_getNextItem,isInEmptySound;
+@synthesize audioPlayer,playerItems,PAUSE_REASON_ForcePause,PLAYMODE_Repeat,PLAYMODE_RepeatOne,PLAYMODE_Shuffle,NETWORK_ERROR_getNextItem,isInEmptySound;
 
 #pragma mark -
 #pragma mark ===========  Initialization, Setup  =========
@@ -46,9 +46,9 @@ static const void *Hysteriatag = &Hysteriatag;
     if ((self = [super init])) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
         playerItems = [NSMutableArray array];
-        PLAYMODE_isRepeat = YES;
-        PLAYMODE_isRepeatOne = NO;
-        PLAYMODE_isShuffle = NO;
+        PLAYMODE_Repeat = YES;
+        PLAYMODE_RepeatOne = NO;
+        PLAYMODE_Shuffle = NO;
         
         playerReadyToPlay = _playerReadyToPlay;
         playerRateChanged = _playerRateChanged;
@@ -224,7 +224,7 @@ static const void *Hysteriatag = &Hysteriatag;
     BOOL findInPlayerItems = NO;
     
     if (CHECK_Order) {
-        if (PLAYMODE_isShuffle || PLAYMODE_isRepeatOne) {
+        if (PLAYMODE_Shuffle || PLAYMODE_RepeatOne) {
             return;
         }
         if (nowIndex + 1 < items_count) {
@@ -258,7 +258,7 @@ static const void *Hysteriatag = &Hysteriatag;
                 });
             }
         }else if (items_count > 1){
-            if (PLAYMODE_isRepeat) {
+            if (PLAYMODE_Repeat) {
                 for (AVPlayerItem *item in playerItems) {
                     NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
                     if (checkIndex == 0) {
@@ -373,7 +373,7 @@ static const void *Hysteriatag = &Hysteriatag;
 
 - (void)playNext
 {
-    if (PLAYMODE_isShuffle) {
+    if (PLAYMODE_Shuffle) {
         NSUInteger index;
         [audioPlayer removeAllItems];
         do {
@@ -388,7 +388,7 @@ static const void *Hysteriatag = &Hysteriatag;
             if (nowIndex + 1 < items_count) {
                 [self fetchAndPlayPlayerItem:(nowIndex + 1)];
             }else{
-                if (PLAYMODE_isRepeat) {
+                if (PLAYMODE_Repeat) {
                     [self fetchAndPlayPlayerItem:0];
                 }
             }
@@ -401,7 +401,7 @@ static const void *Hysteriatag = &Hysteriatag;
     NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
     if (nowIndex == 0)
     {
-        if (PLAYMODE_isRepeat) {
+        if (PLAYMODE_Repeat) {
             [self fetchAndPlayPlayerItem:items_count - 1];
         }else{
             [audioPlayer.currentItem seekToTime:kCMTimeZero];
@@ -430,6 +430,23 @@ static const void *Hysteriatag = &Hysteriatag;
     }
 }
 
+- (void)setPLAYMODE_Repeat:(BOOL)_PLAYMODE_Repeat
+{
+    if (_PLAYMODE_Repeat) {
+        if (PLAYMODE_RepeatOne) {
+            PLAYMODE_RepeatOne = NO;
+        }
+    }
+}
+
+- (void)setPLAYMODE_RepeatOne:(BOOL)_PLAYMODE_RepeatOne
+{
+    if (_PLAYMODE_RepeatOne) {
+        if (PLAYMODE_Repeat) {
+            PLAYMODE_Repeat = NO;
+        }
+    }
+}
 #pragma mark -
 #pragma mark ===========  Player info  =========
 #pragma mark -
@@ -443,7 +460,7 @@ static const void *Hysteriatag = &Hysteriatag;
 {
     if ([self isPlaying]) {
         return HysteriaPauseReasonPlaying;
-    }else if (PAUSE_REASON_manul){
+    }else if (PAUSE_REASON_ForcePause){
         return HysteriaPauseReasonManul;
     }else{
         return HysteriaPauseReasonUnknown;
@@ -483,11 +500,11 @@ static const void *Hysteriatag = &Hysteriatag;
     
     if (reason == AVAudioSessionInterruptionTypeEnded && interruptedWhilePlaying) {
         interruptedWhilePlaying = NO;
-        PAUSE_REASON_manul = NO;
+        PAUSE_REASON_ForcePause = NO;
         [audioPlayer play];
     }else if (reason == AVAudioSessionInterruptionTypeBegan){
         interruptedWhilePlaying = YES;
-        PAUSE_REASON_manul = YES;
+        PAUSE_REASON_ForcePause = YES;
         [audioPlayer pause];
     }
     
@@ -501,11 +518,11 @@ static const void *Hysteriatag = &Hysteriatag;
     NSUInteger reason = [[userInfo objectForKey:@"AVAudioSessionRouteChangeReasonKey"] integerValue];
     if (reason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
         routeChangedWhilePlaying = YES;
-        PAUSE_REASON_manul = YES;
+        PAUSE_REASON_ForcePause = YES;
         NSLog(@"route changed while playng, pause player");
     }else if (reason == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying){
         routeChangedWhilePlaying = NO;
-        PAUSE_REASON_manul = NO;
+        PAUSE_REASON_ForcePause = NO;
         [audioPlayer play];
         NSLog(@"resume playback from route changed");
     }
@@ -566,7 +583,7 @@ static const void *Hysteriatag = &Hysteriatag;
             
             NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
             
-            if (audioPlayer.rate == 0 && !PAUSE_REASON_manul) {
+            if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
                 //buffer for 5 secs, then play
                 if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying) {
                     NSLog(@"-----------3G delay------------");
@@ -585,10 +602,10 @@ static const void *Hysteriatag = &Hysteriatag;
 {
     NSNumber *CHECK_Order = [self getHysteriaOrder:audioPlayer.currentItem];
     if (CHECK_Order) {
-        if (PLAYMODE_isRepeatOne) {
+        if (PLAYMODE_RepeatOne) {
             NSInteger currentIndex = [CHECK_Order integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
-        }else if (PLAYMODE_isShuffle){
+        }else if (PLAYMODE_Shuffle){
             NSUInteger index;
             do {
                 index = arc4random() % items_count;
@@ -600,13 +617,13 @@ static const void *Hysteriatag = &Hysteriatag;
                 NSInteger nowIndex = [CHECK_Order integerValue];
                 if (nowIndex + 1 < items_count) {
                     [self fetchAndPlayPlayerItem:(nowIndex + 1)];
-                }else if (PLAYMODE_isRepeat){
+                }else if (PLAYMODE_Repeat){
                     [self fetchAndPlayPlayerItem:0];
-                }else if (!PLAYMODE_isRepeat){
+                }else if (!PLAYMODE_Repeat){
                     NSInteger nowIndex = [CHECK_Order integerValue];
                     if (nowIndex + 1 == items_count) {
                         [audioPlayer removeAllItems];
-                        PAUSE_REASON_manul = YES;
+                        PAUSE_REASON_ForcePause = YES;
                         [audioPlayer pause];
                         [self fetchAndPlayPlayerItem:0];
                     }
