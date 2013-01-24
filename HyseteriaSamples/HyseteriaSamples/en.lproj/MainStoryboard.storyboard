@@ -54,21 +54,37 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="playSelected:" destination="2" eventType="touchUpInside" id="0X9-Yi-dlp"/>
+                                    <action selector="playJackJohnsonFromItunes:" destination="2" eventType="touchUpInside" id="23p-wC-Eng"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZCt-IC-8d9">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="U2 - iTunes preview">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="playU2FromItunes:" destination="2" eventType="touchUpInside" id="oaF-FW-vZI"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="1ky-ju-hz1" firstAttribute="top" secondItem="3" secondAttribute="top" constant="227" id="6M1-E4-SNf"/>
+                            <constraint firstItem="ZCt-IC-8d9" firstAttribute="top" secondItem="1ky-ju-hz1" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Skq-Iy-FuO"/>
                             <constraint firstItem="Bq3-gq-r9j" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="T44-nj-TSS"/>
                             <constraint firstItem="bEM-8T-La3" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="VvQ-g1-c9B"/>
+                            <constraint firstItem="ZCt-IC-8d9" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Wi8-Qf-cQD"/>
                             <constraint firstAttribute="trailing" secondItem="Bq3-gq-r9j" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="Y5r-NS-u7S"/>
+                            <constraint firstAttribute="trailing" secondItem="ZCt-IC-8d9" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="hmV-5s-0HP"/>
                             <constraint firstItem="1ky-ju-hz1" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="jlW-iP-fiQ"/>
                             <constraint firstItem="bEM-8T-La3" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" type="default" id="k7t-jA-wR0"/>
                             <constraint firstItem="Bq3-gq-r9j" firstAttribute="top" secondItem="3" secondAttribute="top" constant="20" symbolic="YES" type="default" id="mr4-s8-Hao"/>
                             <constraint firstItem="bEM-8T-La3" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="qCX-k2-vgH"/>
                             <constraint firstAttribute="trailing" secondItem="1ky-ju-hz1" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="qD7-Gv-gHi"/>
-                            <constraint firstItem="1ky-ju-hz1" firstAttribute="top" secondItem="Bq3-gq-r9j" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="yQ9-VA-k89"/>
                         </constraints>
                     </view>
                     <connections>
@@ -113,10 +129,11 @@
         <class className="ViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
             <relationships>
+                <relationship kind="action" name="playJackJohnsonFromItunes:"/>
                 <relationship kind="action" name="playNext:"/>
                 <relationship kind="action" name="playPreviouse:"/>
-                <relationship kind="action" name="playSelected:"/>
                 <relationship kind="action" name="playStaticArray:"/>
+                <relationship kind="action" name="playU2FromItunes:"/>
                 <relationship kind="action" name="play_pause:"/>
                 <relationship kind="outlet" name="firstButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="nextButton" candidateClass="UIBarButtonItem"/>

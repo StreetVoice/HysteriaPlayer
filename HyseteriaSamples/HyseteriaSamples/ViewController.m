@@ -30,8 +30,8 @@
 - (IBAction)playNext:(id)sender;
 - (IBAction)playPreviouse:(id)sender;
 - (IBAction)playStaticArray:(id)sender;
-- (IBAction)playSelected:(id)sender;
-
+- (IBAction)playJackJohnsonFromItunes:(id)sender;
+- (IBAction)playU2FromItunes:(id)sender;
 @end
 
 @implementation ViewController
@@ -109,10 +109,40 @@
     [hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
-- (IBAction)playSelected:(id)sender
+- (IBAction)playJackJohnsonFromItunes:(id)sender
 {
     [hysteriaPlayer removeAllItems];
-    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749,5723&entity=song&limit=5&sort=recent";
+    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=5&sort=recent";
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    itunesPreviewUrls = [NSMutableArray array];
+    
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
+        NSArray *JSONArray = [JSON objectForKey:@"results"];
+        for (NSDictionary *obj in JSONArray) {
+            if ([obj objectForKey:@"previewUrl"] != nil) {
+                [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
+                NSLog(@"count is %i",itunesPreviewUrls.count);
+            }
+        }
+        
+        [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+            NSLog(@"count is %i",itunesPreviewUrls.count);
+            return [itunesPreviewUrls objectAtIndex:index];
+        } ItemsCount:[itunesPreviewUrls count]];
+        
+        [hysteriaPlayer fetchAndPlayPlayerItem:0];
+        [hysteriaPlayer setPLAYMODE_Repeat:YES];
+        
+    }failure:nil];
+    
+    [operation start];
+}
+
+- (IBAction)playU2FromItunes:(id)sender
+{
+    [hysteriaPlayer removeAllItems];
+    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=5723&entity=song&limit=5&sort=recent";
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     itunesPreviewUrls = [NSMutableArray array];
