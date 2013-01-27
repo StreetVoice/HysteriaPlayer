@@ -1,8 +1,7 @@
-
 Hysteria Player
 =========
 
-This class provides basic useful player functionality.
+This class provides useful basic player functionality.
 
 Features:
 
