@@ -66,7 +66,6 @@
                       CurrentItemChanged:^(AVPlayerItem * newItem) {
                           if (newItem != (id)[NSNull null]) {
                               [self syncPlayPauseButtons];
-                              NSLog(@"current order is %@",[hysteriaPlayer getHysteriaOrder:newItem]);
                           }
                       }
                       ItemReadyToPlay:^{
@@ -103,12 +102,10 @@
         for (NSDictionary *obj in JSONArray) {
             if ([obj objectForKey:@"previewUrl"] != nil) {
                 [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
-                NSLog(@"count is %i",itunesPreviewUrls.count);
             }
         }
         
         [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
-            NSLog(@"count is %i",itunesPreviewUrls.count);
             return [itunesPreviewUrls objectAtIndex:index];
         } ItemsCount:[itunesPreviewUrls count]];
         
@@ -133,12 +130,10 @@
         for (NSDictionary *obj in JSONArray) {
             if ([obj objectForKey:@"previewUrl"] != nil) {
                 [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
-                NSLog(@"count is %i",itunesPreviewUrls.count);
             }
         }
         
         [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
-            NSLog(@"count is %i",itunesPreviewUrls.count);
             return [itunesPreviewUrls objectAtIndex:index];
         } ItemsCount:[itunesPreviewUrls count]];
         
