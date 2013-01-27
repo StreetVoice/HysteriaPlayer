@@ -38,7 +38,7 @@ typedef void (^ ItemReadyToPlay)();
 typedef enum
 {
     HysteriaPauseReasonPlaying = 0,
-    HysteriaPauseReasonManul,
+    HysteriaPauseReasonForce,
     HysteriaPauseReasonUnknown
 }
 HysteriaPauseReason;
@@ -51,14 +51,15 @@ HysteriaPauseReason;
 
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
-@property (nonatomic) BOOL PAUSE_REASON_manul;
-@property (nonatomic) BOOL PLAYMODE_isRepeat;
-@property (nonatomic) BOOL PLAYMODE_isShuffle;
-@property (nonatomic) BOOL PLAYMODE_isRepeatOne;
+@property (nonatomic) BOOL PAUSE_REASON_ForcePause;
+@property (nonatomic) BOOL PLAYMODE_Repeat;
+@property (nonatomic) BOOL PLAYMODE_Shuffle;
+@property (nonatomic) BOOL PLAYMODE_RepeatOne;
 @property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 
 - (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay;
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged;
 - (void)setupWithGetterBlock:(BlockItemGetter) itemBlock ItemsCount:(NSUInteger) count;
 - (void)setItemsCount:(NSUInteger)count;
 
@@ -72,6 +73,7 @@ HysteriaPauseReason;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double)CMTime;
+
 
 - (NSDictionary *)getPlayerTime;
 - (BOOL)isPlaying;
