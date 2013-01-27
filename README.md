@@ -5,7 +5,7 @@ This class provides useful basic player functionality.
 
 Features:
 
-- You don't need write KVO again, just sending 3 or 4 blocks then you can handle player status.
+- You don't need to write KVO again, just sending 3 or 4 blocks then you can handle player status.
 - Ability to play previous PlayerItem.
 - If player paused bacause buffering problems, auto-resume the playback of your PlayerItem when enough buffered. 
 - Background playable enabled. (need to register your App supports background modes as "App plays audio")
