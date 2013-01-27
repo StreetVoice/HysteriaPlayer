@@ -120,4 +120,4 @@ Click your project and select your target app, going to the info tab find __Requ
 
 ## Licenses
 
-All source code is licensed under the [MIT License](https://raw.github.com/rs/SDWebImage/master/LICENSE).
+All source code is licensed under the MIT License.
