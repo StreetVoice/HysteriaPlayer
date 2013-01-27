@@ -80,20 +80,19 @@ Hysterai Player
 
 With these four blocks, you can handle about the Player's status changed, including __status changed__, __rate changed__, __currentItem changed__.
 
-__Status Changed__ :
+- __Status Changed__ :
 It will be called when Player is ready to play the PlayerItem, so play it. If you have play/pause buttons, should update their status after you starting play.
 
-__Rate Changed__ :
-It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. Hysteria Player have __HysteriaPauseReason__ to help you.
- 
-* HysteriaPauseReasonPlaying : Player is playing
-* HysteriaPauseReasonForce : Player paused because you set Player's property __PAUSE_REASON_ForcePause = YES__ to pause it.
-* HysteriaPauseReasonUnknown : Player paused for unknown reason, usually it because Player is paused for buffering.
+- __Rate Changed__ :
+It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. Hysteria Player have __HysteriaPauseReason__ to help you. 
+	- HysteriaPauseReasonPlaying : Player is playing
+	- HysteriaPauseReasonForce : Player paused because you set Player's property `PAUSE_REASON_ForcePause = YES` to pause it.
+	- HysteriaPauseReasonUnknown : Player paused for unknown reason, usually it because Player is paused for buffering.
 
-__CurrentItem Changed__ :
+- __CurrentItem Changed__ :
 It will be called when player's currentItem changed. If you have artworks, playeritem's infos or play/pause buttons to display, you should update them when this be called.
 
-__ItemReadyToPlay__ :
+- __ItemReadyToPlay__ :
 It will be called when __PlayerItem__ is ready to play, this is optional.
  
 ### Using setupWithGetterBlock:
