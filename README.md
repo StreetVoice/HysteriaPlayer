@@ -97,7 +97,8 @@ It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. 
  
 ### Using setupWithGetterBlock:
 
-Before you starting play anything, set your datasource to Hysteria Player. This block will gives you a index that will be used (instantly play or pre-buffer). Returning a NSString format url is all you need to do.  
+Before you starting play anything, set your datasource to Hysteria Player. This block will gives you a index that will be used (instantly play or pre-buffer). Returning a NSString format url is all you need to do.
+
 __ItemsCount__ tells Hysteria Player the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is modified.
 
 
