@@ -78,28 +78,28 @@ Hysterai Player
 
 ### Using initWithHandlers:
 
-With these four blocks, you can handle about the Player's status changed, including `status changed`, `rate changed`, `currentItem changed`.
+With these four blocks, you can handle about the Player's status changed, including __status changed__, __rate changed__, __currentItem changed__.
 
 __Status Changed__ :
 It will be called when Player is ready to play the PlayerItem, so play it. If you have play/pause buttons, should update their status after you starting play.
 
 __Rate Changed__ :
-It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. Hysteria Player have `HysteriaPauseReason` to help you.
+It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. Hysteria Player have __HysteriaPauseReason__ to help you.
  
 * HysteriaPauseReasonPlaying : Player is playing
-* HysteriaPauseReasonForce : Player paused because you set Player's property `PAUSE_REASON_ForcePause = YES` to pause it.
+* HysteriaPauseReasonForce : Player paused because you set Player's property __PAUSE_REASON_ForcePause = YES__ to pause it.
 * HysteriaPauseReasonUnknown : Player paused for unknown reason, usually it because Player is paused for buffering.
 
 __CurrentItem Changed__ :
 It will be called when player's currentItem changed. If you have artworks, playeritem's infos or play/pause buttons to display, you should update them when this be called.
 
 __ItemReadyToPlay__ :
-It will be called when `PlayerItem` is ready to play, this is optional.
+It will be called when __PlayerItem__ is ready to play, this is optional.
  
 ### Using setupWithGetterBlock:
 
 Before you starting play anything, set your datasource to Hysteria Player. This block will gives you a index that will be used (instantly play or pre-buffer). Returning a NSString format url is all you need to do.  
-`ItemsCount` tells Hysteria Player the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is modified.
+__ItemsCount__ tells Hysteria Player the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is modified.
 
 
 Installation
@@ -111,7 +111,7 @@ Add CoreMedia.framework and AVFoundation.framework to your Link Binary With Libr
 
 ### Copy provided point1sec.mp3 file to your Supporting Files 
 
-Ability to play the `first` PlayerItem when your application is resigned active but `first` PlayerItem is still buffering. 
+Ability to play the __first__ PlayerItem when your application is resigned active but __first__ PlayerItem is still buffering. 
 
 
 ## Licenses
