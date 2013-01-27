@@ -7,10 +7,13 @@
 //
 
 #import "ViewController.h"
+#import "HysteriaPlayer.h"
 #import "AFJSONRequestOperation.h"
 
 @interface ViewController ()
 {
+    HysteriaPlayer *hysteriaPlayer;
+    
     NSArray *mp3Array;
     
     UIBarButtonItem *mRefresh;
@@ -189,7 +192,7 @@
         case HysteriaPauseReasonUnknown:
             [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];
             break;
-        case HysteriaPauseReasonManul:
+        case HysteriaPauseReasonForce:
             [toolbarItems replaceObjectAtIndex:3 withObject:playButton];
             break;
         case HysteriaPauseReasonPlaying:

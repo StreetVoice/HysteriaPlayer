@@ -62,6 +62,27 @@ static const void *Hysteriatag = &Hysteriatag;
     return self;
 }
 
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged
+{
+    if ((self = [super init])) {
+        HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
+        playerItems = [NSMutableArray array];
+        PLAYMODE_Repeat = YES;
+        PLAYMODE_RepeatOne = NO;
+        PLAYMODE_Shuffle = NO;
+        
+        playerReadyToPlay = _playerReadyToPlay;
+        playerRateChanged = _playerRateChanged;
+        currentItemChanged = _currentItemChanged;
+        itemReadyToPlay = nil;
+        
+        [self backgroundPlayable];
+        [self playEmptySound];
+        [self AVAudioSessionNotification];
+    }
+    return self;
+}
+
 - (void)setupWithGetterBlock:(BlockItemGetter)itemBlock ItemsCount:(NSUInteger)count
 { 
     blockItemGetter = itemBlock;
@@ -461,7 +482,7 @@ static const void *Hysteriatag = &Hysteriatag;
     if ([self isPlaying]) {
         return HysteriaPauseReasonPlaying;
     }else if (PAUSE_REASON_ForcePause){
-        return HysteriaPauseReasonManul;
+        return HysteriaPauseReasonForce;
     }else{
         return HysteriaPauseReasonUnknown;
     }

@@ -38,7 +38,7 @@ typedef void (^ ItemReadyToPlay)();
 typedef enum
 {
     HysteriaPauseReasonPlaying = 0,
-    HysteriaPauseReasonManul,
+    HysteriaPauseReasonForce,
     HysteriaPauseReasonUnknown
 }
 HysteriaPauseReason;
@@ -59,6 +59,7 @@ HysteriaPauseReason;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 
 - (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay;
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged;
 - (void)setupWithGetterBlock:(BlockItemGetter) itemBlock ItemsCount:(NSUInteger) count;
 - (void)setItemsCount:(NSUInteger)count;
 

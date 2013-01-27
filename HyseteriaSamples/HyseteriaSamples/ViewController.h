@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import "HysteriaPlayer.h"
+
 
 @interface ViewController : UIViewController <AVAudioSessionDelegate>
 {
-    HysteriaPlayer *hysteriaPlayer;
 }
 @end
