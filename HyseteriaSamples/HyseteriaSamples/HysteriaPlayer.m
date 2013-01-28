@@ -602,7 +602,7 @@ static const void *Hysteriatag = &Hysteriatag;
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
                 //buffer for 5 secs, then play
-                if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying) {
+                if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
                         [audioPlayer play];
                     }

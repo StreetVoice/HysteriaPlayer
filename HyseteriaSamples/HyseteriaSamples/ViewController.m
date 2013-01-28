@@ -49,7 +49,7 @@
 {
     [super viewDidLoad];
     [self initDefaults];
-     mp3Array = [NSArray arrayWithObjects:
+    mp3Array = [NSArray arrayWithObjects:
                          @"http://dc394.4shared.com/img/243065174/bec1a18a/dlink__2Fdownload_2FGlObVQyO_3Fdsid_3D48kq5a.654a9e37903de1dcc657fe31569bf5d7/preview.mp3",
                          @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
     

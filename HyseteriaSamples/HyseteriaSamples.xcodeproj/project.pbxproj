@@ -377,6 +377,10 @@
 		83AD5EC116A5CABD00604530 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HyseteriaSamples/HyseteriaSamples-Prefix.pch";
 				INFOPLIST_FILE = "HyseteriaSamples/HyseteriaSamples-Info.plist";
@@ -388,6 +392,10 @@
 		83AD5EC216A5CABD00604530 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HyseteriaSamples/HyseteriaSamples-Prefix.pch";
 				INFOPLIST_FILE = "HyseteriaSamples/HyseteriaSamples-Info.plist";
