@@ -103,7 +103,6 @@ static const void *Hysteriatag = &Hysteriatag;
         isInEmptySound = YES;
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:filepath]];
         audioPlayer = [AVQueuePlayer queuePlayerWithItems:[NSArray arrayWithObject:playerItem]];
-        NSLog(@"empty sound played");
     }
 }
 
@@ -129,9 +128,7 @@ static const void *Hysteriatag = &Hysteriatag;
                 //audioSession.delegate = self;
             }
         }
-        NSLog(@"register background playable");
     }else {
-        NSLog(@"do not register background playable");
     }
     
     [self longTimeBufferBackground];
@@ -576,7 +573,6 @@ static const void *Hysteriatag = &Hysteriatag;
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
-        NSLog(@"current item changed");
         if (currentItemChanged != nil) {
             currentItemChanged(newPlayerItem);
         }
@@ -606,10 +602,8 @@ static const void *Hysteriatag = &Hysteriatag;
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
                 //buffer for 5 secs, then play
-                if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying) {
-                    NSLog(@"-----------3G delay------------");
+                if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
-                        NSLog(@"3g delay play");
                         [audioPlayer play];
                     }
                 }
@@ -652,7 +646,6 @@ static const void *Hysteriatag = &Hysteriatag;
             }
         }
     }
-    NSLog(@"item end.");
 }
 
 #pragma mark -
