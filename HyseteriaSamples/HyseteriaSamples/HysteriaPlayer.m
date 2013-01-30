@@ -392,12 +392,15 @@ static const void *Hysteriatag = &Hysteriatag;
 - (void)playNext
 {
     if (PLAYMODE_Shuffle) {
-        NSUInteger index;
-        [audioPlayer removeAllItems];
-        do {
-            index = arc4random() % items_count;
-        } while (index == [[self getHysteriaOrder:audioPlayer.currentItem] integerValue]);
-        [self fetchAndPlayPlayerItem:index];
+        if (items_count == 1) {
+            [self fetchAndPlayPlayerItem:0];
+        }else{
+            NSUInteger index;
+            do {
+                index = arc4random() % items_count;
+            } while (index == [[self getHysteriaOrder:audioPlayer.currentItem] integerValue]);
+            [self fetchAndPlayPlayerItem:index];
+        }
     }else{
         if ([audioPlayer.items count] == 2) {
             [audioPlayer advanceToNextItem];
@@ -621,11 +624,15 @@ static const void *Hysteriatag = &Hysteriatag;
             NSInteger currentIndex = [CHECK_Order integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
         }else if (PLAYMODE_Shuffle){
-            NSUInteger index;
-            do {
-                index = arc4random() % items_count;
-            } while (index == [CHECK_Order integerValue]);
-            [self fetchAndPlayPlayerItem:index];
+            if (items_count == 1) {
+                [self fetchAndPlayPlayerItem:0];
+            }else{
+                NSUInteger index;
+                do {
+                    index = arc4random() % items_count;
+                } while (index == [[self getHysteriaOrder:audioPlayer.currentItem] integerValue]);
+                [self fetchAndPlayPlayerItem:index];
+            }
         }else{
             if (NETWORK_ERROR_getNextItem || audioPlayer.items.count == 1) {
                 NETWORK_ERROR_getNextItem = NO;
