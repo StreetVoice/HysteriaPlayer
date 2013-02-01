@@ -121,3 +121,10 @@ Click your project and select your target app, going to the info tab find __Requ
 ## Licenses
 
 All source code is licensed under the MIT License.
+
+## Author
+
+Created by Saiday
+ 
+* [GitHub](https://github.com/saiday/)
+* [Twitter](https://twitter.com/saiday)
