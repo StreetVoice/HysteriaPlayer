@@ -73,8 +73,6 @@
                               [hysteriaPlayer play];
                           }
                       }];
-    
-
 }
 
 - (IBAction)playStaticArray:(id)sender

@@ -28,6 +28,7 @@ static const void *Hysteriatag = &Hysteriatag;
     PlayerRateChanged playerRateChanged;
     CurrentItemChanged currentItemChanged;
     ItemReadyToPlay itemReadyToPlay;
+    PlayerFailed playerFailed;
 }
 @property (nonatomic, strong, readwrite) NSMutableArray *playerItems;
 
@@ -37,13 +38,25 @@ static const void *Hysteriatag = &Hysteriatag;
 @implementation HysteriaPlayer
 @synthesize audioPlayer,playerItems,PAUSE_REASON_ForcePause,PLAYMODE_Repeat,PLAYMODE_RepeatOne,PLAYMODE_Shuffle,NETWORK_ERROR_getNextItem,isInEmptySound;
 
+
+static HysteriaPlayer *sharedInstance = nil;
+
 #pragma mark -
 #pragma mark ===========  Initialization, Setup  =========
 #pragma mark -
 
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay
++ (HysteriaPlayer *)sharedInstance {
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            sharedInstance = [[super allocWithZone:NULL] init];
+        }
+    }
+    return sharedInstance;
+}
+
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay PlayerFailed:(PlayerFailed)_playerFailed
 {
-    if ((self = [super init])) {
+    if ((sharedInstance = [super init])) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
         playerItems = [NSMutableArray array];
         PLAYMODE_Repeat = YES;
@@ -54,17 +67,39 @@ static const void *Hysteriatag = &Hysteriatag;
         playerRateChanged = _playerRateChanged;
         currentItemChanged = _currentItemChanged;
         itemReadyToPlay = _itemReadyToPlay;
+        playerFailed = _playerFailed;
         
         [self backgroundPlayable];
         [self playEmptySound];
         [self AVAudioSessionNotification];
     }
-    return self;
+    return sharedInstance;
+}
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay
+{
+    if ((sharedInstance = [super init])) {
+        HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
+        playerItems = [NSMutableArray array];
+        PLAYMODE_Repeat = YES;
+        PLAYMODE_RepeatOne = NO;
+        PLAYMODE_Shuffle = NO;
+        
+        playerReadyToPlay = _playerReadyToPlay;
+        playerRateChanged = _playerRateChanged;
+        currentItemChanged = _currentItemChanged;
+        itemReadyToPlay = _itemReadyToPlay;
+        playerFailed = nil;
+        
+        [self backgroundPlayable];
+        [self playEmptySound];
+        [self AVAudioSessionNotification];
+    }
+    return sharedInstance;
 }
 
 - (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged
 {
-    if ((self = [super init])) {
+    if ((sharedInstance = [super init])) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
         playerItems = [NSMutableArray array];
         PLAYMODE_Repeat = YES;
@@ -75,12 +110,13 @@ static const void *Hysteriatag = &Hysteriatag;
         playerRateChanged = _playerRateChanged;
         currentItemChanged = _currentItemChanged;
         itemReadyToPlay = nil;
+        playerFailed = nil;
         
         [self backgroundPlayable];
         [self playEmptySound];
         [self AVAudioSessionNotification];
     }
-    return self;
+    return sharedInstance;
 }
 
 - (void)setupWithGetterBlock:(BlockItemGetter)itemBlock ItemsCount:(NSUInteger)count
@@ -564,7 +600,10 @@ static const void *Hysteriatag = &Hysteriatag;
                 [audioPlayer play];
             }
         } else if (audioPlayer.status == AVPlayerStatusFailed) {
-            NSLog(@"player error!!!:%@",audioPlayer.error);
+            NSLog(@"%@",audioPlayer.error);
+            if (playerFailed != nil) {
+                playerFailed();
+            }
         }
     }
     
