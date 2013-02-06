@@ -50,7 +50,7 @@
     [super viewDidLoad];
     [self initDefaults];
     mp3Array = [NSArray arrayWithObjects:
-                @"http://ec-media.soundcloud.com/wDdd3TqtABWT.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595665fa0e01e91ca6ac0e65a3b37866d1dbbd7dfb0d56a8e777dd5cb1a3388b57155f6876308c5a954e40e4bb&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1360142864&Signature=9L9e7xDhyEp5wN73sHH%2FkjFnqvI%3D",
+                @"http://dl.dropbox.com/u/49227701/pain%20is%20temporary.mp3",
                 @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
     
     hysteriaPlayer = [[HysteriaPlayer sharedInstance]
