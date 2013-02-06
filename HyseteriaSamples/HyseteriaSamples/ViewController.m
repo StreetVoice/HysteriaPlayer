@@ -50,10 +50,10 @@
     [super viewDidLoad];
     [self initDefaults];
     mp3Array = [NSArray arrayWithObjects:
-                         @"http://dc394.4shared.com/img/243065174/bec1a18a/dlink__2Fdownload_2FGlObVQyO_3Fdsid_3D48kq5a.654a9e37903de1dcc657fe31569bf5d7/preview.mp3",
-                         @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
+                @"http://ec-media.soundcloud.com/wDdd3TqtABWT.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595665fa0e01e91ca6ac0e65a3b37866d1dbbd7dfb0d56a8e777dd5cb1a3388b57155f6876308c5a954e40e4bb&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1360142864&Signature=9L9e7xDhyEp5wN73sHH%2FkjFnqvI%3D",
+                @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
     
-	hysteriaPlayer = [[HysteriaPlayer alloc]
+    hysteriaPlayer = [[HysteriaPlayer sharedInstance]
                       initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
                               [hysteriaPlayer play];
@@ -63,7 +63,7 @@
                       PlayerRateChanged:^{
                           [self syncPlayPauseButtons];
                       }
-                      CurrentItemChanged:^(AVPlayerItem * newItem) {
+                      CurrentItemChanged:^(AVPlayerItem *newItem) {
                           if (newItem != (id)[NSNull null]) {
                               [self syncPlayPauseButtons];
                           }
@@ -72,6 +72,11 @@
                           if ([hysteriaPlayer pauseReason] == HysteriaPauseReasonUnknown) {
                               [hysteriaPlayer play];
                           }
+                      }
+                      PlayerFailed:^{}
+                      PlayerDidReachEnd:^{
+                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end." message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                          [alert show];
                       }];
 }
 
@@ -84,7 +89,7 @@
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPLAYMODE_Repeat:YES];
+    //[hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
 - (IBAction)playJackJohnsonFromItunes:(id)sender
@@ -173,14 +178,14 @@
 {
     mRefresh = [[UIBarButtonItem alloc] initWithCustomView:refreshIndicator];
     [mRefresh setWidth:30];
-
-
+    
+    
 }
 
 - (void)syncPlayPauseButtons
 {
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
-
+    
     switch ([hysteriaPlayer pauseReason]) {
         case HysteriaPauseReasonUnknown:
             [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];
