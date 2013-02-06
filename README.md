@@ -37,8 +37,8 @@ Hysterai Player
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-	hysteriaPlayer = [[HysteriaPlayer alloc]
+
+    hysteriaPlayer = [[HysteriaPlayer sharedInstance]
                       initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
                               [hysteriaPlayer play];
@@ -48,18 +48,20 @@ Hysterai Player
                       PlayerRateChanged:^{
                           //[self syncPlayPauseButtons];
                       }
-                      CurrentItemChanged:^(AVPlayerItem * newItem) {
+                      CurrentItemChanged:^(AVPlayerItem *newItem) {
                           if (newItem != (id)[NSNull null]) {
-                              //[self syncPlayPauseButtons];
+                              [self syncPlayPauseButtons];
                           }
                       }
                       ItemReadyToPlay:^{
                           if ([hysteriaPlayer pauseReason] == HysteriaPauseReasonUnknown) {
                               [hysteriaPlayer play];
                           }
+                      }
+                      PlayerFailed:^{}
+                      PlayerDidReachEnd:^{
+                      	  //When your player's PLAYMODE_Repeat property isn't @YES, this block get called at Player's endpoint.
                       }];
-    
-
 }
 
 - (IBAction)playStaticArray:(id)sender
