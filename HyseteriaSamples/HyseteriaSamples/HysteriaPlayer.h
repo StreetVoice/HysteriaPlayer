@@ -45,6 +45,14 @@ typedef enum
 }
 HysteriaPauseReason;
 
+typedef enum
+{
+    PLAYMODE_RepeatOn = 0,
+    PLAYMODE_RepeatOne,
+    PLAYMODE_RepeatOff
+}
+PLAYMODE_RepeatMode;
+
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 {
@@ -75,6 +83,7 @@ HysteriaPauseReason;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double)CMTime;
+- (PLAYMODE_RepeatMode)getRepeatMode;
 
 
 - (NSDictionary *)getPlayerTime;

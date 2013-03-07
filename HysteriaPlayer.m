@@ -29,6 +29,7 @@ static const void *Hysteriatag = &Hysteriatag;
     CurrentItemChanged currentItemChanged;
     ItemReadyToPlay itemReadyToPlay;
     PlayerFailed playerFailed;
+    PlayerDidReachEnd playerDidReachEnd;
 }
 @property (nonatomic, strong, readwrite) NSMutableArray *playerItems;
 
@@ -54,12 +55,12 @@ static HysteriaPlayer *sharedInstance = nil;
     return sharedInstance;
 }
 
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay PlayerFailed:(PlayerFailed)_playerFailed
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay PlayerFailed:(PlayerFailed)_playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)_playerDidReachEnd
 {
     if ((sharedInstance = [super init])) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
         playerItems = [NSMutableArray array];
-        PLAYMODE_Repeat = YES;
+        PLAYMODE_Repeat = NO;
         PLAYMODE_RepeatOne = NO;
         PLAYMODE_Shuffle = NO;
         
@@ -68,49 +69,7 @@ static HysteriaPlayer *sharedInstance = nil;
         currentItemChanged = _currentItemChanged;
         itemReadyToPlay = _itemReadyToPlay;
         playerFailed = _playerFailed;
-        
-        [self backgroundPlayable];
-        [self playEmptySound];
-        [self AVAudioSessionNotification];
-    }
-    return sharedInstance;
-}
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay
-{
-    if ((sharedInstance = [super init])) {
-        HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
-        playerItems = [NSMutableArray array];
-        PLAYMODE_Repeat = YES;
-        PLAYMODE_RepeatOne = NO;
-        PLAYMODE_Shuffle = NO;
-        
-        playerReadyToPlay = _playerReadyToPlay;
-        playerRateChanged = _playerRateChanged;
-        currentItemChanged = _currentItemChanged;
-        itemReadyToPlay = _itemReadyToPlay;
-        playerFailed = nil;
-        
-        [self backgroundPlayable];
-        [self playEmptySound];
-        [self AVAudioSessionNotification];
-    }
-    return sharedInstance;
-}
-
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged
-{
-    if ((sharedInstance = [super init])) {
-        HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
-        playerItems = [NSMutableArray array];
-        PLAYMODE_Repeat = YES;
-        PLAYMODE_RepeatOne = NO;
-        PLAYMODE_Shuffle = NO;
-        
-        playerReadyToPlay = _playerReadyToPlay;
-        playerRateChanged = _playerRateChanged;
-        currentItemChanged = _currentItemChanged;
-        itemReadyToPlay = nil;
-        playerFailed = nil;
+        playerDidReachEnd = _playerDidReachEnd;
         
         [self backgroundPlayable];
         [self playEmptySound];
@@ -120,7 +79,7 @@ static HysteriaPlayer *sharedInstance = nil;
 }
 
 - (void)setupWithGetterBlock:(BlockItemGetter)itemBlock ItemsCount:(NSUInteger)count
-{ 
+{
     blockItemGetter = itemBlock;
     items_count = count;
 }
@@ -391,7 +350,7 @@ static HysteriaPlayer *sharedInstance = nil;
             [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:CHECK_order -1]];
         }
     }
-
+    
     items_count --;
 }
 
@@ -447,6 +406,10 @@ static HysteriaPlayer *sharedInstance = nil;
             }else{
                 if (PLAYMODE_Repeat) {
                     [self fetchAndPlayPlayerItem:0];
+                }else{
+                    if (playerDidReachEnd != nil) {
+                        playerDidReachEnd();
+                    }
                 }
             }
         }
@@ -502,6 +465,17 @@ static HysteriaPlayer *sharedInstance = nil;
         if (PLAYMODE_Repeat) {
             PLAYMODE_Repeat = NO;
         }
+    }
+}
+
+- (PLAYMODE_RepeatMode)getRepeatMode
+{
+    if (PLAYMODE_RepeatOne) {
+        return PLAYMODE_RepeatOne;
+    }else if (PLAYMODE_Repeat){
+        return PLAYMODE_RepeatOn;
+    }else{
+        return PLAYMODE_RepeatOff;
     }
 }
 #pragma mark -
@@ -628,7 +602,9 @@ static HysteriaPlayer *sharedInstance = nil;
             if (itemReadyToPlay != nil) {
                 itemReadyToPlay();
             }
-        }
+            if (![self isPlaying]) {
+                [audioPlayer play];
+            }}
     }
     
     if(object == audioPlayer.currentItem && [keyPath isEqualToString:@"loadedTimeRanges"]){
@@ -652,7 +628,7 @@ static HysteriaPlayer *sharedInstance = nil;
             }
         }
     }
-
+    
 }
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification
@@ -687,6 +663,10 @@ static HysteriaPlayer *sharedInstance = nil;
                         PAUSE_REASON_ForcePause = YES;
                         [audioPlayer pause];
                         [self fetchAndPlayPlayerItem:0];
+                    }else{
+                        if (playerDidReachEnd != nil) {
+                            playerDidReachEnd();
+                        }
                     }
                 }
             }

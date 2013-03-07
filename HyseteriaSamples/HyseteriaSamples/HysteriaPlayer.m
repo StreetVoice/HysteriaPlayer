@@ -467,6 +467,17 @@ static HysteriaPlayer *sharedInstance = nil;
         }
     }
 }
+
+- (PLAYMODE_RepeatMode)getRepeatMode
+{
+    if (PLAYMODE_RepeatOne) {
+        return PLAYMODE_RepeatOne;
+    }else if (PLAYMODE_Repeat){
+        return PLAYMODE_RepeatOn;
+    }else{
+        return PLAYMODE_RepeatOff;
+    }
+}
 #pragma mark -
 #pragma mark ===========  Player info  =========
 #pragma mark -
@@ -591,7 +602,9 @@ static HysteriaPlayer *sharedInstance = nil;
             if (itemReadyToPlay != nil) {
                 itemReadyToPlay();
             }
-        }
+            if (![self isPlaying]) {
+                [audioPlayer play];
+            }}
     }
     
     if(object == audioPlayer.currentItem && [keyPath isEqualToString:@"loadedTimeRanges"]){

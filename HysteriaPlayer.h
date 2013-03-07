@@ -6,7 +6,7 @@
 //  Created by Saiday on 01/14/2013.
 //  Copyright 2013 StreetVoice
 //
-// This code is distributed under the terms and conditions of the MIT license. 
+// This code is distributed under the terms and conditions of the MIT license.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *);
 typedef void (^ ItemReadyToPlay)();
 typedef void (^ PlayerFailed)();
+typedef void (^ PlayerDidReachEnd)();
 
 
 typedef enum
@@ -43,6 +44,14 @@ typedef enum
     HysteriaPauseReasonUnknown
 }
 HysteriaPauseReason;
+
+typedef enum
+{
+    PLAYMODE_RepeatOn = 0,
+    PLAYMODE_RepeatOne,
+    PLAYMODE_RepeatOff
+}
+PLAYMODE_RepeatMode;
 
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
@@ -60,9 +69,7 @@ HysteriaPauseReason;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 
 + (HysteriaPlayer *)sharedInstance;
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerFailed:(PlayerFailed)playerFailed;
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay;
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged;
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
 - (void)setupWithGetterBlock:(BlockItemGetter) itemBlock ItemsCount:(NSUInteger) count;
 - (void)setItemsCount:(NSUInteger)count;
 
@@ -76,6 +83,7 @@ HysteriaPauseReason;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double)CMTime;
+- (PLAYMODE_RepeatMode)getRepeatMode;
 
 
 - (NSDictionary *)getPlayerTime;
