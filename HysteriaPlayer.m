@@ -47,11 +47,11 @@ static HysteriaPlayer *sharedInstance = nil;
 #pragma mark -
 
 + (HysteriaPlayer *)sharedInstance {
-    @synchronized(self) {
-        if (sharedInstance == nil) {
-            sharedInstance = [[super allocWithZone:NULL] init];
-        }
-    }
+    
+    static dispatch_once_t predicate; dispatch_once(&predicate, ^{
+        sharedInstance = [self alloc];
+    });
+    
     return sharedInstance;
 }
 
