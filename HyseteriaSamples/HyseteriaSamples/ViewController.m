@@ -56,7 +56,6 @@
     hysteriaPlayer = [[HysteriaPlayer sharedInstance]
                       initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
-                              [hysteriaPlayer play];
                               [self syncPlayPauseButtons];
                           }
                       }
@@ -65,8 +64,9 @@
                       }
                       CurrentItemChanged:^(AVPlayerItem *newItem) {
                           if (newItem != (id)[NSNull null]) {
-                              [self syncPlayPauseButtons];
+                              //Adjustment
                           }
+                          [self syncPlayPauseButtons];
                       }
                       ItemReadyToPlay:^{
                           if ([hysteriaPlayer pauseReason] == HysteriaPauseReasonUnknown) {
@@ -185,7 +185,6 @@
 - (void)syncPlayPauseButtons
 {
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
-    
     switch ([hysteriaPlayer pauseReason]) {
         case HysteriaPauseReasonUnknown:
             [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];

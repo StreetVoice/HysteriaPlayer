@@ -63,6 +63,7 @@ static HysteriaPlayer *sharedInstance = nil;
         PLAYMODE_Repeat = NO;
         PLAYMODE_RepeatOne = NO;
         PLAYMODE_Shuffle = NO;
+        isInEmptySound = YES;
         
         playerReadyToPlay = _playerReadyToPlay;
         playerRateChanged = _playerRateChanged;
@@ -95,7 +96,6 @@ static HysteriaPlayer *sharedInstance = nil;
     //play  2 sec empty sound
     NSString *filepath = [[NSBundle mainBundle]pathForResource:@"point1sec" ofType:@"mp3"];
     if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
-        isInEmptySound = YES;
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:filepath]];
         audioPlayer = [AVQueuePlayer queuePlayerWithItems:[NSArray arrayWithObject:playerItem]];
     }
@@ -219,12 +219,7 @@ static HysteriaPlayer *sharedInstance = nil;
             [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
             [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             [playerItems addObject:item];
-            if (isInEmptySound) {
-                isInEmptySound = NO;
-                [self insertPlayerItem:item];
-            }else{
-                [self insertPlayerItem:item];
-            }
+            [self insertPlayerItem:item];
         });
     });
 }
@@ -589,7 +584,9 @@ static HysteriaPlayer *sharedInstance = nil;
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
-        if (currentItemChanged != nil && !isInEmptySound) {
+        if (isInEmptySound)
+            isInEmptySound = NO;
+        if (currentItemChanged != nil) {
             currentItemChanged(newPlayerItem);
         }
     }
