@@ -589,7 +589,7 @@ static HysteriaPlayer *sharedInstance = nil;
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
-        if (currentItemChanged != nil) {
+        if (currentItemChanged != nil && !isInEmptySound) {
             currentItemChanged(newPlayerItem);
         }
     }
