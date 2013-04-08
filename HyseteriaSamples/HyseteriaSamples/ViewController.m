@@ -57,6 +57,7 @@
                       initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
                               [self syncPlayPauseButtons];
+                              //Tells user your player is starting, update views or something here.
                           }
                       }
                       PlayerRateChanged:^{
@@ -64,7 +65,7 @@
                       }
                       CurrentItemChanged:^(AVPlayerItem *newItem) {
                           if (newItem != (id)[NSNull null]) {
-                              //Adjustment
+                              //Adjustment your PlayerItem here
                           }
                           [self syncPlayPauseButtons];
                       }
