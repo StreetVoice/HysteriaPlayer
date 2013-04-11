@@ -41,7 +41,7 @@ Hysterai Player
     hysteriaPlayer = [[HysteriaPlayer sharedInstance]
                       initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
-                              [hysteriaPlayer play];
+                              //Tells user your player is starting, update views or something here.
                               //[self syncPlayPauseButtons];
                           }
                       }
@@ -50,8 +50,9 @@ Hysterai Player
                       }
                       CurrentItemChanged:^(AVPlayerItem *newItem) {
                           if (newItem != (id)[NSNull null]) {
-                              [self syncPlayPauseButtons];
+                              //Adjustment your PlayerItem here
                           }
+                          [self syncPlayPauseButtons];
                       }
                       ItemReadyToPlay:^{
                           if ([hysteriaPlayer pauseReason] == HysteriaPauseReasonUnknown) {
