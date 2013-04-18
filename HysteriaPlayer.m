@@ -23,7 +23,7 @@ static const void *Hysteriatag = &Hysteriatag;
     
     dispatch_queue_t HBGQueue;
     
-    BlockItemGetter blockItemGetter;
+    SourceItemGetter sourceItemGetter;
     PlayerReadyToPlay playerReadyToPlay;
     PlayerRateChanged playerRateChanged;
     CurrentItemChanged currentItemChanged;
@@ -79,9 +79,9 @@ static HysteriaPlayer *sharedInstance = nil;
     return sharedInstance;
 }
 
-- (void)setupWithGetterBlock:(BlockItemGetter)itemBlock ItemsCount:(NSUInteger)count
+- (void)setupWithGetterBlock:(SourceItemGetter)itemBlock ItemsCount:(NSUInteger)count
 {
-    blockItemGetter = itemBlock;
+    sourceItemGetter = itemBlock;
     items_count = count;
 }
 
@@ -205,8 +205,8 @@ static HysteriaPlayer *sharedInstance = nil;
     
     dispatch_async(HBGQueue, ^{
         AVPlayerItem *item;
-        if (blockItemGetter) {
-            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(startAt)]];
+        if (sourceItemGetter) {
+            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(startAt)]];
         }else{
             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
             return ;
@@ -247,8 +247,8 @@ static HysteriaPlayer *sharedInstance = nil;
             if (!findInPlayerItems) {
                 dispatch_async(HBGQueue, ^{
                     AVPlayerItem *item;
-                    if (blockItemGetter) {
-                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(nowIndex + 1)]];
+                    if (sourceItemGetter) {
+                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(nowIndex + 1)]];
                     }else{
                         NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                         return ;
@@ -277,8 +277,8 @@ static HysteriaPlayer *sharedInstance = nil;
                 if (!findInPlayerItems) {
                     dispatch_async(HBGQueue, ^{
                         AVPlayerItem *item;
-                        if (blockItemGetter) {
-                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:blockItemGetter(0)]];
+                        if (sourceItemGetter) {
+                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(0)]];
                         }else{
                             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                             return ;
@@ -689,6 +689,24 @@ static HysteriaPlayer *sharedInstance = nil;
     
     [audioPlayer pause];
     audioPlayer = nil;
+}
+
+#pragma mark -
+#pragma mark ===========   Memory cached  =========
+#pragma mark -
+
+- (BOOL) isMemoryCached
+{
+    return (playerItems == nil);
+}
+
+- (void) enableMemoryCached:(BOOL)isMemoryCached
+{
+    if (playerItems == nil && isMemoryCached) {
+        playerItems = [NSMutableArray array];
+    }else if (playerItems != nil && !isMemoryCached){
+        playerItems = nil;
+    }
 }
 
 #pragma mark -

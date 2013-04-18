@@ -28,7 +28,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-typedef NSString * (^ BlockItemGetter)(NSUInteger);
+typedef NSString * (^ SourceItemGetter)(NSUInteger);
 typedef void (^ PlayerReadyToPlay)();
 typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *);
@@ -70,7 +70,7 @@ PLAYMODE_RepeatMode;
 
 + (HysteriaPlayer *)sharedInstance;
 - (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
-- (void)setupWithGetterBlock:(BlockItemGetter) itemBlock ItemsCount:(NSUInteger) count;
+- (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count;
 - (void)setItemsCount:(NSUInteger)count;
 
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
@@ -92,6 +92,12 @@ PLAYMODE_RepeatMode;
 - (HysteriaPauseReason)pauseReason;
 
 - (void)deprecatePlayer;
+
+/*
+ *Disable memory cache, player will run SourceItemGetter everytime even the media has been played. 
+ */
+- (void) enableMemoryCached:(BOOL) isMemoryCached;
+- (BOOL) isMemoryCached;
 
 /*
  * Tells OS this application starts one or more long-running tasks, should end background task when completed.
