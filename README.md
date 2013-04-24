@@ -25,8 +25,8 @@ How to use
 
 Just #import the HysteriaPlayer.h header, and call the initWithHandler: and setupWithGetterBlock: method before you starting play. Everything sets for you.
 
-Hysterai Player
-----------
+### Hysteria Player setup ###
+
 
 
 ```objective-c
