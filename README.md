@@ -74,7 +74,7 @@ Just #import the HysteriaPlayer.h header, and call the initWithHandler: and setu
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPLAYMODE_Repeat:YES];
+    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_on];
 }
 ```
 
