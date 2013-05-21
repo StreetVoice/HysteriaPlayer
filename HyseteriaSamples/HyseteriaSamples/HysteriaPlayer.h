@@ -47,11 +47,18 @@ HysteriaPauseReason;
 
 typedef enum
 {
-    PLAYMODE_RepeatOn = 0,
-    PLAYMODE_RepeatOne,
-    PLAYMODE_RepeatOff
+    RepeatMode_on = 0,
+    RepeatMode_one,
+    RepeatMode_off
 }
-PLAYMODE_RepeatMode;
+Player_RepeatMode;
+
+typedef enum
+{
+    ShuffleMode_on = 0,
+    ShuffleMode_off
+}
+Player_ShuffleMode;
 
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
@@ -62,11 +69,10 @@ PLAYMODE_RepeatMode;
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
 @property (nonatomic) BOOL PAUSE_REASON_ForcePause;
-@property (nonatomic) BOOL PLAYMODE_Repeat;
-@property (nonatomic) BOOL PLAYMODE_Shuffle;
-@property (nonatomic) BOOL PLAYMODE_RepeatOne;
 @property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
 @property (nonatomic, readonly) BOOL isInEmptySound;
+@property (nonatomic) Player_RepeatMode _repeatMode;
+@property (nonatomic) Player_ShuffleMode _shuffleMode;
 
 + (HysteriaPlayer *)sharedInstance;
 - (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
@@ -82,8 +88,13 @@ PLAYMODE_RepeatMode;
 - (void)pause;
 - (void)playPrevious;
 - (void)playNext;
-- (void)seekToTime:(double)CMTime;
-- (PLAYMODE_RepeatMode)getRepeatMode;
+- (void)seekToTime:(double) CMTime;
+
+- (void)setPlayerRepeatMode:(Player_RepeatMode) mode;
+- (Player_RepeatMode) getPlayerRepeatMode;
+- (void)setPlayerShuffleMode:(Player_ShuffleMode) mode;
+- (Player_ShuffleMode)getPlayerShuffleMode;
+
 
 
 - (NSDictionary *)getPlayerTime;
@@ -94,7 +105,7 @@ PLAYMODE_RepeatMode;
 - (void)deprecatePlayer;
 
 /*
- *Disable memory cache, player will run SourceItemGetter everytime even the media has been played. 
+ *Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
  */
 - (void) enableMemoryCached:(BOOL) isMemoryCached;
 - (BOOL) isMemoryCached;

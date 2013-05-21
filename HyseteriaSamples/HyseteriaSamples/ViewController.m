@@ -114,7 +114,7 @@
         } ItemsCount:[itunesPreviewUrls count]];
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
-        [hysteriaPlayer setPLAYMODE_Repeat:YES];
+        [hysteriaPlayer setPlayerRepeatMode:RepeatMode_on];
         
     }failure:nil];
     
@@ -142,7 +142,7 @@
         } ItemsCount:[itunesPreviewUrls count]];
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
-        [hysteriaPlayer setPLAYMODE_Repeat:YES];
+        [hysteriaPlayer setPlayerRepeatMode:RepeatMode_on];
         
     }failure:nil];
     
