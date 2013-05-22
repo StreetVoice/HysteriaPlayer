@@ -5,11 +5,11 @@ This class provides useful basic player functionality.
 
 Features:
 
-- You don't need to write KVO again, just sending 3 or 4 blocks then you can handle player status.
+- You don't need to write KVO again, setting up few blocks then you can handle player status.
 - Ability to play previous PlayerItem.
 - If player paused bacause buffering problems, auto-resume the playback of your PlayerItem when enough buffered. 
 - Background playable enabled. (need to register your App supports background modes as "App plays audio")
-- Returns you which index of items are playing.
+- Using getHysteriaOrder: to get the index of your PlayerItems.
 - Long buffer/load time for PlayerItems in background.
 - PlayModes: Repeat, RepeatOne, Shuffle.
 
@@ -109,7 +109,7 @@ Installation
 
 ### Add Frameworks
 
-Add CoreMedia.framework and AVFoundation.framework to your Link Binary With Libraries.
+Add CoreMedia.framework, AudioToolbox.framework and AVFoundation.framework to your Link Binary With Libraries.
 
 ### Copy provided point1sec.mp3 file to your Supporting Files 
 
