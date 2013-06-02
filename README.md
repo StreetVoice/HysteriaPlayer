@@ -21,7 +21,7 @@ It provides:
 How to use
 ---------------
 
-### import HysteriaPlayer.h
+### import HysteriaPlayer.h ###
 
 Just #import the HysteriaPlayer.h header, and call the initWithHandler: and setupWithGetterBlock: method before you starting play. Everything sets for you.
 
@@ -78,7 +78,7 @@ Just #import the HysteriaPlayer.h header, and call the initWithHandler: and setu
 }
 ```
 
-### Using initWithHandlers:
+### Using initWithHandlers: ###
 
 With these four blocks, you can handle about the Player's status changed, including __status changed__, __rate changed__, __currentItem changed__.
 
@@ -97,7 +97,7 @@ It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. 
 	- HysteriaPauseReasonForce : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
     - HysteriaPauseReasonUnknown : Player paused for unknown reason, usually it because Player is paused for buffering.
  
-### Using setupWithGetterBlock:
+### Using setupWithGetterBlock: ###
 
 Before you starting play anything, set your datasource to Hysteria Player. This block will gives you a index that will be used (instantly play or pre-buffer). Returning a NSString format url is all you need to do.
 
@@ -107,25 +107,25 @@ __ItemsCount__ tells Hysteria Player the count of your datasource, you have to u
 Installation
 ------------
 
-### Add Frameworks
+### Add Frameworks ###
 
 Add CoreMedia.framework, AudioToolbox.framework and AVFoundation.framework to your Link Binary With Libraries.
 
-### Copy provided point1sec.mp3 file to your Supporting Files 
+### Copy provided point1sec.mp3 file to your Supporting Files ###
 
 Ability to play the __first__ PlayerItem when your application is resigned active but __first__ PlayerItem is still buffering. 
 
-### Register your app's background modes
+### Register your app's background modes ###
 Click your project and select your target app, going to the info tab find __Required background modes__ , if not exist create new one. In __Required background modes's item 0__ copy this string `App plays audio` into it.
 
 ![](http://imnotyourson.com/images/HysteriaPlayer/SC_RegisterBG.png)
 
 
-## Licenses
+## Licenses ##
 
 All source code is licensed under the MIT License.
 
-## Author
+## Author ##
 
 Created by Saiday
  
