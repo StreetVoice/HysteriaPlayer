@@ -11,6 +11,7 @@ Features:
 - Background playable enabled. (need to register your App supports background modes as "App plays audio")
 - Using getHysteriaOrder: to get the index of your PlayerItems.
 - Long buffer/load time for PlayerItems in background.
+- Returns playing item's current and duration timescale.
 - PlayModes: Repeat, RepeatOne, Shuffle.
 
 It provides:
@@ -103,6 +104,16 @@ Before you starting play anything, set your datasource to Hysteria Player. This 
 
 __ItemsCount__ tells Hysteria Player the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is modified.
 
+
+### Getting playing item's timescale ###
+
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+
+NSDictionary *dict = [hysteriaPlayer getPlayerTime];
+double durationTime = [[dict objectForKey:@"DurationTime"] doubleValue];
+double currentTime = [[dict objectForKey:@"CurrentTime"] doubleValue];
+```
 
 Installation
 ------------
