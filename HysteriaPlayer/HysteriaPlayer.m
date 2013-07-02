@@ -695,10 +695,12 @@ static void audio_route_change_listener(void *inClientData,
             NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
-                //buffer for 5 secs, then play
-                if (CMTIME_COMPARE_INLINE(timerange.duration, >, CMTimeMakeWithSeconds(5, timerange.duration.timescale)) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
-                    NSLog(@"buffering..");
+                CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
+                CMTime milestone = CMTimeAdd(audioPlayer.currentTime, CMTimeMakeWithSeconds(5.0f, timerange.duration.timescale));
+                
+                if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
+                        NSLog(@"resume from buffering..");
                         [audioPlayer play];
                     }
                 }
