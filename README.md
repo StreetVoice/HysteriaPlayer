@@ -21,6 +21,19 @@ It provides:
 
 How to use
 ---------------
+## CocoaPods ##
+If you using [CocoaPods](http://cocoapods.org/), it's easy to install HysteriaPlayer.
+
+Podfile:
+```
+platform :ios, '6.0'
+
+pod 'HysteriaPlayer',			        '~> 1.0.0'
+    
+end
+```
+
+## Manually import library to your project ##
 
 ### import HysteriaPlayer.h ###
 
