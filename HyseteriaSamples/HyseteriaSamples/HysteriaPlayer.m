@@ -220,9 +220,6 @@ static HysteriaPlayer *sharedInstance = nil;
             [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             [playerItems addObject:item];
             [self insertPlayerItem:item];
-            
-            if (isInEmptySound)
-                isInEmptySound = NO;
         });
     });
 }
@@ -507,7 +504,10 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (BOOL)isPlaying
 {
-	return [audioPlayer rate] != 0.f;
+    if (!isInEmptySound)
+        return [audioPlayer rate] != 0.f;
+    else
+        return NO;
 }
 
 - (HysteriaPauseReason)pauseReason
@@ -657,9 +657,10 @@ static void audio_route_change_listener(void *inClientData,
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"rate"]){
-        if (playerRateChanged != nil) {
+        if (!isInEmptySound && playerRateChanged)
             playerRateChanged();
-        }
+        else if (isInEmptySound && [audioPlayer rate] == 0.f)
+            isInEmptySound = NO;
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
