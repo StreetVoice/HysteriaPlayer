@@ -95,7 +95,7 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (void)playEmptySound
 {
-    //play  2 sec empty sound
+    //play .1 sec empty sound
     NSString *filepath = [[NSBundle mainBundle]pathForResource:@"point1sec" ofType:@"mp3"];
     if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
         isInEmptySound = YES;
