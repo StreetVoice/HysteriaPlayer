@@ -105,7 +105,8 @@ Player_ShuffleMode;
 - (void)deprecatePlayer;
 
 /*
- *Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
+ * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
+ * Default is YES
  */
 - (void) enableMemoryCached:(BOOL) isMemoryCached;
 - (BOOL) isMemoryCached;
