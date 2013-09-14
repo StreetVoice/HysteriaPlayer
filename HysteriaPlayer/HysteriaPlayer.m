@@ -95,7 +95,7 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (void)playEmptySound
 {
-    //play  2 sec empty sound
+    //play .1 sec empty sound
     NSString *filepath = [[NSBundle mainBundle]pathForResource:@"point1sec" ofType:@"mp3"];
     if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
         isInEmptySound = YES;
@@ -138,9 +138,14 @@ static HysteriaPlayer *sharedInstance = nil;
  */
 -(void)longTimeBufferBackground
 {
-    bgTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:NULL];
-    if (bgTaskId != UIBackgroundTaskInvalid && removedId != UIBackgroundTaskInvalid) {
+    bgTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:removedId];
+        bgTaskId = UIBackgroundTaskInvalid;
+    }];
+    
+    if (bgTaskId != UIBackgroundTaskInvalid && removedId == 0 ? YES : (removedId != UIBackgroundTaskInvalid)) {
         [[UIApplication sharedApplication] endBackgroundTask: removedId];
+        NSLog(@"%i", bgTaskId);
     }
     removedId = bgTaskId;
 }
@@ -220,9 +225,6 @@ static HysteriaPlayer *sharedInstance = nil;
             [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             [playerItems addObject:item];
             [self insertPlayerItem:item];
-            
-            if (isInEmptySound)
-                isInEmptySound = NO;
         });
     });
 }
@@ -507,7 +509,10 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (BOOL)isPlaying
 {
-	return [audioPlayer rate] != 0.f;
+    if (!isInEmptySound)
+        return [audioPlayer rate] != 0.f;
+    else
+        return NO;
 }
 
 - (HysteriaPauseReason)pauseReason
@@ -657,9 +662,10 @@ static void audio_route_change_listener(void *inClientData,
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"rate"]){
-        if (playerRateChanged != nil) {
+        if (!isInEmptySound && playerRateChanged)
             playerRateChanged();
-        }
+        else if (isInEmptySound && [audioPlayer rate] == 0.f)
+            isInEmptySound = NO;
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
@@ -688,6 +694,7 @@ static void audio_route_change_listener(void *inClientData,
             [self prepareNextPlayerItem];
             CHECK_AvoidPreparingSameItem = audioPlayer.currentItem.hash;
         }
+        
         NSArray *timeRanges = (NSArray *)[change objectForKey:NSKeyValueChangeNewKey];
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange=[[timeRanges objectAtIndex:0]CMTimeRangeValue];
@@ -695,6 +702,8 @@ static void audio_route_change_listener(void *inClientData,
             NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
+                [self longTimeBufferBackground];
+                
                 CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
                 CMTime milestone = CMTimeAdd(audioPlayer.currentTime, CMTimeMakeWithSeconds(5.0f, timerange.duration.timescale));
                 
@@ -702,6 +711,7 @@ static void audio_route_change_listener(void *inClientData,
                     if (![self isPlaying]) {
                         NSLog(@"resume from buffering..");
                         [audioPlayer play];
+                        [self longTimeBufferBackgroundCompleted];
                     }
                 }
             }
