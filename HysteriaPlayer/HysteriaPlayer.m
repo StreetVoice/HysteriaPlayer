@@ -526,6 +526,11 @@ static HysteriaPlayer *sharedInstance = nil;
     }
 }
 
+- (float)getPlayerRate
+{
+    return audioPlayer.rate;
+}
+
 - (NSDictionary *)getPlayerTime
 {
     CMTime playerDuration = [self playerItemDuration];

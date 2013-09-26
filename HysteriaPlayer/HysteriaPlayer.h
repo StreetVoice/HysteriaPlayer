@@ -98,6 +98,7 @@ Player_ShuffleMode;
 
 
 - (NSDictionary *)getPlayerTime;
+- (float)getPlayerRate;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPauseReason)pauseReason;
