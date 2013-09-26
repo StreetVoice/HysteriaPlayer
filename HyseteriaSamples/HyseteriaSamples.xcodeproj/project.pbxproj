@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5804BD7A174B5E1A00EE13AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */; };
+		586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
 		831C382616BBA0E10097D0F2 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381416BBA0E10097D0F2 /* AFHTTPClient.m */; };
 		831C382716BBA0E10097D0F2 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381616BBA0E10097D0F2 /* AFHTTPRequestOperation.m */; };
 		831C382816BBA0E10097D0F2 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381816BBA0E10097D0F2 /* AFImageRequestOperation.m */; };
@@ -36,7 +37,6 @@
 		83AD5EB716A5CABD00604530 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5EB616A5CABD00604530 /* Default-568h@2x.png */; };
 		83AD5EBA16A5CABD00604530 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5EB816A5CABD00604530 /* MainStoryboard.storyboard */; };
 		83AD5EBD16A5CABD00604530 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AD5EBC16A5CABD00604530 /* ViewController.m */; };
-		83AD5EC516A5CB3700604530 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AD5EC416A5CB3700604530 /* HysteriaPlayer.m */; };
 		83AD5EC716A5CB7A00604530 /* NextButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5EC616A5CB7A00604530 /* NextButton@2x.png */; };
 		83AD5ECD16A5CBA800604530 /* PreviousButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5ECC16A5CBA800604530 /* PreviousButton@2x.png */; };
 		83AD5ED316A5D04C00604530 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83AD5ED216A5D04C00604530 /* AVFoundation.framework */; };
@@ -46,6 +46,8 @@
 
 /* Begin PBXFileReference section */
 		5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
+		586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
 		831C381316BBA0E10097D0F2 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		831C381416BBA0E10097D0F2 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		831C381516BBA0E10097D0F2 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -89,8 +91,6 @@
 		83AD5EB916A5CABD00604530 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		83AD5EBB16A5CABD00604530 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		83AD5EBC16A5CABD00604530 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		83AD5EC316A5CB3700604530 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
-		83AD5EC416A5CB3700604530 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
 		83AD5EC616A5CB7A00604530 /* NextButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NextButton@2x.png"; sourceTree = "<group>"; };
 		83AD5ECC16A5CBA800604530 /* PreviousButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreviousButton@2x.png"; sourceTree = "<group>"; };
 		83AD5ED216A5D04C00604530 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -117,9 +117,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		586AA23C17F4731C00A7E557 /* HysteriaPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */,
+				586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */,
+			);
+			name = HysteriaPlayer;
+			path = ../../HysteriaPlayer;
+			sourceTree = "<group>";
+		};
 		831C381216BBA0E10097D0F2 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				586AA23C17F4731C00A7E557 /* HysteriaPlayer */,
 				831C381316BBA0E10097D0F2 /* AFHTTPClient.h */,
 				831C381416BBA0E10097D0F2 /* AFHTTPClient.m */,
 				831C381516BBA0E10097D0F2 /* AFHTTPRequestOperation.h */,
@@ -179,8 +190,6 @@
 		83AD5EA616A5CABD00604530 /* HyseteriaSamples */ = {
 			isa = PBXGroup;
 			children = (
-				83AD5EC316A5CB3700604530 /* HysteriaPlayer.h */,
-				83AD5EC416A5CB3700604530 /* HysteriaPlayer.m */,
 				83AD5EAF16A5CABD00604530 /* AppDelegate.h */,
 				83AD5EB016A5CABD00604530 /* AppDelegate.m */,
 				83AD5EB816A5CABD00604530 /* MainStoryboard.storyboard */,
@@ -290,9 +299,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				83AD5EAD16A5CABD00604530 /* main.m in Sources */,
+				586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */,
 				83AD5EB116A5CABD00604530 /* AppDelegate.m in Sources */,
 				83AD5EBD16A5CABD00604530 /* ViewController.m in Sources */,
-				83AD5EC516A5CB3700604530 /* HysteriaPlayer.m in Sources */,
 				831C382616BBA0E10097D0F2 /* AFHTTPClient.m in Sources */,
 				831C382716BBA0E10097D0F2 /* AFHTTPRequestOperation.m in Sources */,
 				831C382816BBA0E10097D0F2 /* AFImageRequestOperation.m in Sources */,

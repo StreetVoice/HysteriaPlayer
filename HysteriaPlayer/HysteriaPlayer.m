@@ -547,50 +547,6 @@ static HysteriaPlayer *sharedInstance = nil;
 #pragma mark ===========  Interruption, Route changed  =========
 #pragma mark -
 
-- (void)interruption:(NSNotification *)notification
-{
-    //ios 6.0 bug
-    //search avaudiosessioninterruptionnotification at
-    //http://developer.apple.com/library/ios/#documentation/AVFoundation/Reference/AVAudioSession_ClassReference/Reference/Reference.html#//apple_ref/c/data/AVAudioSessionInterruptionTypeKey
-    //because of iOS6 bug, audioSession interrupted never called so remove interruptuptedWhilePlaying flag, till this issue fixed.
-    //if (reason == AVAudioSessionInterruptionTypeEnded && interruptedWhilePlaying)
-    
-    /*          deprecated
-     NSDictionary *userInfo = [notification userInfo];
-     NSUInteger reason = [[userInfo objectForKey:@"AVAudioSessionInterruptionType"] integerValue];
-     
-     
-     if (reason == AVAudioSessionInterruptionTypeEnded) {
-     interruptedWhilePlaying = NO;
-     PAUSE_REASON_ForcePause = NO;
-     [audioPlayer play];
-     }else if (reason == AVAudioSessionInterruptionTypeBegan){
-     interruptedWhilePlaying = YES;
-     PAUSE_REASON_ForcePause = YES;
-     [audioPlayer pause];
-     }
-     NSLog(@"interruption: %@", reason == AVAudioSessionInterruptionTypeBegan ? @"Began" : @"Ended");
-     */
-}
-
-- (void)routeChanged:(NSNotification *)notification
-{
-    /*          deprecated
-     NSDictionary *userInfo = [notification userInfo];
-     NSUInteger reason = [[userInfo objectForKey:@"AVAudioSessionRouteChangeReasonKey"] integerValue];
-     if (reason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
-     routeChangedWhilePlaying = YES;
-     PAUSE_REASON_ForcePause = YES;
-     NSLog(@"route changed while playng, pause player");
-     }else if (reason == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying){
-     routeChangedWhilePlaying = NO;
-     PAUSE_REASON_ForcePause = NO;
-     [audioPlayer play];
-     NSLog(@"resume playback from route changed");
-     }
-     */
-}
-
 static void audio_session_interruption_listener(void *inClientData, UInt32 inInterruptionState)
 {
     //__unsafe_unretained DOUAudioEventLoop *eventLoop = (__bridge DOUAudioEventLoop *)inClientData;
