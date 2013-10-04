@@ -401,7 +401,13 @@ static HysteriaPlayer *sharedInstance = nil;
         if (nowIndex + 1 < items_count) {
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
         }else{
+            if (_repeatMode == RepeatMode_off) {
+                PAUSE_REASON_ForcePause = YES;
+                if (playerDidReachEnd != nil)
+                    playerDidReachEnd();
+            }
             [self fetchAndPlayPlayerItem:0];
+            
         }
     }
 }
