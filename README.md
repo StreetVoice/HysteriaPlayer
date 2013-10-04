@@ -19,9 +19,11 @@ It provides:
 - PlayerItem cache management.
 - Pre-buffer next PlayerItem. 
 
-How to use
+Installation
 ---------------
-## CocoaPods ##
+
+### CocoaPods ###
+
 If you using [CocoaPods](http://cocoapods.org/), it's easy to install HysteriaPlayer.
 
 Podfile:
@@ -33,14 +35,25 @@ pod 'HysteriaPlayer',			        '~> 1.0.0'
 end
 ```
 
-## Manually import library to your project ##
+---------------
 
-### import HysteriaPlayer.h ###
+### Manually import library to your project ###
 
-Just #import the HysteriaPlayer.h header, and call the initWithHandler: and setupWithGetterBlock: method before you starting play. Everything sets for you.
+#### Add Frameworks ####
 
-### Hysteria Player setup ###
+Add CoreMedia.framework, AudioToolbox.framework and AVFoundation.framework to your Link Binary With Libraries.
 
+### Copy provided point1sec.mp3 file to your Supporting Files ###
+
+Ability to play the __first__ PlayerItem when your application is resigned active but __first__ PlayerItem is still buffering. 
+
+### Register your app's background modes ###
+Click your project and select your target app, going to the info tab find __Required background modes__ , if not exist create new one. In __Required background modes's item 0__ copy this string `App plays audio` into it.
+
+![](http://imnotyourson.com/images/HysteriaPlayer/SC_RegisterBG.png)
+
+How to use - Setup
+---------------
 
 
 ```objective-c
@@ -128,21 +141,13 @@ double durationTime = [[dict objectForKey:@"DurationTime"] doubleValue];
 double currentTime = [[dict objectForKey:@"CurrentTime"] doubleValue];
 ```
 
-Installation
-------------
-
-### Add Frameworks ###
-
-Add CoreMedia.framework, AudioToolbox.framework and AVFoundation.framework to your Link Binary With Libraries.
-
-### Copy provided point1sec.mp3 file to your Supporting Files ###
-
-Ability to play the __first__ PlayerItem when your application is resigned active but __first__ PlayerItem is still buffering. 
-
-### Register your app's background modes ###
-Click your project and select your target app, going to the info tab find __Required background modes__ , if not exist create new one. In __Required background modes's item 0__ copy this string `App plays audio` into it.
-
-![](http://imnotyourson.com/images/HysteriaPlayer/SC_RegisterBG.png)
+FAQ
+---------------
+### Get item's index of my working items: ###
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+NSNumber *order = [hysteriaPlayer getHysteriaOrder:[hysteriaPlayer getCurrentItem]];
+```
 
 
 ## Licenses ##
