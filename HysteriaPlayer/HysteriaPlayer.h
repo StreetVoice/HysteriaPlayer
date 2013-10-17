@@ -89,6 +89,7 @@ Player_ShuffleMode;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double) CMTime;
+- (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
 
 - (void)setPlayerRepeatMode:(Player_RepeatMode) mode;
 - (Player_RepeatMode) getPlayerRepeatMode;

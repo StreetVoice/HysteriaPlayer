@@ -369,6 +369,16 @@ static HysteriaPlayer *sharedInstance = nil;
 {
     [audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC)];
 }
+
+- (void)seekToTime:(double)seconds withCompletionBlock:(void (^)(BOOL))completionBlock
+{
+    [audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
+        if (completionBlock) {
+            completionBlock(finished);
+        }
+    }];
+}
+
 - (AVPlayerItem *)getCurrentItem
 {
     return [audioPlayer currentItem];
