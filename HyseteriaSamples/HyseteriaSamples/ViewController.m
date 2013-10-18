@@ -74,7 +74,11 @@
                               [hysteriaPlayer play];
                           }
                       }
-                      PlayerFailed:^{}
+                      PlayerPreLoaded:^(CMTime bufferedTime) {
+                          // if you have to update your buffering UI state, here to go.
+                          NSLog(@"item buffered time: %f",CMTimeGetSeconds(bufferedTime));
+                      }
+                      PlayerFailed:nil
                       PlayerDidReachEnd:^{
                           UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end." message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                           [alert show];
@@ -90,7 +94,7 @@
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    //[hysteriaPlayer setPLAYMODE_Repeat:YES];
+//    [hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
 - (IBAction)playJackJohnsonFromItunes:(id)sender
