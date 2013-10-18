@@ -35,6 +35,7 @@ typedef void (^ CurrentItemChanged)(AVPlayerItem *);
 typedef void (^ ItemReadyToPlay)();
 typedef void (^ PlayerFailed)();
 typedef void (^ PlayerDidReachEnd)();
+typedef void (^ PlayerPreLoaded)(CMTime);
 
 
 typedef enum
@@ -62,9 +63,6 @@ Player_ShuffleMode;
 
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
-{
-    
-}
 
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
@@ -75,7 +73,7 @@ Player_ShuffleMode;
 @property (nonatomic) Player_ShuffleMode _shuffleMode;
 
 + (HysteriaPlayer *)sharedInstance;
-- (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
+- (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
 - (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count;
 - (void)setItemsCount:(NSUInteger)count;
 

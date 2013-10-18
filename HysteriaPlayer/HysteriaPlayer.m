@@ -24,13 +24,14 @@ static const void *Hysteriatag = &Hysteriatag;
     
     dispatch_queue_t HBGQueue;
     
-    SourceItemGetter sourceItemGetter;
-    PlayerReadyToPlay playerReadyToPlay;
-    PlayerRateChanged playerRateChanged;
-    CurrentItemChanged currentItemChanged;
-    ItemReadyToPlay itemReadyToPlay;
-    PlayerFailed playerFailed;
-    PlayerDidReachEnd playerDidReachEnd;
+    SourceItemGetter _sourceItemGetter;
+    PlayerReadyToPlay _playerReadyToPlay;
+    PlayerRateChanged _playerRateChanged;
+    CurrentItemChanged _currentItemChanged;
+    ItemReadyToPlay _itemReadyToPlay;
+    PlayerPreLoaded _playerPreLoaded;
+    PlayerFailed _playerFailed;
+    PlayerDidReachEnd _playerDidReachEnd;
 }
 
 @property (nonatomic, strong, readwrite) NSMutableArray *playerItems;
@@ -58,7 +59,7 @@ static HysteriaPlayer *sharedInstance = nil;
     return sharedInstance;
 }
 
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)_playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)_playerRateChanged CurrentItemChanged:(CurrentItemChanged)_currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)_itemReadyToPlay PlayerFailed:(PlayerFailed)_playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)_playerDidReachEnd
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd
 {
     if ((sharedInstance = [super init])) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
@@ -67,12 +68,13 @@ static HysteriaPlayer *sharedInstance = nil;
         _repeatMode = RepeatMode_off;
         _shuffleMode = ShuffleMode_off;
         
-        playerReadyToPlay = _playerReadyToPlay;
-        playerRateChanged = _playerRateChanged;
-        currentItemChanged = _currentItemChanged;
-        itemReadyToPlay = _itemReadyToPlay;
-        playerFailed = _playerFailed;
-        playerDidReachEnd = _playerDidReachEnd;
+        _playerReadyToPlay = playerReadyToPlay;
+        _playerRateChanged = playerRateChanged;
+        _currentItemChanged = currentItemChanged;
+        _itemReadyToPlay = itemReadyToPlay;
+        _playerPreLoaded = playerPreLoaded;
+        _playerFailed = playerFailed;
+        _playerDidReachEnd = playerDidReachEnd;
         
         [self backgroundPlayable];
         [self playEmptySound];
@@ -83,7 +85,7 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (void)setupWithGetterBlock:(SourceItemGetter)itemBlock ItemsCount:(NSUInteger)count
 {
-    sourceItemGetter = itemBlock;
+    _sourceItemGetter = itemBlock;
     items_count = count;
 }
 
@@ -210,8 +212,8 @@ static HysteriaPlayer *sharedInstance = nil;
     
     dispatch_async(HBGQueue, ^{
         AVPlayerItem *item;
-        if (sourceItemGetter) {
-            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(startAt)]];
+        if (_sourceItemGetter) {
+            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(startAt)]];
         }else{
             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
             return ;
@@ -252,8 +254,8 @@ static HysteriaPlayer *sharedInstance = nil;
             if (!findInPlayerItems) {
                 dispatch_async(HBGQueue, ^{
                     AVPlayerItem *item;
-                    if (sourceItemGetter) {
-                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(nowIndex + 1)]];
+                    if (_sourceItemGetter) {
+                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(nowIndex + 1)]];
                     }else{
                         NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                         return ;
@@ -282,8 +284,8 @@ static HysteriaPlayer *sharedInstance = nil;
                 if (!findInPlayerItems) {
                     dispatch_async(HBGQueue, ^{
                         AVPlayerItem *item;
-                        if (sourceItemGetter) {
-                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:sourceItemGetter(0)]];
+                        if (_sourceItemGetter) {
+                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(0)]];
                         }else{
                             NSLog(@"please using setupWithGetterBlock: to setup your datasource");
                             return ;
@@ -403,8 +405,8 @@ static HysteriaPlayer *sharedInstance = nil;
         }else{
             if (_repeatMode == RepeatMode_off) {
                 PAUSE_REASON_ForcePause = YES;
-                if (playerDidReachEnd != nil)
-                    playerDidReachEnd();
+                if (_playerDidReachEnd != nil)
+                    _playerDidReachEnd();
             }
             [self fetchAndPlayPlayerItem:0];
             
@@ -614,31 +616,31 @@ static void audio_route_change_listener(void *inClientData,
                         change:(NSDictionary *)change context:(void *)context {
     if (object == audioPlayer && [keyPath isEqualToString:@"status"]) {
         if (audioPlayer.status == AVPlayerStatusReadyToPlay) {
-            if (playerReadyToPlay != nil) {
-                playerReadyToPlay();
+            if (_playerReadyToPlay != nil) {
+                _playerReadyToPlay();
             }
             if (![self isPlaying]) {
                 [audioPlayer play];
             }
         } else if (audioPlayer.status == AVPlayerStatusFailed) {
             NSLog(@"%@",audioPlayer.error);
-            if (playerFailed != nil) {
-                playerFailed();
+            if (_playerFailed != nil) {
+                _playerFailed();
             }
         }
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"rate"]){
-        if (!isInEmptySound && playerRateChanged)
-            playerRateChanged();
+        if (!isInEmptySound && _playerRateChanged)
+            _playerRateChanged();
         else if (isInEmptySound && [audioPlayer rate] == 0.f)
             isInEmptySound = NO;
     }
     
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
-        if (currentItemChanged != nil) {
+        if (_currentItemChanged != nil) {
             AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
-            currentItemChanged(newPlayerItem);
+            _currentItemChanged(newPlayerItem);
         }
     }
     
@@ -647,8 +649,8 @@ static void audio_route_change_listener(void *inClientData,
             NSLog(@"------player item failed:%@",audioPlayer.currentItem.error);
             [self playNext];
         }else if (audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            if (itemReadyToPlay != nil) {
-                itemReadyToPlay();
+            if (_itemReadyToPlay != nil) {
+                _itemReadyToPlay();
             }
             if (![self isPlaying] && !PAUSE_REASON_ForcePause) {
                 [audioPlayer play];
@@ -666,7 +668,11 @@ static void audio_route_change_listener(void *inClientData,
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange=[[timeRanges objectAtIndex:0]CMTimeRangeValue];
             
-            NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
+//            NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
+            
+            if (_playerPreLoaded)
+                _playerPreLoaded(CMTimeAdd(timerange.start, timerange.duration));
+            
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
                 [self longTimeBufferBackground];
@@ -714,8 +720,8 @@ static void audio_route_change_listener(void *inClientData,
                 }else{
                     PAUSE_REASON_ForcePause = YES;
                     [self fetchAndPlayPlayerItem:0];
-                    if (playerDidReachEnd != nil) {
-                        playerDidReachEnd();
+                    if (_playerDidReachEnd != nil) {
+                        _playerDidReachEnd();
                     }
                 }
             }
@@ -737,13 +743,13 @@ static void audio_route_change_listener(void *inClientData,
     
     [self removeAllItems];
     
-    sourceItemGetter = nil;
-    playerReadyToPlay = nil;
-    playerRateChanged = nil;
-    currentItemChanged = nil;
-    itemReadyToPlay = nil;
-    playerFailed = nil;
-    playerDidReachEnd = nil;
+    _sourceItemGetter = nil;
+    _playerReadyToPlay = nil;
+    _playerRateChanged = nil;
+    _currentItemChanged = nil;
+    _itemReadyToPlay = nil;
+    _playerFailed = nil;
+    _playerDidReachEnd = nil;
     
     [audioPlayer pause];
     audioPlayer = nil;
