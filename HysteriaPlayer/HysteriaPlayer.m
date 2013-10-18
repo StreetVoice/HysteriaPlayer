@@ -147,7 +147,6 @@ static HysteriaPlayer *sharedInstance = nil;
     
     if (bgTaskId != UIBackgroundTaskInvalid && removedId == 0 ? YES : (removedId != UIBackgroundTaskInvalid)) {
         [[UIApplication sharedApplication] endBackgroundTask: removedId];
-        NSLog(@"%i", bgTaskId);
     }
     removedId = bgTaskId;
 }
