@@ -735,6 +735,7 @@ static void audio_route_change_listener(void *inClientData,
 
 - (void)deprecatePlayer
 {
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     
     [audioPlayer removeObserver:self forKeyPath:@"status" context:nil];
