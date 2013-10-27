@@ -1,0 +1,6 @@
+version 1.2.0:
+* Refactor API interface
+* Add buffering status
+* Add -(void)pausePlayerForcibly:(BOOL) method
+* Rename HysteriaPauseReason to HysteriaPlayerStatus
+* Improve code readability
