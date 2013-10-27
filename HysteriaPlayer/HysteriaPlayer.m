@@ -37,6 +37,22 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic, strong, readwrite) NSMutableArray *playerItems;
 @property (nonatomic, readwrite) BOOL isInEmptySound;
 
+/*
+ * Private 
+ */
+
+@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
+@property (nonatomic) BOOL PAUSE_REASON_ForcePause;
+@property (nonatomic) BOOL PAUSE_REASON_Buffering;
+@property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
+@property (nonatomic) PlayerRepeatMode repeatMode;
+@property (nonatomic) PlayerShuffleMode shuffleMode;
+@property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
+
+- (void)longTimeBufferBackground;
+- (void)longTimeBufferBackgroundCompleted;
+- (void)setHysteriaOrder:(AVPlayerItem *)item Key:(NSNumber *)order;
+
 @end
 
 @implementation HysteriaPlayer
@@ -457,7 +473,7 @@ static HysteriaPlayer *sharedInstance = nil;
     }
 }
 
-- (void)setPlayerRepeatMode:(Player_RepeatMode)mode
+- (void)setPlayerRepeatMode:(PlayerRepeatMode)mode
 {
     switch (mode) {
         case RepeatMode_off:
@@ -474,7 +490,7 @@ static HysteriaPlayer *sharedInstance = nil;
     }
 }
 
-- (Player_RepeatMode)getPlayerRepeatMode
+- (PlayerRepeatMode)getPlayerRepeatMode
 {
     switch (_repeatMode) {
         case RepeatMode_one:
@@ -492,7 +508,7 @@ static HysteriaPlayer *sharedInstance = nil;
     }
 }
 
-- (void)setPlayerShuffleMode:(Player_ShuffleMode)mode
+- (void)setPlayerShuffleMode:(PlayerShuffleMode)mode
 {
     switch (mode) {
         case ShuffleMode_off:
@@ -506,7 +522,7 @@ static HysteriaPlayer *sharedInstance = nil;
     }
 }
 
-- (Player_ShuffleMode)getPlayerShuffleMode
+- (PlayerShuffleMode)getPlayerShuffleMode
 {
     switch (_shuffleMode) {
         case ShuffleMode_on:
@@ -540,7 +556,7 @@ static HysteriaPlayer *sharedInstance = nil;
         return NO;
 }
 
-- (HysteriaPlayerStatus)pauseReason
+- (HysteriaPlayerStatus)getHysteriaPlayerStatus
 {
     if ([self isPlaying])
         return HysteriaPlayerStatusPlaying;
@@ -793,6 +809,15 @@ static void audio_route_change_listener(void *inClientData,
     }else if (playerItems != nil && !isMemoryCached){
         playerItems = nil;
     }
+}
+
+#pragma mark -
+#pragma mark ===========   Deprecated Methods  =========
+#pragma mark -
+
+- (HysteriaPlayerStatus)pauseReason
+{
+    return nil;
 }
 
 #pragma mark -

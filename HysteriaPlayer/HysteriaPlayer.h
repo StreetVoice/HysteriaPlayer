@@ -53,27 +53,20 @@ typedef enum
     RepeatMode_one,
     RepeatMode_off
 }
-Player_RepeatMode;
+PlayerRepeatMode;
 
 typedef enum
 {
     ShuffleMode_on = 0,
     ShuffleMode_off
 }
-Player_ShuffleMode;
+PlayerShuffleMode;
 
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
-@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
-@property (nonatomic) BOOL PAUSE_REASON_ForcePause;
-@property (nonatomic) BOOL PAUSE_REASON_Buffering;
-@property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
 @property (nonatomic, readonly) BOOL isInEmptySound;
-@property (nonatomic) Player_RepeatMode repeatMode;
-@property (nonatomic) Player_ShuffleMode shuffleMode;
-@property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
 
 + (HysteriaPlayer *)sharedInstance;
 - (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
@@ -92,17 +85,19 @@ Player_ShuffleMode;
 - (void)seekToTime:(double) CMTime;
 - (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(Player_RepeatMode)mode;
-- (Player_RepeatMode)getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(Player_ShuffleMode)mode;
+- (void)setPlayerRepeatMode:(PlayerRepeatMode)mode;
+- (PlayerRepeatMode)getPlayerRepeatMode;
+- (void)setPlayerShuffleMode:(PlayerShuffleMode)mode;
 - (void)pausePlayerForcibly:(BOOL)forcibly;
 
-- (Player_ShuffleMode)getPlayerShuffleMode;
+- (PlayerShuffleMode)getPlayerShuffleMode;
 - (NSDictionary *)getPlayerTime;
 - (float)getPlayerRate;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
-- (HysteriaPlayerStatus)pauseReason;
+- (HysteriaPlayerStatus)getHysteriaPlayerStatus;
+- (HysteriaPlayerStatus)pauseReason __deprecated;
+
 
 - (void)deprecatePlayer;
 
@@ -114,15 +109,8 @@ Player_ShuffleMode;
 - (BOOL)isMemoryCached;
 
 /*
- * Tells OS this application starts one or more long-running tasks, should end background task when completed.
- */
-- (void)longTimeBufferBackground;
-- (void)longTimeBufferBackgroundCompleted;
-
-/*
  * Indicating Playeritem's play order
  */
-- (void)setHysteriaOrder:(AVPlayerItem *)item Key:(NSNumber *)order;
 - (NSNumber *)getHysteriaOrder:(AVPlayerItem *)item;
 
 @end
