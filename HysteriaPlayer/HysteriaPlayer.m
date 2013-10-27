@@ -649,7 +649,8 @@ static void audio_route_change_listener(void *inClientData,
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
         if (_currentItemChanged != nil) {
             AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
-            _currentItemChanged(newPlayerItem);
+            if (newPlayerItem != (id)[NSNull null])
+                _currentItemChanged(newPlayerItem);
         }
     }
     
