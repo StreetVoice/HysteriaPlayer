@@ -40,11 +40,12 @@ typedef void (^ PlayerPreLoaded)(CMTime);
 
 typedef enum
 {
-    HysteriaPauseReasonPlaying = 0,
-    HysteriaPauseReasonForce,
-    HysteriaPauseReasonUnknown
+    HysteriaPlayerStatusPlaying = 0,
+    HysteriaPlayerStatusForcePause,
+    HysteriaPlayerStatusBuffering,
+    HysteriaPlayerStatusUnknown
 }
-HysteriaPauseReason;
+HysteriaPlayerStatus;
 
 typedef enum
 {
@@ -67,10 +68,12 @@ Player_ShuffleMode;
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
 @property (nonatomic) BOOL PAUSE_REASON_ForcePause;
+@property (nonatomic) BOOL PAUSE_REASON_Buffering;
 @property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 @property (nonatomic) Player_RepeatMode _repeatMode;
 @property (nonatomic) Player_ShuffleMode _shuffleMode;
+@property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
 
 + (HysteriaPlayer *)sharedInstance;
 - (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
@@ -100,7 +103,7 @@ Player_ShuffleMode;
 - (float)getPlayerRate;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
-- (HysteriaPauseReason)pauseReason;
+- (HysteriaPlayerStatus)pauseReason;
 
 - (void)deprecatePlayer;
 

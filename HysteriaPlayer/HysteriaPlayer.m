@@ -40,7 +40,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @end
 
 @implementation HysteriaPlayer
-@synthesize audioPlayer,playerItems,PAUSE_REASON_ForcePause,NETWORK_ERROR_getNextItem,isInEmptySound;
+@synthesize audioPlayer, playerItems, PAUSE_REASON_ForcePause, PAUSE_REASON_Buffering, NETWORK_ERROR_getNextItem, isInEmptySound;
 @synthesize _repeatMode, _shuffleMode;
 
 
@@ -67,6 +67,7 @@ static HysteriaPlayer *sharedInstance = nil;
         
         _repeatMode = RepeatMode_off;
         _shuffleMode = ShuffleMode_off;
+        _hysteriaPlayerStatus = HysteriaPlayerStatusUnknown;
         
         _playerReadyToPlay = playerReadyToPlay;
         _playerRateChanged = playerRateChanged;
@@ -532,15 +533,16 @@ static HysteriaPlayer *sharedInstance = nil;
         return NO;
 }
 
-- (HysteriaPauseReason)pauseReason
+- (HysteriaPlayerStatus)pauseReason
 {
-    if ([self isPlaying]) {
-        return HysteriaPauseReasonPlaying;
-    }else if (PAUSE_REASON_ForcePause){
-        return HysteriaPauseReasonForce;
-    }else{
-        return HysteriaPauseReasonUnknown;
-    }
+    if ([self isPlaying])
+        return HysteriaPlayerStatusPlaying;
+    else if (PAUSE_REASON_Buffering)
+        return HysteriaPlayerStatusBuffering;
+    else if (PAUSE_REASON_ForcePause)
+        return HysteriaPlayerStatusForcePause;
+    else
+        return HysteriaPlayerStatusUnknown;
 }
 
 - (float)getPlayerRate
@@ -678,13 +680,13 @@ static void audio_route_change_listener(void *inClientData,
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange=[[timeRanges objectAtIndex:0]CMTimeRangeValue];
             
-//            NSLog(@". . . %.5f  -> %.5f",CMTimeGetSeconds(timerange.start),CMTimeGetSeconds(timerange.duration));
-            
             if (_playerPreLoaded)
                 _playerPreLoaded(CMTimeAdd(timerange.start, timerange.duration));
             
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
+                PAUSE_REASON_Buffering = YES;
+                
                 [self longTimeBufferBackground];
                 
                 CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
@@ -693,6 +695,8 @@ static void audio_route_change_listener(void *inClientData,
                 if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
                         NSLog(@"resume from buffering..");
+                        PAUSE_REASON_Buffering = NO;
+                        
                         [audioPlayer play];
                         [self longTimeBufferBackgroundCompleted];
                     }
