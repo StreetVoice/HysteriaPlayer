@@ -41,7 +41,6 @@ static const void *Hysteriatag = &Hysteriatag;
 
 @implementation HysteriaPlayer
 @synthesize audioPlayer, playerItems, PAUSE_REASON_ForcePause, PAUSE_REASON_Buffering, NETWORK_ERROR_getNextItem, isInEmptySound;
-@synthesize _repeatMode, _shuffleMode;
 
 
 static HysteriaPlayer *sharedInstance = nil;

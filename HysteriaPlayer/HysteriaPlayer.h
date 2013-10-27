@@ -71,8 +71,8 @@ Player_ShuffleMode;
 @property (nonatomic) BOOL PAUSE_REASON_Buffering;
 @property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
 @property (nonatomic, readonly) BOOL isInEmptySound;
-@property (nonatomic) Player_RepeatMode _repeatMode;
-@property (nonatomic) Player_ShuffleMode _shuffleMode;
+@property (nonatomic) Player_RepeatMode repeatMode;
+@property (nonatomic) Player_ShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
 
 + (HysteriaPlayer *)sharedInstance;
