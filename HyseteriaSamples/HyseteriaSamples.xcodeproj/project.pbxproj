@@ -124,13 +124,12 @@
 				586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */,
 			);
 			name = HysteriaPlayer;
-			path = ../../HysteriaPlayer;
+			path = ../HysteriaPlayer;
 			sourceTree = "<group>";
 		};
 		831C381216BBA0E10097D0F2 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
-				586AA23C17F4731C00A7E557 /* HysteriaPlayer */,
 				831C381316BBA0E10097D0F2 /* AFHTTPClient.h */,
 				831C381416BBA0E10097D0F2 /* AFHTTPClient.m */,
 				831C381516BBA0E10097D0F2 /* AFHTTPRequestOperation.h */,
@@ -158,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				831C381216BBA0E10097D0F2 /* AFNetworking */,
+				586AA23C17F4731C00A7E557 /* HysteriaPlayer */,
 				83AD5EA616A5CABD00604530 /* HyseteriaSamples */,
 				83AD5E9F16A5CABD00604530 /* Frameworks */,
 				83AD5E9D16A5CABD00604530 /* Products */,
