@@ -1,23 +1,23 @@
 Hysteria Player
 =========
 
-This class provides useful basic player functionality.
-
-Features:
-
-- You don't need to write KVO again, setting up few blocks then you can handle player status.
-- Ability to play previous PlayerItem.
-- If player paused bacause buffering problems, auto-resume the playback of your PlayerItem when enough buffered. 
-- Background playable enabled. (need to register your App supports background modes as "App plays audio")
-- Using getHysteriaOrder: to get the index of your PlayerItems.
-- Long buffer/load time for PlayerItems in background.
-- Returns playing item's current and duration timescale.
-- PlayModes: Repeat, RepeatOne, Shuffle.
+HysteriaPlayer provides useful basic player functionalities.
 
 It provides:
 
 - PlayerItem cache management.
 - Pre-buffer next PlayerItem. 
+
+Features:
+
+- You don't need to write KVO again, setting up few blocks then you can handle player status.
+- Ability to play previous PlayerItem.
+- If player suspended bacause of high network latency in bad network, auto-resume the playback of your PlayerItem when buffered ready. 
+- Background playable enabled. (need to register your App supports background modes as "App plays audio")
+- Using getHysteriaOrder: to get the index of your PlayerItems.
+- Extends long time buffering in background.
+- Returns playing item's current and duration timescale.
+- PlayModes: Repeat, RepeatOne, Shuffle.
 
 Installation
 ---------------
@@ -27,10 +27,11 @@ Installation
 If you using [CocoaPods](http://cocoapods.org/), it's easy to install HysteriaPlayer.
 
 Podfile:
-```
-platform :ios, '6.0'
 
-pod 'HysteriaPlayer',			        '~> 1.0.0'
+```
+platform :ios, 'x.0'
+
+pod 'HysteriaPlayer',			        '~> x.x.x'
     
 end
 ```
@@ -64,36 +65,36 @@ How to use - Setup
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    hysteriaPlayer = [[HysteriaPlayer sharedInstance]
-                      initWithHandlerPlayerReadyToPlay:^{
-                          if (![hysteriaPlayer isPlaying]) {
-                              //Tells user your player is starting, update views or something here.
-                              //[self syncPlayPauseButtons];
-                          }
+    
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    hysteriaPlayer = [hysteriaPlayer initWithHandlerPlayerReadyToPlay:^{
                       }
                       PlayerRateChanged:^{
-                          //[self syncPlayPauseButtons];
+                          [self syncPlayPauseButtons];
                       }
                       CurrentItemChanged:^(AVPlayerItem *newItem) {
-                          if (newItem != (id)[NSNull null]) {
-                              //Adjustment your PlayerItem here
-                          }
                           [self syncPlayPauseButtons];
                       }
                       ItemReadyToPlay:^{
-                          if ([hysteriaPlayer pauseReason] == HysteriaPauseReasonUnknown) {
-                              [hysteriaPlayer play];
-                          }
                       }
-                      PlayerFailed:^{}
+                      PlayerPreLoaded:^(CMTime bufferedTime) {
+                          NSLog(@"item buffered time: %f",CMTimeGetSeconds(bufferedTime));
+                      }
+                      PlayerFailed:nil
                       PlayerDidReachEnd:^{
-                      	  //When your player's PLAYMODE_Repeat property isn't @YES, this block get called at Player's endpoint.
+                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
+                                                                         message:nil
+                                                                        delegate:self
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil, nil];
+                          [alert show];
                       }];
 }
 
 - (IBAction)playStaticArray:(id)sender
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     [hysteriaPlayer removeAllItems];
     [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
         return [mp3Array objectAtIndex:index];
@@ -101,47 +102,53 @@ How to use - Setup
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_on];
 }
 ```
 
 ### Using initWithHandlers: ###
 
-With these four blocks, you can handle about the Player's status changed, including __status changed__, __rate changed__, __currentItem changed__.
+With callback blocks, handling the Player when status changed.
+All blocks are optional, set `nil` if you won't do anything on that callback block.
 
-- __Status Changed__ :
+- __PlayerReadyToPlay__ :
 It will be called when Player is ready to play the PlayerItem, so play it. If you have play/pause buttons, should update their status after you starting play.
 
+- __PlayerRateChanged__ :
+It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. HysteriaPlayer have __HysteriaPlayerStatus__ state helping you find out the informations. 
+	- HysteriaPlayerStatusPlaying : Player is playing
+	- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
+	- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
+    - HysteriaPlayerStatusUnknown : Player status unknown.
 - __CurrentItem Changed__ :
-It will be called when player's currentItem changed. If you have artworks, playeritem's infos or play/pause buttons to display, you should update them when this be called.
+It will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them when called.(i.e. title, artist, artwork ..)
 
 - __ItemReadyToPlay__ :
-It will be called when __PlayerItem__ is ready to play, this is optional.
+It will be called when current __PlayerItem__ is ready to play.
 
-- __Rate Changed__ :
-It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. Hysteria Player have __HysteriaPauseReason__ to help you. 
-	- HysteriaPauseReasonPlaying : Player is playing
-	- HysteriaPauseReasonForce : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
-    - HysteriaPauseReasonUnknown : Player paused for unknown reason, usually it because Player is paused for buffering.
+- __PlayerPreLoaded__ :
+It will be called when receive new buffer data.
+
+- __PlayerFailed__ :
+It will be called when player just failed.
+
+- __PlayerDidReachEnd__ :
+It will be called when player stops, reaching the end of playing queue and repeat is disabled.
+
  
 ### Using setupWithGetterBlock: ###
 
-Before you starting play anything, set your datasource to Hysteria Player. This block will gives you a index that will be used (instantly play or pre-buffer). Returning a NSString format url is all you need to do.
+Before you starting play anything, set your datasource to Hysteria Player. This block will gives you the index that will be using (instantly play or pre-buffer). Returning a NSString format url is all you need to do.
 
-__ItemsCount__ tells Hysteria Player the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is modified.
-
-
-### Getting playing item's timescale ###
+__ItemsCount__ tells HysteriaPlayer the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
 
 ```objective-c
-HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-
-NSDictionary *dict = [hysteriaPlayer getPlayerTime];
-double durationTime = [[dict objectForKey:@"DurationTime"] doubleValue];
-double currentTime = [[dict objectForKey:@"CurrentTime"] doubleValue];
+[hysteriaPlayer removeAllItems];
+[hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+    return [mp3Array objectAtIndex:index];
+} ItemsCount:[mp3Array count]];
 ```
 
-FAQ
+Snippets
 ---------------
 ### Get item's index of my working items: ###
 ```objective-c
@@ -149,6 +156,65 @@ HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
 NSNumber *order = [hysteriaPlayer getHysteriaOrder:[hysteriaPlayer getCurrentItem]];
 ```
 
+### Get playing item's timescale ###
+
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+NSDictionary *dict = [hysteriaPlayer getPlayerTime];
+double durationTime = [[dict objectForKey:@"DurationTime"] doubleValue];
+double currentTime = [[dict objectForKey:@"CurrentTime"] doubleValue];
+```
+
+### How to pause my playback forcibly? ###
+`pausePlayerForcibly:(BOOL)` method telling HysteriaPlayer to/not to force pause the playback(mostly when user tapped play/pause button)
+```objective-c
+- (IBAction)play_pauseButton:(id)sender
+{
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
+    if ([hysteriaPlayer isPlaying])
+    {
+        [hysteriaPlayer pausePlayerForcibly:YES];
+        [hysteriaPlayer pause];
+    }else{
+        [hysteriaPlayer pausePlayerForcibly:NO];
+        [hysteriaPlayer play];
+    }
+}
+```
+
+### Get Player status ###
+```objective-c
+switch ([hysteriaPlayer getHysteriaPlayerStatus]) {
+    case HysteriaPlayerStatusUnknown:
+        
+        break;
+    case HysteriaPlayerStatusForcePause:
+        
+        break;
+    case HysteriaPlayerStatusBuffering:
+        
+        break;
+    case HysteriaPlayerStatusPlaying:
+        
+    default:
+        break;
+}
+```
+
+### Disable played item caching ###
+Default is cache enabled
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+[hysteriaPlayer enableMemoryCached:NO];
+```
+
+### What if I don't need player instance anymore? ###
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+[hysteriaPlayer deprecatePlayer];
+hysteriaPlayer = nil;
+```
 
 ## Licenses ##
 
