@@ -53,12 +53,8 @@
     
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     hysteriaPlayer = [hysteriaPlayer initWithHandlerPlayerReadyToPlay:^{
-                          if (![hysteriaPlayer isPlaying]) {
-                              // It will be called when Player is ready to play the PlayerItem, so play it.
-                              // If you have play/pause buttons, should update their status after you starting play.
-                              
-                              [self syncPlayPauseButtons];
-                          }
+                          // It will be called when Player is ready to play the PlayerItem, so play it.
+                          // If you have play/pause buttons, should update their status after you starting play.
                       }
                       PlayerRateChanged:^{
                           // It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0.
@@ -82,7 +78,11 @@
                       PlayerDidReachEnd:^{
                           // It will be called when player stops, reaching the end of playing queue and repeat is disabled.
                           
-                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end." message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
+                                                                         message:nil
+                                                                        delegate:self
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil, nil];
                           [alert show];
                       }];
 }
@@ -90,6 +90,7 @@
 - (IBAction)playStaticArray:(id)sender
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     [hysteriaPlayer removeAllItems];
     [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
         return [mp3Array objectAtIndex:index];
@@ -199,7 +200,7 @@
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
-    switch ([hysteriaPlayer pauseReason]) {
+    switch ([hysteriaPlayer getHysteriaPlayerStatus]) {
         case HysteriaPlayerStatusUnknown:
             [toolbarItems replaceObjectAtIndex:3 withObject:mRefresh];
             break;
