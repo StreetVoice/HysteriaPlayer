@@ -12,8 +12,6 @@
 
 @interface ViewController ()
 {
-    HysteriaPlayer *hysteriaPlayer;
-    
     NSArray *mp3Array;
     
     UIBarButtonItem *mRefresh;
@@ -53,8 +51,8 @@
                 @"http://dl.dropbox.com/u/49227701/pain%20is%20temporary.mp3",
                 @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
     
-    hysteriaPlayer = [[HysteriaPlayer sharedInstance]
-                      initWithHandlerPlayerReadyToPlay:^{
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    hysteriaPlayer = [hysteriaPlayer initWithHandlerPlayerReadyToPlay:^{
                           if (![hysteriaPlayer isPlaying]) {
                               // It will be called when Player is ready to play the PlayerItem, so play it.
                               // If you have play/pause buttons, should update their status after you starting play.
@@ -91,6 +89,7 @@
 
 - (IBAction)playStaticArray:(id)sender
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     [hysteriaPlayer removeAllItems];
     [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
         return [mp3Array objectAtIndex:index];
@@ -103,6 +102,8 @@
 
 - (IBAction)playJackJohnsonFromItunes:(id)sender
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     [hysteriaPlayer removeAllItems];
     NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=5&sort=recent";
     NSURL *url = [NSURL URLWithString:urlString];
@@ -131,6 +132,8 @@
 
 - (IBAction)playU2FromItunes:(id)sender
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     [hysteriaPlayer removeAllItems];
     NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=5723&entity=song&limit=5&sort=recent";
     NSURL *url = [NSURL URLWithString:urlString];
@@ -159,24 +162,26 @@
 
 - (IBAction)play_pause:(id)sender
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     if ([hysteriaPlayer isPlaying])
     {
-        [hysteriaPlayer setPAUSE_REASON_ForcePause:YES];
+        [hysteriaPlayer pausePlayerForcibly:YES];
         [hysteriaPlayer pause];
     }else{
-        [hysteriaPlayer setPAUSE_REASON_ForcePause:NO];
+        [hysteriaPlayer pausePlayerForcibly:NO];
         [hysteriaPlayer play];
     }
 }
 
 - (IBAction)playNext:(id)sender
 {
-    [hysteriaPlayer playNext];
+    [[HysteriaPlayer sharedInstance] playNext];
 }
 
 - (IBAction)playPreviouse:(id)sender
 {
-    [hysteriaPlayer playPrevious];
+    [[HysteriaPlayer sharedInstance] playPrevious];
 }
 
 #pragma mark -
@@ -191,6 +196,8 @@
 
 - (void)syncPlayPauseButtons
 {
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolbar items]];
     switch ([hysteriaPlayer pauseReason]) {
         case HysteriaPlayerStatusUnknown:
