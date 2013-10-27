@@ -414,7 +414,7 @@ static HysteriaPlayer *sharedInstance = nil;
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
         }else{
             if (_repeatMode == RepeatMode_off) {
-                PAUSE_REASON_ForcePause = YES;
+                [self pausePlayerForcibly:YES];
                 if (_playerDidReachEnd != nil)
                     _playerDidReachEnd();
             }
@@ -521,6 +521,14 @@ static HysteriaPlayer *sharedInstance = nil;
             break;
     }
 }
+
+- (void)pausePlayerForcibly:(BOOL)forcibly
+{
+    if (forcibly)
+        PAUSE_REASON_ForcePause = YES;
+    else
+        PAUSE_REASON_ForcePause = NO;
+}
 #pragma mark -
 #pragma mark ===========  Player info  =========
 #pragma mark -
@@ -579,11 +587,11 @@ static void audio_session_interruption_listener(void *inClientData, UInt32 inInt
     
     if (inInterruptionState == kAudioSessionBeginInterruption && [hysteriaPlayer isPlaying]) {
         hysteriaPlayer->interruptedWhilePlaying = YES;
-        hysteriaPlayer->PAUSE_REASON_ForcePause = YES;
+        [hysteriaPlayer pausePlayerForcibly:YES];
         [hysteriaPlayer pause];
     }else if (inInterruptionState == kAudioSessionEndInterruption && hysteriaPlayer->interruptedWhilePlaying){
         hysteriaPlayer->interruptedWhilePlaying = NO;
-        hysteriaPlayer->PAUSE_REASON_ForcePause = NO;
+        [hysteriaPlayer pausePlayerForcibly:NO];
         [hysteriaPlayer play];
     }
     NSLog(@"interruption: %@", inInterruptionState == kAudioSessionBeginInterruption ? @"Began" : @"Ended");
@@ -609,11 +617,11 @@ static void audio_route_change_listener(void *inClientData,
     
     if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable && !hysteriaPlayer->PAUSE_REASON_ForcePause) {
         hysteriaPlayer->routeChangedWhilePlaying = YES;
-        hysteriaPlayer->PAUSE_REASON_ForcePause = YES;
+        [hysteriaPlayer pausePlayerForcibly:YES];
         NSLog(@"route changed while playng, pause player");
     }else if (routeChangeReason == kAudioSessionRouteChangeReason_NewDeviceAvailable && hysteriaPlayer->routeChangedWhilePlaying){
         hysteriaPlayer->routeChangedWhilePlaying = NO;
-        hysteriaPlayer->PAUSE_REASON_ForcePause = NO;
+        [hysteriaPlayer pausePlayerForcibly:NO];
         [hysteriaPlayer play];
         NSLog(@"resume playback from route changed");
     }
@@ -732,7 +740,7 @@ static void audio_route_change_listener(void *inClientData,
                 }else if (_repeatMode == RepeatMode_on){
                     [self fetchAndPlayPlayerItem:0];
                 }else{
-                    PAUSE_REASON_ForcePause = YES;
+                    [self pausePlayerForcibly:YES];
                     [self fetchAndPlayPlayerItem:0];
                     if (_playerDidReachEnd != nil) {
                         _playerDidReachEnd();

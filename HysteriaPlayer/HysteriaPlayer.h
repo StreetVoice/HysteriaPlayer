@@ -92,13 +92,12 @@ Player_ShuffleMode;
 - (void)seekToTime:(double) CMTime;
 - (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(Player_RepeatMode) mode;
-- (Player_RepeatMode) getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(Player_ShuffleMode) mode;
+- (void)setPlayerRepeatMode:(Player_RepeatMode)mode;
+- (Player_RepeatMode)getPlayerRepeatMode;
+- (void)setPlayerShuffleMode:(Player_ShuffleMode)mode;
+- (void)pausePlayerForcibly:(BOOL)forcibly;
+
 - (Player_ShuffleMode)getPlayerShuffleMode;
-
-
-
 - (NSDictionary *)getPlayerTime;
 - (float)getPlayerRate;
 - (BOOL)isPlaying;
@@ -111,8 +110,8 @@ Player_ShuffleMode;
  * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
  * Default is YES
  */
-- (void) enableMemoryCached:(BOOL) isMemoryCached;
-- (BOOL) isMemoryCached;
+- (void)enableMemoryCached:(BOOL) isMemoryCached;
+- (BOOL)isMemoryCached;
 
 /*
  * Tells OS this application starts one or more long-running tasks, should end background task when completed.
