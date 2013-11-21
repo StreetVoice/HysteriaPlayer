@@ -215,6 +215,8 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (void) fetchAndPlayPlayerItem: (NSUInteger )startAt
 {
+    BOOL findInPlayerItems = NO;
+    
     [audioPlayer pause];
     [audioPlayer removeAllItems];
     
@@ -226,31 +228,35 @@ static HysteriaPlayer *sharedInstance = nil;
     for (AVPlayerItem *item in playerItems) {
         NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
         if (checkIndex == startAt) {
-            [item seekToTime:kCMTimeZero];
-            [self insertPlayerItem:item];
-            return;
+            findInPlayerItems = YES;
+            [item seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
+                [self insertPlayerItem:item];
+            }];
+            break;
         }
     }
     
-    dispatch_async(HBGQueue, ^{
-        AVPlayerItem *item;
-        if (_sourceItemGetter) {
-            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(startAt)]];
-        }else{
-            NSLog(@"please using setupWithGetterBlock: to setup your datasource");
-            return ;
-        }
-        if (item == nil) {
-            return ;
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:startAt]];
-            [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-            [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-            [playerItems addObject:item];
-            [self insertPlayerItem:item];
+    if (!findInPlayerItems) {
+        dispatch_async(HBGQueue, ^{
+            AVPlayerItem *item;
+            if (_sourceItemGetter) {
+                item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(startAt)]];
+            }else{
+                NSLog(@"please using setupWithGetterBlock: to setup your datasource");
+                return ;
+            }
+            if (item == nil) {
+                return ;
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:startAt]];
+                [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+                [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+                [playerItems addObject:item];
+                [self insertPlayerItem:item];
+            });
         });
-    });
+    }
 }
 
 - (void) recordPlayedItems:(NSUInteger)order
