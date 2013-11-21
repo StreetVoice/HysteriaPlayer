@@ -48,6 +48,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic) PlayerRepeatMode repeatMode;
 @property (nonatomic) PlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
+@property (nonatomic, strong) NSMutableSet *playedItems;
 
 - (void)longTimeBufferBackground;
 - (void)longTimeBufferBackgroundCompleted;
@@ -216,6 +217,12 @@ static HysteriaPlayer *sharedInstance = nil;
 {
     [audioPlayer pause];
     [audioPlayer removeAllItems];
+    
+    // if in shuffle mode, record played songs.
+    if (_playedItems)
+        [self recordPlayedItems:startAt];
+    
+    // if enabled memory cache, search from playeritems first.
     for (AVPlayerItem *item in playerItems) {
         NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
         if (checkIndex == startAt) {
@@ -244,6 +251,14 @@ static HysteriaPlayer *sharedInstance = nil;
             [self insertPlayerItem:item];
         });
     });
+}
+
+- (void) recordPlayedItems:(NSUInteger)order
+{
+    [_playedItems addObject:[NSNumber numberWithInteger:order]];
+    
+    if ([_playedItems count] == items_count)
+        _playedItems = [NSMutableSet set];
 }
 
 - (void) prepareNextPlayerItem
@@ -420,7 +435,8 @@ static HysteriaPlayer *sharedInstance = nil;
             NSUInteger index;
             do {
                 index = arc4random() % items_count;
-            } while (index == [[self getHysteriaOrder:audioPlayer.currentItem] integerValue]);
+            } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
+            NSLog(@"current index is %i", index);
             [self fetchAndPlayPlayerItem:index];
         }
     }else{
@@ -513,9 +529,12 @@ static HysteriaPlayer *sharedInstance = nil;
     switch (mode) {
         case ShuffleMode_off:
             _shuffleMode = ShuffleMode_off;
+            [_playedItems removeAllObjects];
+            _playedItems = nil;
             break;
         case ShuffleMode_on:
             _shuffleMode = ShuffleMode_on;
+            _playedItems = [NSMutableSet set];
             break;
         default:
             break;
@@ -788,6 +807,7 @@ static void audio_route_change_listener(void *inClientData,
     _itemReadyToPlay = nil;
     _playerFailed = nil;
     _playerDidReachEnd = nil;
+    _playedItems = nil;
     
     [audioPlayer pause];
     audioPlayer = nil;
