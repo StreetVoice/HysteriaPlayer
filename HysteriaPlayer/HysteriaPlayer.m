@@ -68,7 +68,8 @@ static HysteriaPlayer *sharedInstance = nil;
 
 + (HysteriaPlayer *)sharedInstance {
     
-    static dispatch_once_t predicate; dispatch_once(&predicate, ^{
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
         sharedInstance = [self alloc];
     });
     
@@ -442,7 +443,6 @@ static HysteriaPlayer *sharedInstance = nil;
             do {
                 index = arc4random() % items_count;
             } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
-            NSLog(@"current index is %i", index);
             [self fetchAndPlayPlayerItem:index];
         }
     }else{
@@ -541,6 +541,7 @@ static HysteriaPlayer *sharedInstance = nil;
         case ShuffleMode_on:
             _shuffleMode = ShuffleMode_on;
             _playedItems = [NSMutableSet set];
+            [self recordPlayedItems:[[self getHysteriaOrder:audioPlayer.currentItem] integerValue]];
             break;
         default:
             break;
