@@ -68,7 +68,8 @@ static HysteriaPlayer *sharedInstance = nil;
 
 + (HysteriaPlayer *)sharedInstance {
     
-    static dispatch_once_t predicate; dispatch_once(&predicate, ^{
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
         sharedInstance = [self alloc];
     });
     
@@ -200,9 +201,13 @@ static HysteriaPlayer *sharedInstance = nil;
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
     
-    //AVAudioSession Interruption, RouteChanged listener
-    AudioSessionInitialize(NULL, NULL, audio_session_interruption_listener, (__bridge void *)self);
-    AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, audio_route_change_listener, (__bridge void *)self);
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(interruption:)
+                                                 name:AVAudioSessionInterruptionNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routeChange:)
+                                                 name:AVAudioSessionRouteChangeNotification
+                                               object:nil];
     
     [audioPlayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:nil];
     [audioPlayer addObserver:self forKeyPath:@"rate" options:0 context:nil];
@@ -442,7 +447,6 @@ static HysteriaPlayer *sharedInstance = nil;
             do {
                 index = arc4random() % items_count;
             } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
-            NSLog(@"current index is %i", index);
             [self fetchAndPlayPlayerItem:index];
         }
     }else{
@@ -541,6 +545,7 @@ static HysteriaPlayer *sharedInstance = nil;
         case ShuffleMode_on:
             _shuffleMode = ShuffleMode_on;
             _playedItems = [NSMutableSet set];
+            [self recordPlayedItems:[[self getHysteriaOrder:audioPlayer.currentItem] integerValue]];
             break;
         default:
             break;
@@ -619,52 +624,37 @@ static HysteriaPlayer *sharedInstance = nil;
 #pragma mark ===========  Interruption, Route changed  =========
 #pragma mark -
 
-static void audio_session_interruption_listener(void *inClientData, UInt32 inInterruptionState)
+- (void)interruption:(NSNotification*)notification
 {
-    //__unsafe_unretained DOUAudioEventLoop *eventLoop = (__bridge DOUAudioEventLoop *)inClientData;
-    //[eventLoop _handleAudioSessionInterruptionWithState:inInterruptionState];
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSUInteger interuptionType = [[interuptionDict valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
     
-    if (inInterruptionState == kAudioSessionBeginInterruption && [hysteriaPlayer isPlaying]) {
-        hysteriaPlayer->interruptedWhilePlaying = YES;
-        [hysteriaPlayer pausePlayerForcibly:YES];
-        [hysteriaPlayer pause];
-    }else if (inInterruptionState == kAudioSessionEndInterruption && hysteriaPlayer->interruptedWhilePlaying){
-        hysteriaPlayer->interruptedWhilePlaying = NO;
-        [hysteriaPlayer pausePlayerForcibly:NO];
-        [hysteriaPlayer play];
+    if (interuptionType == AVAudioSessionInterruptionTypeBegan && !PAUSE_REASON_ForcePause) {
+        interruptedWhilePlaying = YES;
+        [self pausePlayerForcibly:YES];
+        [self pause];
+    } else if (interuptionType == AVAudioSessionInterruptionTypeEnded && interruptedWhilePlaying) {
+        interruptedWhilePlaying = NO;
+        [self pausePlayerForcibly:NO];
+        [self play];
     }
-    NSLog(@"interruption: %@", inInterruptionState == kAudioSessionBeginInterruption ? @"Began" : @"Ended");
+    NSLog(@"HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
 }
 
-static void audio_route_change_listener(void *inClientData,
-                                        AudioSessionPropertyID inID,
-                                        UInt32 inDataSize,
-                                        const void *inData)
+- (void)routeChange:(NSNotification *)notification
 {
-    if (inID != kAudioSessionProperty_AudioRouteChange) {
-        return;
+    NSDictionary *routeChangeDict = notification.userInfo;
+    NSUInteger routeChangeType = [[routeChangeDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+    
+    if (routeChangeType == AVAudioSessionRouteChangeReasonOldDeviceUnavailable && !PAUSE_REASON_ForcePause) {
+        routeChangedWhilePlaying = YES;
+        [self pausePlayerForcibly:YES];
+    } else if (routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying) {
+        routeChangedWhilePlaying = NO;
+        [self pausePlayerForcibly:NO];
+        [self play];
     }
-    
-    CFDictionaryRef routeChangeDictionary = (CFDictionaryRef)inData;
-    CFNumberRef routeChangeReasonRef = CFDictionaryGetValue(routeChangeDictionary,
-                                                            CFSTR(kAudioSession_AudioRouteChangeKey_Reason));
-    
-    SInt32 routeChangeReason;
-    CFNumberGetValue(routeChangeReasonRef, kCFNumberSInt32Type, &routeChangeReason);
-    
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
-    if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable && !hysteriaPlayer->PAUSE_REASON_ForcePause) {
-        hysteriaPlayer->routeChangedWhilePlaying = YES;
-        [hysteriaPlayer pausePlayerForcibly:YES];
-        NSLog(@"route changed while playng, pause player");
-    }else if (routeChangeReason == kAudioSessionRouteChangeReason_NewDeviceAvailable && hysteriaPlayer->routeChangedWhilePlaying){
-        hysteriaPlayer->routeChangedWhilePlaying = NO;
-        [hysteriaPlayer pausePlayerForcibly:NO];
-        [hysteriaPlayer play];
-        NSLog(@"resume playback from route changed");
-    }
+    NSLog(@"HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
 }
 
 #pragma mark -
