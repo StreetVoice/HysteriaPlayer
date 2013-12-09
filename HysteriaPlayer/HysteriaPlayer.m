@@ -460,7 +460,6 @@ static HysteriaPlayer *sharedInstance = nil;
                     _playerDidReachEnd();
             }
             [self fetchAndPlayPlayerItem:0];
-            
         }
     }
 }
@@ -767,14 +766,13 @@ static HysteriaPlayer *sharedInstance = nil;
                 NSInteger nowIndex = [CHECK_Order integerValue];
                 if (nowIndex + 1 < items_count) {
                     [self fetchAndPlayPlayerItem:(nowIndex + 1)];
-                }else if (_repeatMode == RepeatMode_on){
-                    [self fetchAndPlayPlayerItem:0];
                 }else{
-                    [self pausePlayerForcibly:YES];
-                    [self fetchAndPlayPlayerItem:0];
-                    if (_playerDidReachEnd != nil) {
-                        _playerDidReachEnd();
+                    if (_repeatMode == RepeatMode_off) {
+                        [self pausePlayerForcibly:YES];
+                        if (_playerDidReachEnd != nil)
+                            _playerDidReachEnd();
                     }
+                    [self fetchAndPlayPlayerItem:0];
                 }
             }
         }
