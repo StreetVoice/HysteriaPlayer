@@ -38,7 +38,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic, readwrite) BOOL isInEmptySound;
 
 /*
- * Private 
+ * Private
  */
 
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
@@ -244,7 +244,7 @@ static HysteriaPlayer *sharedInstance = nil;
     if (!findInPlayerItems) {
         dispatch_async(HBGQueue, ^{
             AVPlayerItem *item;
-            if (_sourceItemGetter) {
+            if (_sourceItemGetter && items_count > 0) {
                 item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(startAt)]];
             }else{
                 NSLog(@"please using setupWithGetterBlock: to setup your datasource");
