@@ -589,10 +589,10 @@ static HysteriaPlayer *sharedInstance = nil;
 {
     if ([self isPlaying])
         return HysteriaPlayerStatusPlaying;
-    else if (PAUSE_REASON_Buffering)
-        return HysteriaPlayerStatusBuffering;
     else if (PAUSE_REASON_ForcePause)
         return HysteriaPlayerStatusForcePause;
+    else if (PAUSE_REASON_Buffering)
+        return HysteriaPlayerStatusBuffering;
     else
         return HysteriaPlayerStatusUnknown;
 }
