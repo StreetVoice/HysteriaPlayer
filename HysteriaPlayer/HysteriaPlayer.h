@@ -96,6 +96,11 @@ PlayerShuffleMode;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus;
+
+/*!
+ DEPRECATED: Use getHysteriaPlayerStatus instead
+ @method pauseReason
+ */
 - (HysteriaPlayerStatus)pauseReason __deprecated;
 
 

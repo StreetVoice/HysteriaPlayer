@@ -831,7 +831,7 @@ static HysteriaPlayer *sharedInstance = nil;
 
 - (HysteriaPlayerStatus)pauseReason
 {
-    return nil;
+    return [self getHysteriaPlayerStatus];
 }
 
 #pragma mark -
