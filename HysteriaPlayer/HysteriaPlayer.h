@@ -28,14 +28,14 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-typedef NSString * (^ SourceItemGetter)(NSUInteger);
+typedef NSString * (^ SourceItemGetter)(NSUInteger index);
 typedef void (^ PlayerReadyToPlay)();
 typedef void (^ PlayerRateChanged)();
-typedef void (^ CurrentItemChanged)(AVPlayerItem *);
+typedef void (^ CurrentItemChanged)(AVPlayerItem *item);
 typedef void (^ ItemReadyToPlay)();
 typedef void (^ PlayerFailed)();
 typedef void (^ PlayerDidReachEnd)();
-typedef void (^ PlayerPreLoaded)(CMTime);
+typedef void (^ PlayerPreLoaded)(CMTime time);
 
 
 typedef enum
