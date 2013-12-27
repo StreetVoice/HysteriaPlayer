@@ -28,6 +28,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+typedef void (^ SourceAsyncGetter)(NSUInteger index);
 typedef NSString * (^ SourceItemGetter)(NSUInteger index);
 typedef void (^ PlayerReadyToPlay)();
 typedef void (^ PlayerRateChanged)();
@@ -71,6 +72,7 @@ PlayerShuffleMode;
 + (HysteriaPlayer *)sharedInstance;
 - (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
 - (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count;
+- (void)setSourceAsyncGetter:(SourceAsyncGetter)completation ItemsCount:(NSUInteger)count;
 - (void)setItemsCount:(NSUInteger)count;
 
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;

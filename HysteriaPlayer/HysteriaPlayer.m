@@ -229,39 +229,48 @@ static HysteriaPlayer *sharedInstance = nil;
     if (_playedItems)
         [self recordPlayedItems:startAt];
     
-    // if enabled memory cache, search from playeritems first.
+    findInPlayerItems = [self findSourceInPlayerItems:startAt];
+    
+    if (!findInPlayerItems) {
+        [self getAndInsertMediaSource:startAt];
+    }
+}
+
+- (void)getAndInsertMediaSource:(NSUInteger)index
+{
+    dispatch_async(HBGQueue, ^{
+        AVPlayerItem *item;
+        if (_sourceItemGetter && items_count > 0) {
+            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(index)]];
+        }else{
+            NSLog(@"please using setupWithGetterBlock: to setup your datasource");
+            return ;
+        }
+        if (item == nil) {
+            return ;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:index]];
+            [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+            [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+            [playerItems addObject:item];
+            [self insertPlayerItem:item];
+        });
+    });
+}
+
+- (BOOL)findSourceInPlayerItems:(NSUInteger)index
+{
     for (AVPlayerItem *item in playerItems) {
         NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
-        if (checkIndex == startAt) {
-            findInPlayerItems = YES;
+        if (checkIndex == index) {
             [item seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
                 [self insertPlayerItem:item];
             }];
-            break;
+            return YES;
         }
     }
-    
-    if (!findInPlayerItems) {
-        dispatch_async(HBGQueue, ^{
-            AVPlayerItem *item;
-            if (_sourceItemGetter && items_count > 0) {
-                item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(startAt)]];
-            }else{
-                NSLog(@"please using setupWithGetterBlock: to setup your datasource");
-                return ;
-            }
-            if (item == nil) {
-                return ;
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:startAt]];
-                [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-                [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-                [playerItems addObject:item];
-                [self insertPlayerItem:item];
-            });
-        });
-    }
+    return NO;
 }
 
 - (void) recordPlayedItems:(NSUInteger)order
@@ -284,64 +293,16 @@ static HysteriaPlayer *sharedInstance = nil;
             return;
         }
         if (nowIndex + 1 < items_count) {
-            for (AVPlayerItem *item in playerItems) {
-                NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
-                if (checkIndex == nowIndex +1) {
-                    [item seekToTime:kCMTimeZero];
-                    findInPlayerItems = YES;
-                    [self insertPlayerItem:item];
-                }
-            }
+            findInPlayerItems = [self findSourceInPlayerItems:nowIndex +1];
+            
             if (!findInPlayerItems) {
-                dispatch_async(HBGQueue, ^{
-                    AVPlayerItem *item;
-                    if (_sourceItemGetter) {
-                        item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(nowIndex + 1)]];
-                    }else{
-                        NSLog(@"please using setupWithGetterBlock: to setup your datasource");
-                        return ;
-                    }
-                    if (item == nil) {
-                        return ;
-                    }
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:nowIndex + 1]];
-                        [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-                        [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-                        [playerItems addObject:item];
-                        [self insertPlayerItem:item];
-                    });
-                });
+                [self getAndInsertMediaSource:nowIndex +1];
             }
         }else if (items_count > 1){
             if (_repeatMode == RepeatMode_on) {
-                for (AVPlayerItem *item in playerItems) {
-                    NSInteger checkIndex = [[self getHysteriaOrder:item] integerValue];
-                    if (checkIndex == 0) {
-                        findInPlayerItems = YES;
-                        [self insertPlayerItem:item];
-                    }
-                }
+                findInPlayerItems = [self findSourceInPlayerItems:0];
                 if (!findInPlayerItems) {
-                    dispatch_async(HBGQueue, ^{
-                        AVPlayerItem *item;
-                        if (_sourceItemGetter) {
-                            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(0)]];
-                        }else{
-                            NSLog(@"please using setupWithGetterBlock: to setup your datasource");
-                            return ;
-                        }
-                        if (item == nil) {
-                            return ;
-                        }
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:0]];
-                            [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-                            [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-                            [playerItems addObject:item];
-                            [self insertPlayerItem:item];
-                        });
-                    });
+                    [self getAndInsertMediaSource:0];
                 }
             }
         }
