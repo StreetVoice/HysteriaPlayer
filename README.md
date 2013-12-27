@@ -90,19 +90,6 @@ How to use - Setup
                           [alert show];
                       }];
 }
-
-- (IBAction)playStaticArray:(id)sender
-{
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
-    [hysteriaPlayer removeAllItems];
-    [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
-        return [mp3Array objectAtIndex:index];
-        
-    } ItemsCount:[mp3Array count]];
-    
-    [hysteriaPlayer fetchAndPlayPlayerItem:0];
-}
 ```
 
 ### Using initWithHandlers: ###
@@ -134,18 +121,51 @@ It will be called when player just failed.
 - __PlayerDidReachEnd__ :
 It will be called when player stops, reaching the end of playing queue and repeat is disabled.
 
- 
-### Using setupWithGetterBlock: ###
+## Setting up Source Getter ##
 
-Before you starting play anything, set your datasource to Hysteria Player. This block will gives you the index that will be using (instantly play or pre-buffer). Returning a NSString format url is all you need to do.
+Before you starting play anything, you have to set up your data source for HysteriaPlayer.
+When Player gonna use (instantly play or pre-buffer) items, the source getter block will telling which index of your playing list is needed.
 
-__ItemsCount__ tells HysteriaPlayer the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
+There are two methods to set up Source Getter.
+
+1. __setupSourceGetter:ItemsCount:__
+2. __asyncSetupSourceGetter:ItemsCount:__
+
+__ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
+
+### setupSourceGetter:ItemsCount: ###
+The simplest way.  
+When player ask for an index that it would liked to use, return your source link as NSString value inside the index given block.
+
+example:
 
 ```objective-c
-[hysteriaPlayer removeAllItems];
-[hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
-    return [mp3Array objectAtIndex:index];
-} ItemsCount:[mp3Array count]];
+    [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
+        return [mp3Array objectAtIndex:index];
+    } ItemsCount:[mp3Array count]];
+```
+
+### asyncSetupSourceGetter:ItemsCount: ###
+For advanced usage, if you could use `setupSourceGetter:ItemsCount:` as well then no needs to use this method to setting up.
+
+If you have to access your media link when player actually gonna play that item. 
+You probability take that media link by an asynchronous connection and HysteriaPlayer also needs an asynchronous block to transform the media link your provided to AVPlayerItem. There are no ways you can return values from an async block to another.
+
+So, you have to call `setupPlayerItem:Order:` by yourself when your async connection that getting media link is completion. And the Order parameter is what player asked for.
+
+example:
+```objective-c
+NSUInteger count = [listItems count];
+[hysteriaPlayer asyncSetupSourceGetter:^(NSUInteger index) {
+    asyncOperation^{
+        ..
+        operation
+        ..
+        NSString *mediaLink = source;
+        
+        [hysteriaPlayer setupPlayerItem:mediaLink Order:index];
+    }
+} ItemsCount:count];
 ```
 
 Snippets

@@ -92,44 +92,17 @@
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer removeAllItems];
-    [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+    
+    [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
         return [mp3Array objectAtIndex:index];
-        
     } ItemsCount:[mp3Array count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
 //    [hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
-- (IBAction)playJackJohnsonFromItunes:(id)sender
-{
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
-    [hysteriaPlayer removeAllItems];
-    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=5&sort=recent";
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    itunesPreviewUrls = [NSMutableArray array];
-    
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
-        NSArray *JSONArray = [JSON objectForKey:@"results"];
-        for (NSDictionary *obj in JSONArray) {
-            if ([obj objectForKey:@"previewUrl"] != nil) {
-                [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
-            }
-        }
-        
-        [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
-            return [itunesPreviewUrls objectAtIndex:index];
-        } ItemsCount:[itunesPreviewUrls count]];
-        
-        [hysteriaPlayer fetchAndPlayPlayerItem:0];
-        [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
-        
-    }failure:nil];
-    
-    [operation start];
-}
+
+#pragma mark - Normal usage example, recommended.
 
 - (IBAction)playU2FromItunes:(id)sender
 {
@@ -149,7 +122,7 @@
             }
         }
         
-        [hysteriaPlayer setupWithGetterBlock:^NSString *(NSUInteger index) {
+        [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
             return [itunesPreviewUrls objectAtIndex:index];
         } ItemsCount:[itunesPreviewUrls count]];
         
@@ -159,6 +132,51 @@
     }failure:nil];
     
     [operation start];
+}
+
+#pragma mark - Async source getter example, advanced usage.
+/*
+ You need to know counts of items that you playing.
+ 
+ Useful when you have a list of songs but you don't have media links,
+ this way could help you access the link (ex. with song.id) and setup your PlayerItem with your async connection.
+ 
+ This example shows how to use asyncSetupSourceGetter:ItemsCount:, 
+ but in this situation that we had media links already, highly recommend you use setupSourceGetter:ItemsCount: instead.
+ */
+
+- (IBAction)playJackJohnsonFromItunes:(id)sender
+{
+    NSUInteger limit = 5;
+    
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    
+    [hysteriaPlayer removeAllItems];
+    NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%i&sort=recent", limit];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    itunesPreviewUrls = [NSMutableArray array];
+    
+    
+    
+    [hysteriaPlayer asyncSetupSourceGetter:^(NSUInteger index) {
+        AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
+            NSArray *JSONArray = [JSON objectForKey:@"results"];
+            for (NSDictionary *obj in JSONArray) {
+                if ([obj objectForKey:@"previewUrl"] != nil) {
+                    [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
+                }
+            }
+
+            // using async source getter, should call this method after you get the source.
+            [hysteriaPlayer setupPlayerItem:[itunesPreviewUrls objectAtIndex:index] Order:index];
+        }failure:nil];
+        
+        [operation start];
+    } ItemsCount:limit];
+    
+    [hysteriaPlayer fetchAndPlayPlayerItem:0];
+    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
 }
 
 - (IBAction)play_pause:(id)sender
