@@ -131,6 +131,8 @@ There are two methods to set up Source Getter.
 1. __setupSourceGetter:ItemsCount:__
 2. __asyncSetupSourceGetter:ItemsCount:__
 
+__ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
+
 ### setupSourceGetter:ItemsCount: ###
 The simplest way.  
 When player ask for an index that it would liked to use, return your source link as NSString value inside the index given block.
@@ -165,8 +167,6 @@ NSUInteger count = [listItems count];
     }
 } ItemsCount:count];
 ```
-
-__ItemsCount__ tells HysteriaPlayer the count of your datasource, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
 
 Snippets
 ---------------
