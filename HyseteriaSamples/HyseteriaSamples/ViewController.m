@@ -147,10 +147,12 @@
 
 - (IBAction)playJackJohnsonFromItunes:(id)sender
 {
+    NSUInteger limit = 5;
+    
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer removeAllItems];
-    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=5&sort=recent";
+    NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%i&sort=recent", limit];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     itunesPreviewUrls = [NSMutableArray array];
@@ -171,7 +173,7 @@
         }failure:nil];
         
         [operation start];
-    } ItemsCount:5];
+    } ItemsCount:limit];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
     [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
