@@ -24,7 +24,8 @@ static const void *Hysteriatag = &Hysteriatag;
     
     dispatch_queue_t HBGQueue;
     
-    SourceItemGetter _sourceItemGetter;
+    SourceAsyncGetter _sourceAsyncGetter;
+    SourceSyncGetter _sourceSyncGetter;
     PlayerReadyToPlay _playerReadyToPlay;
     PlayerRateChanged _playerRateChanged;
     CurrentItemChanged _currentItemChanged;
@@ -101,9 +102,21 @@ static HysteriaPlayer *sharedInstance = nil;
     return sharedInstance;
 }
 
-- (void)setupWithGetterBlock:(SourceItemGetter)itemBlock ItemsCount:(NSUInteger)count
+- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger)count
 {
-    _sourceItemGetter = itemBlock;
+    if (_sourceAsyncGetter != nil)
+        _sourceAsyncGetter = nil;
+    
+    _sourceSyncGetter = itemBlock;
+    items_count = count;
+}
+
+- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count
+{
+    if (_sourceSyncGetter != nil)
+        _sourceSyncGetter = nil;
+    
+    _sourceAsyncGetter = asyncBlock;
     items_count = count;
 }
 
@@ -111,7 +124,6 @@ static HysteriaPlayer *sharedInstance = nil;
 {
     items_count = count;
 }
-
 
 - (void)playEmptySound
 {
@@ -232,30 +244,35 @@ static HysteriaPlayer *sharedInstance = nil;
     findInPlayerItems = [self findSourceInPlayerItems:startAt];
     
     if (!findInPlayerItems) {
-        [self getAndInsertMediaSource:startAt];
+        NSAssert((_sourceSyncGetter != nil) || (_sourceAsyncGetter != nil),
+                 @"please using setupSourceGetter:ItemsCount: to setup your datasource");
+        if (_sourceSyncGetter != nil)
+            [self getAndInsertMediaSource:startAt];
+        else if (_sourceAsyncGetter != nil)
+            _sourceAsyncGetter(startAt);
     }
 }
 
 - (void)getAndInsertMediaSource:(NSUInteger)index
 {
     dispatch_async(HBGQueue, ^{
-        AVPlayerItem *item;
-        if (_sourceItemGetter && items_count > 0) {
-            item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_sourceItemGetter(index)]];
-        }else{
-            NSLog(@"please using setupWithGetterBlock: to setup your datasource");
-            return ;
-        }
-        if (item == nil) {
-            return ;
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:index]];
-            [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-            [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-            [playerItems addObject:item];
-            [self insertPlayerItem:item];
-        });
+        NSAssert(items_count > 0, @"your items count is zero, please check setupWithGetterBlock: or setItemsCount:");
+        [self setupPlayerItem:_sourceSyncGetter(index) Order:index];
+    });
+}
+
+- (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index
+{
+    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]];
+    if (!item)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:index]];
+        [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+        [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+        [playerItems addObject:item];
+        [self insertPlayerItem:item];
     });
 }
 
@@ -296,13 +313,19 @@ static HysteriaPlayer *sharedInstance = nil;
             findInPlayerItems = [self findSourceInPlayerItems:nowIndex +1];
             
             if (!findInPlayerItems) {
-                [self getAndInsertMediaSource:nowIndex +1];
+                if (_sourceSyncGetter != nil)
+                    [self getAndInsertMediaSource:nowIndex + 1];
+                else if (_sourceAsyncGetter != nil)
+                    _sourceAsyncGetter(nowIndex + 1);
             }
         }else if (items_count > 1){
             if (_repeatMode == RepeatMode_on) {
                 findInPlayerItems = [self findSourceInPlayerItems:0];
                 if (!findInPlayerItems) {
-                    [self getAndInsertMediaSource:0];
+                    if (_sourceSyncGetter != nil)
+                        [self getAndInsertMediaSource:0];
+                    else if (_sourceAsyncGetter != nil)
+                        _sourceAsyncGetter(0);
                 }
             }
         }
@@ -755,7 +778,8 @@ static HysteriaPlayer *sharedInstance = nil;
     
     [self removeAllItems];
     
-    _sourceItemGetter = nil;
+    _sourceAsyncGetter = nil;
+    _sourceSyncGetter = nil;
     _playerReadyToPlay = nil;
     _playerRateChanged = nil;
     _currentItemChanged = nil;
@@ -793,6 +817,11 @@ static HysteriaPlayer *sharedInstance = nil;
 - (HysteriaPlayerStatus)pauseReason
 {
     return [self getHysteriaPlayerStatus];
+}
+
+- (void)setupWithGetterBlock:(SourceItemGetter)itemBlock ItemsCount:(NSUInteger)count
+{
+    NSLog(@"this method is deprecated, use setupSourceGetter:ItemsCount: instead");
 }
 
 #pragma mark -

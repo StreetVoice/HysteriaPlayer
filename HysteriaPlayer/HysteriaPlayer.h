@@ -28,8 +28,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+typedef NSString *(^ SourceItemGetter) (NSUInteger); // deprecated
 typedef void (^ SourceAsyncGetter)(NSUInteger index);
-typedef NSString * (^ SourceItemGetter)(NSUInteger index);
+typedef NSString * (^ SourceSyncGetter)(NSUInteger index);
 typedef void (^ PlayerReadyToPlay)();
 typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *item);
@@ -71,10 +72,26 @@ PlayerShuffleMode;
 
 + (HysteriaPlayer *)sharedInstance;
 - (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
-- (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count;
-- (void)setSourceAsyncGetter:(SourceAsyncGetter)completation ItemsCount:(NSUInteger)count;
+
+/*!
+ Recommend you use this method to handle your source getter, setupSourceAsyncGetter:ItemsCount: is for advanced usage.
+ @method setupSourceGetter:ItemsCount:
+ */
+- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count;
+/*!
+ If you are using Async block handle your item, make sure you call setupPlayerItem: at last
+ @method asyncSetupSourceGetter:ItemsCount
+ */
+- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count;
 - (void)setItemsCount:(NSUInteger)count;
 
+/*!
+ This method is necessary if you setting up AsyncGetter. 
+ After you your AVPlayerItem initialized should call this method on your asyncBlock.
+ Should not call this method directly if you using setupSourceGetter:ItemsCount.
+ @method setupPlayerItem:
+ */
+- (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
@@ -104,7 +121,11 @@ PlayerShuffleMode;
  @method pauseReason
  */
 - (HysteriaPlayerStatus)pauseReason __deprecated;
-
+/*!
+ DEPRECATED: Use setupSourceGetter:ItemsCount: instead
+ @method setupWithGetterBlock:ItemsCount: instead
+ */
+- (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count __deprecated;
 
 - (void)deprecatePlayer;
 
