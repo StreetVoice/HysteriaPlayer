@@ -1,6 +1,9 @@
 Current Version:
 * Comportable shuffle algorithm
 * Using New iOS SDK API: NotificationCetner handling interrutpion and route change
+* add setupSourceGetter:ItemsCount:
+* add asyncSetupSourceGetter:ItemsCount:
+* deprecate setupWithGetterBlock:ItemsCount:
 
 version 1.2.1:
 * Cached item bug fixed
