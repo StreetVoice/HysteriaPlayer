@@ -55,7 +55,9 @@ Click your project and select your target app, going to the info tab find __Requ
 
 How to use - Setup
 ---------------
-
+    
+Register Handlers of HysteriaPlayer, all Handlers are optional.
+ 
 
 ```objective-c
 #import "HysteriaPlayer.h"
@@ -66,29 +68,66 @@ How to use - Setup
 {
     [super viewDidLoad];
     
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    hysteriaPlayer = [hysteriaPlayer initWithHandlerPlayerReadyToPlay:^{
-                      }
-                      PlayerRateChanged:^{
-                          [self syncPlayPauseButtons];
-                      }
-                      CurrentItemChanged:^(AVPlayerItem *newItem) {
-                          [self syncPlayPauseButtons];
-                      }
-                      ItemReadyToPlay:^{
-                      }
-                      PlayerPreLoaded:^(CMTime bufferedTime) {
-                          NSLog(@"item buffered time: %f",CMTimeGetSeconds(bufferedTime));
-                      }
-                      PlayerFailed:nil
-                      PlayerDidReachEnd:^{
-                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
-                                                                         message:nil
-                                                                        delegate:self
-                                                               cancelButtonTitle:@"OK"
-                                                               otherButtonTitles:nil, nil];
-                          [alert show];
-                      }];
+    [hysteriaPlayer registerHandlerPlayerRateChanged:^{
+        // It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0.
+        // Anyways you should update your interface to notice the user what's happening. HysteriaPlayer have HysteriaPlayerStatus state helping you find out the informations.
+        
+        [self syncPlayPauseButtons];
+    } CurrentItemChanged:^(AVPlayerItem *item) {
+        // It will be called when player's currentItem changed.
+        // If you have UI elements related to Playing item, should update them when called.(i.e. title, artist, artwork ..)
+        
+        [self syncPlayPauseButtons];
+    } PlayerDidReachEnd:^{
+        // It will be called when player stops, reaching the end of playing queue and repeat is disabled.
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
+                                                       message:nil
+                                                      delegate:self
+                                             cancelButtonTitle:@"OK"
+                                             otherButtonTitles:nil, nil];
+        [alert show];
+    }];
+    
+    [hysteriaPlayer registerHandlerCurrentItemPreLoaded:^(CMTime time) {
+        // It will be called when current item receive new buffered data.
+        
+        NSLog(@"item buffered time: %f",CMTimeGetSeconds(time));
+    }];
+    
+    [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
+        switch (identifier) {
+            case HysteriaPlayerReadyToPlayPlayer:
+                // It will be called when Player is ready to play at the first time.
+                
+                // If you have any UI changes related to Player, should update here.
+                break;
+            
+            case HysteriaPlayerReadyToPlayCurrentItem:
+                // It will be called when current PlayerItem is ready to play.
+                
+                // HysteriaPlayer will automatic play it, if you don't like this behavior,
+                // You can pausePlayerForcibly:YES to stop it.
+                break;
+            default:
+                break;
+        }
+    }];
+    
+    [hysteriaPlayer registerHandlerFailed:^(HysteriaPlayerFailed identifier, NSError *error) {
+        switch (identifier) {
+            case HysteriaPlayerFailedPlayer:
+                break;
+                
+            case HysteriaPlayerFailedCurrentItem:
+                // Current Item failed, advanced to next.
+                [hysteriaPlayer playNext];
+                break;
+            default:
+                break;
+        }
+        NSLog(@"%@", [error localizedDescription]);
+    }];
 }
 ```
 
@@ -168,8 +207,17 @@ NSUInteger count = [listItems count];
 } ItemsCount:count];
 ```
 
+Before you start
+--------------
+
+`[HysteriaPlayer sharedInstance]` will take over the audio focus, because it really init a Player for you.
+
+The player object is singleton, you don't have to store it to your local instance, use `[HysteriaPlayer sharedInstance]` until you really need a Player to play anything.
+
+It will be tiresome that your app take over the system audio focus when it just launched.
+
 Snippets
----------------
+--------------
 ### Get item's index of my working items: ###
 ```objective-c
 HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
