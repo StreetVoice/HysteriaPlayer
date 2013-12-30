@@ -24,14 +24,13 @@ static const void *Hysteriatag = &Hysteriatag;
     
     dispatch_queue_t HBGQueue;
     
+    Failed _failed;
+    ReadyToPlay _readyToPlay;
     SourceAsyncGetter _sourceAsyncGetter;
     SourceSyncGetter _sourceSyncGetter;
-    PlayerReadyToPlay _playerReadyToPlay;
     PlayerRateChanged _playerRateChanged;
     CurrentItemChanged _currentItemChanged;
-    ItemReadyToPlay _itemReadyToPlay;
-    PlayerPreLoaded _playerPreLoaded;
-    PlayerFailed _playerFailed;
+    CurrentItemPreLoaded _currentItemPreLoaded;
     PlayerDidReachEnd _playerDidReachEnd;
 }
 
@@ -71,15 +70,15 @@ static HysteriaPlayer *sharedInstance = nil;
     
     static dispatch_once_t predicate;
     dispatch_once(&predicate, ^{
-        sharedInstance = [self alloc];
+        sharedInstance = [[self alloc] init];
     });
     
     return sharedInstance;
 }
 
-- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd
-{
-    if ((sharedInstance = [super init])) {
+- (id)init {
+    self = [super init];
+    if (self) {
         HBGQueue = dispatch_queue_create("com.hysteria.queue", NULL);
         playerItems = [NSMutableArray array];
         
@@ -87,19 +86,43 @@ static HysteriaPlayer *sharedInstance = nil;
         _shuffleMode = ShuffleMode_off;
         _hysteriaPlayerStatus = HysteriaPlayerStatusUnknown;
         
-        _playerReadyToPlay = playerReadyToPlay;
-        _playerRateChanged = playerRateChanged;
-        _currentItemChanged = currentItemChanged;
-        _itemReadyToPlay = itemReadyToPlay;
-        _playerPreLoaded = playerPreLoaded;
-        _playerFailed = playerFailed;
-        _playerDidReachEnd = playerDidReachEnd;
+        _failed = nil;
+        _readyToPlay = nil;
+        _sourceAsyncGetter = nil;
+        _sourceSyncGetter = nil;
+        _playerRateChanged = nil;
+        _playerDidReachEnd = nil;
+        _currentItemChanged = nil;
+        _currentItemPreLoaded = nil;
         
         [self backgroundPlayable];
         [self playEmptySound];
         [self AVAudioSessionNotification];
     }
-    return sharedInstance;
+    
+    return self;
+}
+
+-(void)registerHandlerPlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd
+{
+    _playerRateChanged = playerRateChanged;
+    _currentItemChanged = currentItemChanged;
+    _playerDidReachEnd = playerDidReachEnd;
+}
+
+- (void)registerHandlerCurrentItemPreLoaded:(CurrentItemPreLoaded)currentItemPreLoaded
+{
+    _currentItemPreLoaded = currentItemPreLoaded;
+}
+
+- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay
+{
+    _readyToPlay = readyToPlay;
+}
+
+-(void)registerHandlerFailed:(Failed)failed
+{
+    _failed = failed;
 }
 
 - (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger)count
@@ -648,16 +671,16 @@ static HysteriaPlayer *sharedInstance = nil;
                         change:(NSDictionary *)change context:(void *)context {
     if (object == audioPlayer && [keyPath isEqualToString:@"status"]) {
         if (audioPlayer.status == AVPlayerStatusReadyToPlay) {
-            if (_playerReadyToPlay != nil) {
-                _playerReadyToPlay();
+            if (_readyToPlay != nil) {
+                _readyToPlay(HysteriaPlayerReadyToPlayPlayer);
             }
             if (![self isPlaying]) {
                 [audioPlayer play];
             }
         } else if (audioPlayer.status == AVPlayerStatusFailed) {
             NSLog(@"%@",audioPlayer.error);
-            if (_playerFailed != nil) {
-                _playerFailed();
+            if (_failed != nil) {
+                _failed(HysteriaPlayerFailedPlayer, audioPlayer.error);
             }
         }
     }
@@ -679,11 +702,11 @@ static HysteriaPlayer *sharedInstance = nil;
     
     if (object == audioPlayer.currentItem && [keyPath isEqualToString:@"status"]) {
         if (audioPlayer.currentItem.status == AVPlayerItemStatusFailed) {
-            NSLog(@"------player item failed:%@",audioPlayer.currentItem.error);
-            [self playNext];
+            if (_failed)
+                _failed(HysteriaPlayerFailedCurrentItem, audioPlayer.currentItem.error);
         }else if (audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            if (_itemReadyToPlay != nil) {
-                _itemReadyToPlay();
+            if (_readyToPlay != nil) {
+                _readyToPlay(HysteriaPlayerReadyToPlayCurrentItem);
             }
             if (![self isPlaying] && !PAUSE_REASON_ForcePause) {
                 [audioPlayer play];
@@ -701,8 +724,8 @@ static HysteriaPlayer *sharedInstance = nil;
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange=[[timeRanges objectAtIndex:0]CMTimeRangeValue];
             
-            if (_playerPreLoaded)
-                _playerPreLoaded(CMTimeAdd(timerange.start, timerange.duration));
+            if (_currentItemPreLoaded)
+                _currentItemPreLoaded(CMTimeAdd(timerange.start, timerange.duration));
             
             
             if (audioPlayer.rate == 0 && !PAUSE_REASON_ForcePause) {
@@ -778,15 +801,14 @@ static HysteriaPlayer *sharedInstance = nil;
     
     [self removeAllItems];
     
+    _failed = nil;
+    _readyToPlay = nil;
     _sourceAsyncGetter = nil;
     _sourceSyncGetter = nil;
-    _playerReadyToPlay = nil;
     _playerRateChanged = nil;
-    _currentItemChanged = nil;
-    _itemReadyToPlay = nil;
-    _playerFailed = nil;
     _playerDidReachEnd = nil;
-    _playedItems = nil;
+    _currentItemChanged = nil;
+    _currentItemPreLoaded = nil;
     
     [audioPlayer pause];
     audioPlayer = nil;
@@ -813,6 +835,11 @@ static HysteriaPlayer *sharedInstance = nil;
 #pragma mark -
 #pragma mark ===========   Deprecated Methods  =========
 #pragma mark -
+
+- (id)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd
+{
+    return nil;
+}
 
 - (HysteriaPlayerStatus)pauseReason
 {
