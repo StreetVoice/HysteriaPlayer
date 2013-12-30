@@ -64,9 +64,9 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
 
 ...
 
-- (void)viewDidLoad
+- (void)initPlayer
 {
-    [super viewDidLoad];
+    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer registerHandlerPlayerRateChanged:^{
         // It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0.
