@@ -1,3 +1,4 @@
+[![Analytics](https://ga-beacon.appspot.com/UA-36710053-5/hysteriaplayer/readme)](https://github.com/igrigorik/ga-beacon)
 Hysteria Player
 =========
 
