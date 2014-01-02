@@ -1,4 +1,6 @@
 [![Analytics](https://ga-beacon.appspot.com/UA-36710053-5/hysteriaplayer/readme)](https://github.com/igrigorik/ga-beacon)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/StreetVoice/hysteriaplayer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 Hysteria Player
 =========
 
@@ -296,7 +298,4 @@ Created by Saiday
 * [GitHub](https://github.com/saiday/)
 * [Twitter](https://twitter.com/saiday)
 * Skype: imnotyourson
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/StreetVoice/hysteriaplayer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
