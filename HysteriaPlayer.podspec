@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://github.com/StreetVoice/HysteriaPlayer'
   s.license      = 'MIT'
   s.author       = { 'Stan Tsai' => 'feocms@gmail.com' }
-  s.source       = { :git => 'https://github.com/StreetVoice/HysteriaPlayer.git'}
+  s.source       = { :git => 'https://github.com/StreetVoice/HysteriaPlayer.git', :branch=> 'master'}
   s.platform     = :ios, '6.0'
   s.source_files = 'HysteriaPlayer/**/*.{h,m}'
   s.resources    = 'HysteriaPlayer/point1sec.{mp3}'
