@@ -456,7 +456,9 @@ static HysteriaPlayer *sharedInstance = nil;
             } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
             [self fetchAndPlayPlayerItem:index];
         }
-    }else{
+    } else if ([audioPlayer.items count] > 1) {
+        [audioPlayer advanceToNextItem];
+    } else {
         NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
         if (nowIndex + 1 < items_count) {
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
