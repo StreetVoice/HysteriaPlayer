@@ -1,4 +1,7 @@
 Current Version:
+* enhanced memory cache disabled, but still go through pre-buffer 
+
+Version 1.5.0:
 * Comportable shuffle algorithm
 * Using New iOS SDK API: NotificationCetner handling interrutpion and route change
 * add setupSourceGetter:ItemsCount:
