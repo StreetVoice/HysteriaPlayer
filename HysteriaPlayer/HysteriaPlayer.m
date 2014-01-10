@@ -456,8 +456,6 @@ static HysteriaPlayer *sharedInstance = nil;
             } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
             [self fetchAndPlayPlayerItem:index];
         }
-    } else if ([audioPlayer.items count] > 1) {
-        [audioPlayer advanceToNextItem];
     } else {
         NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
         if (nowIndex + 1 < items_count) {
@@ -774,7 +772,7 @@ static HysteriaPlayer *sharedInstance = nil;
                 NETWORK_ERROR_getNextItem = NO;
                 NSInteger nowIndex = [CHECK_Order integerValue];
                 if (nowIndex + 1 < items_count) {
-                    [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+                    [self playNext];
                 }else{
                     if (_repeatMode == RepeatMode_off) {
                         [self pausePlayerForcibly:YES];
