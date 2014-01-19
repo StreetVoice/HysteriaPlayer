@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                 = "HysteriaPlayer"
-  s.version              = "1.5.1"
+  s.version              = "1.5.2"
   s.summary              = "Objective-C remote audio player (AVPlayer extends)"
   s.homepage             = "https://github.com/StreetVoice/HysteriaPlayer"
   # s.screenshots        = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
