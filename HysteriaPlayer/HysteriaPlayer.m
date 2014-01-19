@@ -44,7 +44,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic) BOOL PAUSE_REASON_ForcePause;
 @property (nonatomic) BOOL PAUSE_REASON_Buffering;
-@property (nonatomic) BOOL NETWORK_ERROR_getNextItem;
+@property (nonatomic) BOOL isPreBuffered;
 @property (nonatomic) PlayerRepeatMode repeatMode;
 @property (nonatomic) PlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
@@ -57,7 +57,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @end
 
 @implementation HysteriaPlayer
-@synthesize audioPlayer, playerItems, PAUSE_REASON_ForcePause, PAUSE_REASON_Buffering, NETWORK_ERROR_getNextItem, isInEmptySound;
+@synthesize audioPlayer, playerItems, PAUSE_REASON_ForcePause, PAUSE_REASON_Buffering, isInEmptySound, isPreBuffered;
 
 
 static HysteriaPlayer *sharedInstance = nil;
@@ -447,20 +447,12 @@ static HysteriaPlayer *sharedInstance = nil;
 - (void)playNext
 {
     if (_shuffleMode == ShuffleMode_on) {
-        if (items_count == 1) {
-            [self fetchAndPlayPlayerItem:0];
-        }else{
-            NSUInteger index;
-            do {
-                index = arc4random() % items_count;
-            } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
-            [self fetchAndPlayPlayerItem:index];
-        }
+        [self fetchAndPlayPlayerItem:[self getRandomSong]];
     } else {
         NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
         if (nowIndex + 1 < items_count) {
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
-        }else{
+        } else {
             if (_repeatMode == RepeatMode_off) {
                 [self pausePlayerForcibly:YES];
                 if (_playerDidReachEnd != nil)
@@ -478,10 +470,10 @@ static HysteriaPlayer *sharedInstance = nil;
     {
         if (_repeatMode == RepeatMode_on) {
             [self fetchAndPlayPlayerItem:items_count - 1];
-        }else{
+        } else {
             [audioPlayer.currentItem seekToTime:kCMTimeZero];
         }
-    }else{
+    } else {
         [self fetchAndPlayPlayerItem:(nowIndex - 1)];
     }
 }
@@ -500,7 +492,7 @@ static HysteriaPlayer *sharedInstance = nil;
         }else {
             return (kCMTimeInvalid);
         }
-    }else{
+    } else {
         return (kCMTimeInvalid);
     }
 }
@@ -613,16 +605,15 @@ static HysteriaPlayer *sharedInstance = nil;
 {
     CMTime playerDuration = [self playerItemDuration];
     if (CMTIME_IS_INVALID(playerDuration)) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:0.0], @"CurrentTime", [NSNumber numberWithDouble:0.0], @"DurationTime", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:0.0], HYSTERIAPLAYER_CURRENT_TIME, [NSNumber numberWithDouble:0.0], HYSTERIAPLAYER_DURATION_TIME, nil];
     }
     
 	double duration = CMTimeGetSeconds(playerDuration);
-	if (isfinite(duration))
-	{
+	if (isfinite(duration)) {
 		double time = CMTimeGetSeconds([audioPlayer currentTime]);
-        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:time], @"CurrentTime", [NSNumber numberWithDouble:duration], @"DurationTime", nil];
-	}else{
-        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:0.0], @"CurrentTime", [NSNumber numberWithDouble:0.0], @"DurationTime", nil];
+        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:time], HYSTERIAPLAYER_CURRENT_TIME, [NSNumber numberWithDouble:duration], HYSTERIAPLAYER_DURATION_TIME, nil];
+	} else {
+        return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithDouble:0.0], HYSTERIAPLAYER_CURRENT_TIME, [NSNumber numberWithDouble:0.0], HYSTERIAPLAYER_DURATION_TIME, nil];
     }
 }
 
@@ -701,6 +692,7 @@ static HysteriaPlayer *sharedInstance = nil;
     }
     
     if (object == audioPlayer.currentItem && [keyPath isEqualToString:@"status"]) {
+        isPreBuffered = NO;
         if (audioPlayer.currentItem.status == AVPlayerItemStatusFailed) {
             if (_failed)
                 _failed(HysteriaPlayerFailedCurrentItem, audioPlayer.currentItem.error);
@@ -713,6 +705,9 @@ static HysteriaPlayer *sharedInstance = nil;
             }
         }
     }
+    
+    if (audioPlayer.items.count > 1 && object == [audioPlayer.items objectAtIndex:1] && [keyPath isEqualToString:@"loadedTimeRanges"])
+        isPreBuffered = YES;
     
     if(object == audioPlayer.currentItem && [keyPath isEqualToString:@"loadedTimeRanges"]){
         if (audioPlayer.currentItem.hash != CHECK_AvoidPreparingSameItem) {
@@ -757,23 +752,14 @@ static HysteriaPlayer *sharedInstance = nil;
         if (_repeatMode == RepeatMode_one) {
             NSInteger currentIndex = [CHECK_Order integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
-        }else if (_shuffleMode == ShuffleMode_on){
-            if (items_count == 1) {
-                [self fetchAndPlayPlayerItem:0];
-            }else{
-                NSUInteger index;
-                do {
-                    index = arc4random() % items_count;
-                } while (index == [CHECK_Order integerValue]);
-                [self fetchAndPlayPlayerItem:index];
-            }
-        }else{
-            if (NETWORK_ERROR_getNextItem || audioPlayer.items.count == 1) {
-                NETWORK_ERROR_getNextItem = NO;
+        } else if (_shuffleMode == ShuffleMode_on){
+            [self fetchAndPlayPlayerItem:[self getRandomSong]];
+        } else {
+            if (audioPlayer.items.count == 1 || !isPreBuffered) {
                 NSInteger nowIndex = [CHECK_Order integerValue];
                 if (nowIndex + 1 < items_count) {
                     [self playNext];
-                }else{
+                } else {
                     if (_repeatMode == RepeatMode_off) {
                         [self pausePlayerForcibly:YES];
                         if (_playerDidReachEnd != nil)
@@ -784,6 +770,16 @@ static HysteriaPlayer *sharedInstance = nil;
             }
         }
     }
+}
+
+- (NSUInteger)getRandomSong
+{
+    NSUInteger index;
+    do {
+        index = arc4random() % items_count;
+    } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
+    
+    return index;
 }
 
 #pragma mark -

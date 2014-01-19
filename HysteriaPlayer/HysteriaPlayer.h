@@ -28,6 +28,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+#define HYSTERIAPLAYER_CURRENT_TIME @"CurrentTime"
+#define HYSTERIAPLAYER_DURATION_TIME @"DurationTime"
+
 typedef NS_ENUM(NSUInteger, HysteriaPlayerReadyToPlay) {
     HysteriaPlayerReadyToPlayPlayer = 3000,
     HysteriaPlayerReadyToPlayCurrentItem = 3001,
@@ -106,7 +109,7 @@ PlayerShuffleMode;
 - (void)setItemsCount:(NSUInteger)count;
 
 /*!
- This method is necessary if you setting up AsyncGetter. 
+ This method is necessary if you setting up AsyncGetter.
  After you your AVPlayerItem initialized should call this method on your asyncBlock.
  Should not call this method directly if you using setupSourceGetter:ItemsCount.
  @method setupPlayerItem:
