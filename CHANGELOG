@@ -1,5 +1,9 @@
 Current Version:
+
+Version 1.5.2:
 * enhanced memory cache disabled, but still go through pre-buffer 
+* iOS 7 won't pre-buffer next item when in weak network, preventing advance to empty item. Will check next item is pre-buffered before jump into.
+* HYSTERIAPLAYER_CURRENT_TIME, HYSTERIAPLAYER_DURATION_TIME
 
 Version 1.5.0:
 * Comportable shuffle algorithm
