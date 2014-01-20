@@ -61,6 +61,7 @@ static const void *Hysteriatag = &Hysteriatag;
 
 
 static HysteriaPlayer *sharedInstance = nil;
+static dispatch_once_t onceToken;
 
 #pragma mark -
 #pragma mark ===========  Initialization, Setup  =========
@@ -68,8 +69,7 @@ static HysteriaPlayer *sharedInstance = nil;
 
 + (HysteriaPlayer *)sharedInstance {
     
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
+    dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
     });
     
@@ -808,6 +808,8 @@ static HysteriaPlayer *sharedInstance = nil;
     
     [audioPlayer pause];
     audioPlayer = nil;
+    
+    onceToken = 0;
 }
 
 #pragma mark -
