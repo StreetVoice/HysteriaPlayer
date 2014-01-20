@@ -1,4 +1,5 @@
 Current Version:
+* Fixed issue about deprecating player and recreate one by + (instancetype) SharedInstance, singleton issue.
 
 Version 1.5.2:
 * enhanced memory cache disabled, but still go through pre-buffer 
