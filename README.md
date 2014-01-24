@@ -1,4 +1,4 @@
-![](http://imnotyourson.com/images/HysteriaPlayer/Hysteria.jpg)
+![](https://raw.github.com/StreetVoice/HysteriaPlayer/master/docs/Hysteria.jpg)
 Hysteria Player
 =========
 
@@ -52,7 +52,7 @@ Ability to play the __first__ PlayerItem when your application is resigned activ
 ### Register your app's background modes ###
 Click your project and select your target app, going to the info tab find __Required background modes__ , if not exist create new one. In __Required background modes's item 0__ copy this string `App plays audio` into it.
 
-![](http://imnotyourson.com/images/HysteriaPlayer/SC_RegisterBG.png)
+![](https://raw.github.com/StreetVoice/HysteriaPlayer/master/docs/SC_RegisterBG.png)
 
 How to use - Setup
 ---------------
