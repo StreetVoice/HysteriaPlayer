@@ -211,15 +211,6 @@ NSUInteger count = [listItems count];
 } ItemsCount:count];
 ```
 
-Before you start
---------------
-
-`[HysteriaPlayer sharedInstance]` will take over the audio focus, because it really init a Player for you.
-
-The player object is singleton, you don't have to store it to your local instance, use `[HysteriaPlayer sharedInstance]` until you really need a Player to play anything.
-
-It will be tiresome that your app take over the system audio focus when it just launched.
-
 Snippets
 --------------
 ### Get item's index of my working items: ###
