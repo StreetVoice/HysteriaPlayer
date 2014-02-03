@@ -45,6 +45,7 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic) BOOL PAUSE_REASON_ForcePause;
 @property (nonatomic) BOOL PAUSE_REASON_Buffering;
 @property (nonatomic) BOOL isPreBuffered;
+@property (nonatomic) BOOL tookAudioFocus;
 @property (nonatomic) PlayerRepeatMode repeatMode;
 @property (nonatomic) PlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
@@ -104,13 +105,18 @@ static dispatch_once_t onceToken;
         _playerDidReachEnd = nil;
         _currentItemChanged = nil;
         _currentItemPreLoaded = nil;
-        
-        [self backgroundPlayable];
-        [self playEmptySound];
-        [self AVAudioSessionNotification];
     }
     
     return self;
+}
+
+- (void)preAction
+{
+    self.tookAudioFocus = YES;
+    
+    [self backgroundPlayable];
+    [self playEmptySound];
+    [self AVAudioSessionNotification];
 }
 
 -(void)registerHandlerPlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd
@@ -265,6 +271,9 @@ static dispatch_once_t onceToken;
 
 - (void) fetchAndPlayPlayerItem: (NSUInteger )startAt
 {
+    if (!self.tookAudioFocus)
+        [self preAction];
+    
     BOOL findInPlayerItems = NO;
     
     [audioPlayer pause];
