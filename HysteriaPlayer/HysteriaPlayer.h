@@ -87,6 +87,7 @@ PlayerShuffleMode;
 
 @property (nonatomic, strong, readonly) NSMutableArray *playerItems;
 @property (nonatomic, readonly) BOOL isInEmptySound;
+@property (nonatomic) BOOL showErrorMessages;
 
 + (HysteriaPlayer *)sharedInstance;
 

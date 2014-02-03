@@ -76,6 +76,16 @@ static dispatch_once_t onceToken;
     return sharedInstance;
 }
 
++ (void)showAlertWithError:(NSError *)error
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Player errors"
+                                                    message:[error localizedDescription]
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+}
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -670,6 +680,10 @@ static dispatch_once_t onceToken;
             }
         } else if (audioPlayer.status == AVPlayerStatusFailed) {
             NSLog(@"%@",audioPlayer.error);
+            
+            if (self.showErrorMessages)
+                [HysteriaPlayer showAlertWithError:audioPlayer.error];
+            
             if (_failed != nil) {
                 _failed(HysteriaPlayerFailedPlayer, audioPlayer.error);
             }
@@ -694,6 +708,9 @@ static dispatch_once_t onceToken;
     if (object == audioPlayer.currentItem && [keyPath isEqualToString:@"status"]) {
         isPreBuffered = NO;
         if (audioPlayer.currentItem.status == AVPlayerItemStatusFailed) {
+            if (self.showErrorMessages)
+                [HysteriaPlayer showAlertWithError:audioPlayer.currentItem.error];
+
             if (_failed)
                 _failed(HysteriaPlayerFailedCurrentItem, audioPlayer.currentItem.error);
         }else if (audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
