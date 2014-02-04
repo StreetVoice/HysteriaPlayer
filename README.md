@@ -132,13 +132,14 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
 
 Specified event would trigger related callback blocks.
 
-- __registerHandlerPlayerRateChanged:CurrentItemChanged:PlayerDidReachEnd:__ :
+- __RateChanged:CurrentItemChanged:PlayerDidReachEnd:__ :
+
 **PlayerRateChanged**'s callback block will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. You should update your UI to notice the user what's happening. HysteriaPlayer have __getHysteriaPlayerStatus:__ method helping you find out the informations. 
 	- HysteriaPlayerStatusPlaying : Player is playing
 	- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
 	- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
 	- HysteriaPlayerStatusUnknown : Player status unknown.
-	- 
+
 **CurrentItemChanged**'s callback block will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them.(i.e. title, artist, artwork ..)
 
 **PlayerDidReachEnd**'s callback block will be called when player stops, reaching the end of playing queue and repeat is disabled.
@@ -165,7 +166,7 @@ There are two methods to set up Source Getter.
 
 __ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
 
-### setupSourceGetter:ItemsCount: ###
+#### 1. setupSourceGetter:ItemsCount: ####
 The simplest way.  
 When player ask for an index that it would liked to use, return your source link as NSString value inside the index given block.
 
@@ -177,7 +178,7 @@ example:
     } ItemsCount:[mp3Array count]];
 ```
 
-### asyncSetupSourceGetter:ItemsCount: ###
+#### 2. asyncSetupSourceGetter:ItemsCount: ####
 For advanced usage, if you could use `setupSourceGetter:ItemsCount:` as well then no needs to use this method to setting up.
 
 If you have to access your media link when player actually gonna play that item. 
