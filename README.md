@@ -20,6 +20,19 @@ Features:
 - Returns playing item's current and duration timescale.
 - PlayModes: Repeat, RepeatOne, Shuffle.
 
+Tutorials
+---------------
+In [part 0](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-0/), what we want? why HysteriaPlayer?
+
+In [part 1](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-1/), demonstrating how to play remote audios with HysteriaPlayer.
+
+In [part 2](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-2/), making a simple player user interface. 
+
+In [part 3](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-3/), registering lock screen details and remote controls. 
+
+
+You can download tutorial source code [here](https://github.com/saiday/HysteriaPlayerTutorial)
+
 Installation
 ---------------
 
@@ -68,51 +81,33 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
 
 ...
 
-- (void)initPlayer
+- (void)setupHyseteriaPlayer
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer registerHandlerPlayerRateChanged:^{
-        // It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0.
-        // Anyways you should update your interface to notice the user what's happening. HysteriaPlayer have HysteriaPlayerStatus state helping you find out the informations.
         
-        [self syncPlayPauseButtons];
     } CurrentItemChanged:^(AVPlayerItem *item) {
-        // It will be called when player's currentItem changed.
-        // If you have UI elements related to Playing item, should update them when called.(i.e. title, artist, artwork ..)
         
-        [self syncPlayPauseButtons];
     } PlayerDidReachEnd:^{
-        // It will be called when player stops, reaching the end of playing queue and repeat is disabled.
         
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
-                                                       message:nil
-                                                      delegate:self
-                                             cancelButtonTitle:@"OK"
-                                             otherButtonTitles:nil, nil];
-        [alert show];
     }];
     
     [hysteriaPlayer registerHandlerCurrentItemPreLoaded:^(CMTime time) {
-        // It will be called when current item receive new buffered data.
-        
-        NSLog(@"item buffered time: %f",CMTimeGetSeconds(time));
+        NSLog(@"%f", CMTimeGetSeconds(time));
     }];
     
     [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
         switch (identifier) {
-            case HysteriaPlayerReadyToPlayPlayer:
-                // It will be called when Player is ready to play at the first time.
-                
-                // If you have any UI changes related to Player, should update here.
-                break;
-            
             case HysteriaPlayerReadyToPlayCurrentItem:
-                // It will be called when current PlayerItem is ready to play.
-                
-                // HysteriaPlayer will automatic play it, if you don't like this behavior,
-                // You can pausePlayerForcibly:YES to stop it.
+                if ([hysteriaPlayer getHysteriaPlayerStatus] != HysteriaPlayerStatusForcePause) {
+                    [hysteriaPlayer play];
+                }
                 break;
+            case HysteriaPlayerReadyToPlayPlayer:
+                [hysteriaPlayer play];
+                break;
+                
             default:
                 break;
         }
@@ -120,49 +115,43 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
     
     [hysteriaPlayer registerHandlerFailed:^(HysteriaPlayerFailed identifier, NSError *error) {
         switch (identifier) {
-            case HysteriaPlayerFailedPlayer:
+            case HysteriaPlayerFailedCurrentItem:
                 break;
                 
-            case HysteriaPlayerFailedCurrentItem:
-                // Current Item failed, advanced to next.
-                [hysteriaPlayer playNext];
-                break;
             default:
                 break;
         }
-        NSLog(@"%@", [error localizedDescription]);
     }];
+    
+    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
+    [hysteriaPlayer enableMemoryCached:NO];
 }
 ```
 
-### Using initWithHandlers: ###
+### Handlers: ###
 
-With callback blocks, handling the Player when status changed.
-All blocks are optional, set `nil` if you won't do anything on that callback block.
+Specified event would trigger related callback blocks.
 
-- __PlayerReadyToPlay__ :
-It will be called when Player is ready to play the PlayerItem, so play it. If you have play/pause buttons, should update their status after you starting play.
-
-- __PlayerRateChanged__ :
-It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. Anyways you should update your interface to notice the user what's happening. HysteriaPlayer have __HysteriaPlayerStatus__ state helping you find out the informations. 
+- __registerHandlerPlayerRateChanged:CurrentItemChanged:PlayerDidReachEnd:__ :
+**PlayerRateChanged**'s callback block will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. You should update your UI to notice the user what's happening. HysteriaPlayer have __getHysteriaPlayerStatus:__ method helping you find out the informations. 
 	- HysteriaPlayerStatusPlaying : Player is playing
 	- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
 	- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
-    - HysteriaPlayerStatusUnknown : Player status unknown.
-- __CurrentItem Changed__ :
-It will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them when called.(i.e. title, artist, artwork ..)
+	- HysteriaPlayerStatusUnknown : Player status unknown.
+	- 
+**CurrentItemChanged**'s callback block will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them.(i.e. title, artist, artwork ..)
 
-- __ItemReadyToPlay__ :
-It will be called when current __PlayerItem__ is ready to play.
+**PlayerDidReachEnd**'s callback block will be called when player stops, reaching the end of playing queue and repeat is disabled.
 
-- __PlayerPreLoaded__ :
+- __ReadyToPlay__ :
+It will be called when **Player** or **PlayerItem** ready to play.
+
+- __CurrentItemPreLoaded__ :
 It will be called when receive new buffer data.
 
-- __PlayerFailed__ :
-It will be called when player just failed.
+- __Failed__ :
+It will be called when **Player** or **PlayerItem** failed.
 
-- __PlayerDidReachEnd__ :
-It will be called when player stops, reaching the end of playing queue and repeat is disabled.
 
 ## Setting up Source Getter ##
 
