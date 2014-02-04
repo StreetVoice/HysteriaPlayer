@@ -132,25 +132,25 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
 
 Specified event would trigger related callback blocks.
 
-- __RateChanged:CurrentItemChanged:PlayerDidReachEnd:__ :
+#### __RateChanged:CurrentItemChanged:PlayerDidReachEnd:__ : ####
 
 **PlayerRateChanged**'s callback block will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. You should update your UI to notice the user what's happening. HysteriaPlayer have __getHysteriaPlayerStatus:__ method helping you find out the informations. 
-	- HysteriaPlayerStatusPlaying : Player is playing
-	- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
-	- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
-	- HysteriaPlayerStatusUnknown : Player status unknown.
+- HysteriaPlayerStatusPlaying : Player is playing
+- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
+- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
+- HysteriaPlayerStatusUnknown : Player status unknown.
 
 **CurrentItemChanged**'s callback block will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them.(i.e. title, artist, artwork ..)
 
 **PlayerDidReachEnd**'s callback block will be called when player stops, reaching the end of playing queue and repeat is disabled.
 
-- __ReadyToPlay__ :
+#### __ReadyToPlay__ : ####
 It will be called when **Player** or **PlayerItem** ready to play.
 
-- __CurrentItemPreLoaded__ :
+#### __CurrentItemPreLoaded__ : ####
 It will be called when receive new buffer data.
 
-- __Failed__ :
+#### __Failed__ : ####
 It will be called when **Player** or **PlayerItem** failed.
 
 
