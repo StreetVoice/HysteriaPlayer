@@ -116,6 +116,7 @@ PlayerShuffleMode;
  @method setupPlayerItem:
  */
 - (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index;
+- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
