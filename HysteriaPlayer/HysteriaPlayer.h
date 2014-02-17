@@ -113,9 +113,8 @@ PlayerShuffleMode;
  This method is necessary if you setting up AsyncGetter.
  After you your AVPlayerItem initialized should call this method on your asyncBlock.
  Should not call this method directly if you using setupSourceGetter:ItemsCount.
- @method setupPlayerItem:
+ @method setupPlayerItemWithUrl:Order:
  */
-- (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index;
 - (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
 - (void)removeAllItems;
