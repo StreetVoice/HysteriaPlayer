@@ -11,6 +11,7 @@ It provides:
 
 Features:
 
+- Supporting both local and remote media.
 - You don't need to write KVO again, setting up few blocks then you can handle player status.
 - Ability to play previous PlayerItem.
 - If player suspended bacause of high network latency in bad network, auto-resume the playback of your PlayerItem when buffered ready. 
