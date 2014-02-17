@@ -305,7 +305,12 @@ static dispatch_once_t onceToken;
 
 - (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index
 {
-    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]];
+    [self setupPlayerItemWithUrl:[NSURL URLWithString:url] Order:index];
+}
+
+- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index
+{
+    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
     if (!item)
         return;
     
@@ -317,6 +322,7 @@ static dispatch_once_t onceToken;
         [self insertPlayerItem:item];
     });
 }
+
 
 - (BOOL)findSourceInPlayerItems:(NSUInteger)index
 {
