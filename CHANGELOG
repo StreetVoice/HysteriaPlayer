@@ -1,5 +1,10 @@
 Current Version:
 
+Version 1.5.4:
+* Supporting local media
+* SourceGetter callback block used to return NSString type result changes to NSURL type
+* Async source getter now comes with SetupItemWithUrl:Order: method instead SetupItem:Order:
+
 Version 1.5.3:
 * Fixed issue about deprecating player and recreate one by + (instancetype) SharedInstance, singleton issue.
 * Show error messages (optional)
