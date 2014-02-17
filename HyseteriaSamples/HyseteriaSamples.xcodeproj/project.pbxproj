@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5804BD7A174B5E1A00EE13AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */; };
 		586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
+		8308CB6A18B26E6000AA0C3A /* pain_is_temporary.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */; };
+		8308CB6C18B26EA600AA0C3A /* new_noise.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */; };
 		831C382616BBA0E10097D0F2 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381416BBA0E10097D0F2 /* AFHTTPClient.m */; };
 		831C382716BBA0E10097D0F2 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381616BBA0E10097D0F2 /* AFHTTPRequestOperation.m */; };
 		831C382816BBA0E10097D0F2 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381816BBA0E10097D0F2 /* AFImageRequestOperation.m */; };
@@ -48,6 +50,8 @@
 		5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
 		586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
+		8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pain_is_temporary.mp3; sourceTree = "<group>"; };
+		8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = new_noise.mp3; sourceTree = "<group>"; };
 		831C381316BBA0E10097D0F2 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		831C381416BBA0E10097D0F2 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		831C381516BBA0E10097D0F2 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -204,6 +208,8 @@
 			isa = PBXGroup;
 			children = (
 				83AD5ED716A5D6A400604530 /* point1sec.mp3 */,
+				8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */,
+				8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */,
 				8363FCBB16AC83ED009F7EAD /* playButton.png */,
 				8363FCBC16AC83ED009F7EAD /* playButton@2x.png */,
 				8363FCB616AC83E4009F7EAD /* pauseButton.png */,
@@ -274,7 +280,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8308CB6A18B26E6000AA0C3A /* pain_is_temporary.mp3 in Resources */,
 				83AD5EAB16A5CABD00604530 /* InfoPlist.strings in Resources */,
+				8308CB6C18B26EA600AA0C3A /* new_noise.mp3 in Resources */,
 				83AD5EB316A5CABD00604530 /* Default.png in Resources */,
 				83AD5EB516A5CABD00604530 /* Default@2x.png in Resources */,
 				83AD5EB716A5CABD00604530 /* Default-568h@2x.png in Resources */,

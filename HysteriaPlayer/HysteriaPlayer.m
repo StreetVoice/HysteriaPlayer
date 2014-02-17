@@ -299,13 +299,13 @@ static dispatch_once_t onceToken;
 {
     dispatch_async(HBGQueue, ^{
         NSAssert(items_count > 0, @"your items count is zero, please check setupWithGetterBlock: or setItemsCount:");
-        [self setupPlayerItem:_sourceSyncGetter(index) Order:index];
+        [self setupPlayerItemWithUrl:_sourceSyncGetter(index) Order:index];
     });
 }
 
-- (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index
+- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index
 {
-    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:url]];
+    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
     if (!item)
         return;
     
@@ -317,6 +317,7 @@ static dispatch_once_t onceToken;
         [self insertPlayerItem:item];
     });
 }
+
 
 - (BOOL)findSourceInPlayerItems:(NSUInteger)index
 {

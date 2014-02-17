@@ -12,7 +12,7 @@
 
 @interface ViewController ()
 {
-    NSArray *mp3Array;
+    NSArray *localMedias;
     
     UIBarButtonItem *mRefresh;
     
@@ -47,9 +47,10 @@
 {
     [super viewDidLoad];
     [self initDefaults];
-    mp3Array = [NSArray arrayWithObjects:
-                @"http://dl.dropbox.com/u/49227701/pain%20is%20temporary.mp3",
-                @"http://www.musiclikedirt.com/wp-content/MP3/feb/01%20New%20Noise%201.mp3", nil];
+    localMedias = [NSArray arrayWithObjects:
+                [[NSBundle mainBundle] pathForResource:@"pain_is_temporary" ofType:@"mp3"],
+                [[NSBundle mainBundle] pathForResource:@"new_noise" ofType:@"mp3"],
+                nil];
     
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
@@ -125,12 +126,11 @@
     
     [hysteriaPlayer removeAllItems];
     
-    [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
-        return [mp3Array objectAtIndex:index];
-    } ItemsCount:[mp3Array count]];
+    [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
+        return [[NSURL alloc] initFileURLWithPath:[localMedias objectAtIndex:index]];
+    } ItemsCount:[localMedias count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-//    [hysteriaPlayer setPLAYMODE_Repeat:YES];
 }
 
 
@@ -154,8 +154,8 @@
             }
         }
         
-        [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
-            return [itunesPreviewUrls objectAtIndex:index];
+        [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
+            return [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
         } ItemsCount:[itunesPreviewUrls count]];
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
@@ -201,7 +201,8 @@
             }
 
             // using async source getter, should call this method after you get the source.
-            [hysteriaPlayer setupPlayerItem:[itunesPreviewUrls objectAtIndex:index] Order:index];
+            NSURL *url = [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
+            [hysteriaPlayer setupPlayerItemWithUrl:url Order:index];
         }failure:nil];
         
         [operation start];

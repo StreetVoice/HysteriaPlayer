@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
 typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error);
 typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
 typedef void (^ SourceAsyncGetter)(NSUInteger index);
-typedef NSString * (^ SourceSyncGetter)(NSUInteger index);
+typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
 typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *item);
 typedef void (^ PlayerDidReachEnd)();
@@ -103,7 +103,7 @@ PlayerShuffleMode;
  */
 - (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count;
 /*!
- If you are using Async block handle your item, make sure you call setupPlayerItem: at last
+ If you are using Async block handle your item, make sure you call setupPlayerItemWithUrl:Order: at last
  @method asyncSetupSourceGetter:ItemsCount
  */
 - (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count;
@@ -113,9 +113,9 @@ PlayerShuffleMode;
  This method is necessary if you setting up AsyncGetter.
  After you your AVPlayerItem initialized should call this method on your asyncBlock.
  Should not call this method directly if you using setupSourceGetter:ItemsCount.
- @method setupPlayerItem:
+ @method setupPlayerItemWithUrl:Order:
  */
-- (void)setupPlayerItem:(NSString *)url Order:(NSUInteger)index;
+- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
