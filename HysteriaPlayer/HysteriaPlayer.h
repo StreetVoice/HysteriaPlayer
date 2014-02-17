@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
 typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error);
 typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
 typedef void (^ SourceAsyncGetter)(NSUInteger index);
-typedef NSString * (^ SourceSyncGetter)(NSUInteger index);
+typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
 typedef void (^ PlayerRateChanged)();
 typedef void (^ CurrentItemChanged)(AVPlayerItem *item);
 typedef void (^ PlayerDidReachEnd)();

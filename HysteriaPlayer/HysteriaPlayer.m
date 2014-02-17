@@ -299,7 +299,7 @@ static dispatch_once_t onceToken;
 {
     dispatch_async(HBGQueue, ^{
         NSAssert(items_count > 0, @"your items count is zero, please check setupWithGetterBlock: or setItemsCount:");
-        [self setupPlayerItemWithUrl:[NSURL URLWithString:_sourceSyncGetter(index)] Order:index];
+        [self setupPlayerItemWithUrl:_sourceSyncGetter(index) Order:index];
     });
 }
 
