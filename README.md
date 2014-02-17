@@ -168,13 +168,13 @@ __ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to 
 
 #### 1. setupSourceGetter:ItemsCount: ####
 The simplest way.  
-When player ask for an index that it would liked to use, return your source link as NSString value inside the index given block.
+When player ask for an index that it would liked to use, return your source link as NSURL type inside the index given block.
 
 example:
 
 ```objective-c
-    [hysteriaPlayer setupSourceGetter:^NSString *(NSUInteger index) {
-        return [mp3Array objectAtIndex:index];
+    [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
+        return [urlArray objectAtIndex:index];
     } ItemsCount:[mp3Array count]];
 ```
 
@@ -195,8 +195,8 @@ NSUInteger count = [listItems count];
         operation
         ..
         NSString *mediaLink = source;
-        
-        [hysteriaPlayer setupPlayerItem:mediaLink Order:index];
+        NSURL *url = [NSURL URLWithString:mediaLink];
+        [hysteriaPlayer setupPlayerItem:url Order:index];
     }
 } ItemsCount:count];
 ```
