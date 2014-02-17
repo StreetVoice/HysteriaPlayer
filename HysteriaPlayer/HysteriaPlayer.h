@@ -103,7 +103,7 @@ PlayerShuffleMode;
  */
 - (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count;
 /*!
- If you are using Async block handle your item, make sure you call setupPlayerItem: at last
+ If you are using Async block handle your item, make sure you call setupPlayerItemWithUrl:Order: at last
  @method asyncSetupSourceGetter:ItemsCount
  */
 - (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count;
