@@ -40,8 +40,8 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic) BOOL PAUSE_REASON_Buffering;
 @property (nonatomic) BOOL isPreBuffered;
 @property (nonatomic) BOOL tookAudioFocus;
-@property (nonatomic) PlayerRepeatMode repeatMode;
-@property (nonatomic) PlayerShuffleMode shuffleMode;
+@property (nonatomic) HysteriaPlayerRepeatMode repeatMode;
+@property (nonatomic) HysteriaPlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
 @property (nonatomic, strong) NSMutableSet *playedItems;
 
@@ -88,8 +88,8 @@ static dispatch_once_t onceToken;
         playerItems = [NSMutableArray array];
         delegates = [NSMutableSet set];
         
-        _repeatMode = PlayerRepeatMode_off;
-        _shuffleMode = PlayerShuffleMode_off;
+        _repeatMode = HysteriaPlayerRepeatModeOff;
+        _shuffleMode = HysteriaPlayerShuffleModeOff;
         _hysteriaPlayerStatus = HysteriaPlayerStatusUnknown;
         
         _failed = nil;
@@ -328,7 +328,7 @@ static dispatch_once_t onceToken;
     BOOL findInPlayerItems = NO;
     
     if (CHECK_Order) {
-        if (_shuffleMode == PlayerShuffleMode_on || _repeatMode == PlayerRepeatMode_one) {
+        if (_shuffleMode == HysteriaPlayerShuffleModeOn || _repeatMode == HysteriaPlayerRepeatModeOnce) {
             return;
         }
         if (nowIndex + 1 < items_count) {
@@ -341,7 +341,7 @@ static dispatch_once_t onceToken;
                     _sourceAsyncGetter(nowIndex + 1);
             }
         }else if (items_count > 1){
-            if (_repeatMode == PlayerRepeatMode_on) {
+            if (_repeatMode == HysteriaPlayerRepeatModeOn) {
                 findInPlayerItems = [self findSourceInPlayerItems:0];
                 if (!findInPlayerItems) {
                     if (_sourceSyncGetter != nil)
@@ -445,14 +445,14 @@ static dispatch_once_t onceToken;
 
 - (void)playNext
 {
-    if (_shuffleMode == PlayerShuffleMode_on) {
+    if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
         [self fetchAndPlayPlayerItem:[self randomIndex]];
     } else {
         NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
         if (nowIndex + 1 < items_count) {
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
         } else {
-            if (_repeatMode == PlayerRepeatMode_off) {
+            if (_repeatMode == HysteriaPlayerRepeatModeOff) {
                 [self pausePlayerForcibly:YES];
                 for (id<HysteriaPlayerDelegate> delegate in delegates) {
                     if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
@@ -470,7 +470,7 @@ static dispatch_once_t onceToken;
     NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
     if (nowIndex == 0)
     {
-        if (_repeatMode == PlayerRepeatMode_on) {
+        if (_repeatMode == HysteriaPlayerRepeatModeOn) {
             [self fetchAndPlayPlayerItem:items_count - 1];
         } else {
             [audioPlayer.currentItem seekToTime:kCMTimeZero];
@@ -499,38 +499,26 @@ static dispatch_once_t onceToken;
     }
 }
 
-- (void)setPlayerRepeatMode:(PlayerRepeatMode)mode
+- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode
 {
-    switch (mode) {
-        case PlayerRepeatMode_off:
-            _repeatMode = PlayerRepeatMode_off;
-            break;
-        case PlayerRepeatMode_on:
-            _repeatMode = PlayerRepeatMode_on;
-            break;
-        case PlayerRepeatMode_one:
-            _repeatMode = PlayerRepeatMode_one;
-            break;
-        default:
-            break;
-    }
+    _repeatMode = mode;
 }
 
-- (PlayerRepeatMode)getPlayerRepeatMode
+- (HysteriaPlayerRepeatMode)getPlayerRepeatMode
 {
     return _repeatMode;
 }
 
-- (void)setPlayerShuffleMode:(PlayerShuffleMode)mode
+- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode
 {
     switch (mode) {
-        case PlayerShuffleMode_off:
-            _shuffleMode = PlayerShuffleMode_off;
+        case HysteriaPlayerShuffleModeOff:
+            _shuffleMode = HysteriaPlayerShuffleModeOff;
             [_playedItems removeAllObjects];
             _playedItems = nil;
             break;
-        case PlayerShuffleMode_on:
-            _shuffleMode = PlayerShuffleMode_on;
+        case HysteriaPlayerShuffleModeOn:
+            _shuffleMode = HysteriaPlayerShuffleModeOn;
             _playedItems = [NSMutableSet set];
             [self recordPlayedItems:[[self getHysteriaOrder:audioPlayer.currentItem] integerValue]];
             break;
@@ -539,7 +527,7 @@ static dispatch_once_t onceToken;
     }
 }
 
-- (PlayerShuffleMode)getPlayerShuffleMode
+- (HysteriaPlayerShuffleMode)getPlayerShuffleMode
 {
     return _shuffleMode;
 }
@@ -573,11 +561,6 @@ static dispatch_once_t onceToken;
         return HysteriaPlayerStatusBuffering;
     else
         return HysteriaPlayerStatusUnknown;
-}
-
-- (float)getPlayerRate
-{
-    return audioPlayer.rate;
 }
 
 - (float)getPlayingItemCurrentTime
@@ -743,10 +726,10 @@ static dispatch_once_t onceToken;
 {
     NSNumber *CHECK_Order = [self getHysteriaOrder:audioPlayer.currentItem];
     if (CHECK_Order) {
-        if (_repeatMode == PlayerRepeatMode_one) {
+        if (_repeatMode == HysteriaPlayerRepeatModeOnce) {
             NSInteger currentIndex = [CHECK_Order integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
-        } else if (_shuffleMode == PlayerShuffleMode_on){
+        } else if (_shuffleMode == HysteriaPlayerShuffleModeOn){
             [self fetchAndPlayPlayerItem:[self randomIndex]];
         } else {
             if (audioPlayer.items.count == 1 || !isPreBuffered) {
@@ -754,7 +737,7 @@ static dispatch_once_t onceToken;
                 if (nowIndex + 1 < items_count) {
                     [self playNext];
                 } else {
-                    if (_repeatMode == PlayerRepeatMode_off) {
+                    if (_repeatMode == HysteriaPlayerRepeatModeOff) {
                         [self pausePlayerForcibly:YES];
                         for (id<HysteriaPlayerDelegate>delegate in delegates) {
                             if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {

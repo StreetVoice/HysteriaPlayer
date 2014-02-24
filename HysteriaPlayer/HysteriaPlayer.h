@@ -56,30 +56,23 @@ typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
 typedef void (^ SourceAsyncGetter)(NSUInteger index);
 typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
 
-typedef enum
-{
+typedef NS_ENUM(NSUInteger, HysteriaPlayerStatus) {
     HysteriaPlayerStatusPlaying = 0,
     HysteriaPlayerStatusForcePause,
     HysteriaPlayerStatusBuffering,
-    HysteriaPlayerStatusUnknown
-}
-HysteriaPlayerStatus;
+    HysteriaPlayerStatusUnknown,
+};
 
-typedef enum
-{
-    PlayerRepeatMode_on = 0,
-    PlayerRepeatMode_one,
-    PlayerRepeatMode_off
-}
-PlayerRepeatMode;
+typedef NS_ENUM(NSUInteger, HysteriaPlayerRepeatMode) {
+    HysteriaPlayerRepeatModeOn = 0,
+    HysteriaPlayerRepeatModeOnce,
+    HysteriaPlayerRepeatModeOff,
+};
 
-typedef enum
-{
-    PlayerShuffleMode_on = 0,
-    PlayerShuffleMode_off
-}
-PlayerShuffleMode;
-
+typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
+    HysteriaPlayerShuffleModeOn = 0,
+    HysteriaPlayerShuffleModeOff,
+};
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
@@ -119,18 +112,17 @@ PlayerShuffleMode;
 - (void)moveItemFromIndex:(NSUInteger)from toIndex:(NSUInteger)to;
 - (void)play;
 - (void)pause;
+- (void)pausePlayerForcibly:(BOOL)forcibly;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double) CMTime;
 - (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(PlayerRepeatMode)mode;
-- (PlayerRepeatMode)getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(PlayerShuffleMode)mode;
-- (void)pausePlayerForcibly:(BOOL)forcibly;
+- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode;
+- (HysteriaPlayerRepeatMode)getPlayerRepeatMode;
+- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode;
+- (HysteriaPlayerShuffleMode)getPlayerShuffleMode;
 
-- (PlayerShuffleMode)getPlayerShuffleMode;
-- (float)getPlayerRate;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus;
