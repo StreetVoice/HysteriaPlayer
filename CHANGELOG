@@ -1,4 +1,8 @@
 Current Version:
+* Version 2.0
+* Deprecated UI related callback blocks, using delegate pattern instead.
+* Deprecated getPlayerTime method, added getPlayingItemCurrentTime and getPlayingItemDurationTime instead.
+* enums conform to the standard.(HysteriaPlayer prefix)
 
 Version 1.5.4:
 * Supporting local media
