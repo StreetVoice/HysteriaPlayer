@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "HysteriaPlayer.h"
 #import "AFJSONRequestOperation.h"
 
 @interface ViewController ()
@@ -53,38 +52,12 @@
                 nil];
     
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    [hysteriaPlayer addDelegate:self];
     
     /*
      Register Handlers of HysteriaPlayer
      All Handlers are optional
      */
-    [hysteriaPlayer registerHandlerPlayerRateChanged:^{
-        // It will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0.
-        // Anyways you should update your interface to notice the user what's happening. HysteriaPlayer have HysteriaPlayerStatus state helping you find out the informations.
-        
-        [self syncPlayPauseButtons];
-    } CurrentItemChanged:^(AVPlayerItem *item) {
-        // It will be called when player's currentItem changed.
-        // If you have UI elements related to Playing item, should update them when called.(i.e. title, artist, artwork ..)
-        
-        [self syncPlayPauseButtons];
-    } PlayerDidReachEnd:^{
-        // It will be called when player stops, reaching the end of playing queue and repeat is disabled.
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
-                                                       message:nil
-                                                      delegate:self
-                                             cancelButtonTitle:@"OK"
-                                             otherButtonTitles:nil, nil];
-        [alert show];
-    }];
-    
-    [hysteriaPlayer registerHandlerCurrentItemPreLoaded:^(CMTime time) {
-        // It will be called when current item receive new buffered data.
-        
-        NSLog(@"item buffered time: %f",CMTimeGetSeconds(time));
-    }];
-    
     [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
         switch (identifier) {
             case HysteriaPlayerReadyToPlayPlayer:
@@ -118,6 +91,32 @@
         }
         NSLog(@"%@", [error localizedDescription]);
     }];
+}
+
+- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item
+{
+    NSLog(@"current item changed");
+}
+
+- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time
+{
+    NSLog(@"current item pre-loaded time: %f", CMTimeGetSeconds(time));
+}
+
+- (void)hysteriaPlayerDidReachEnd
+{
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
+                                                   message:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+}
+
+- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying
+{
+    [self syncPlayPauseButtons];
+    NSLog(@"player rate changed");
 }
 
 - (IBAction)playStaticArray:(id)sender
@@ -159,7 +158,7 @@
         } ItemsCount:[itunesPreviewUrls count]];
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
-        [hysteriaPlayer setPlayerRepeatMode:RepeatMode_on];
+        [hysteriaPlayer setPlayerRepeatMode:PlayerRepeatMode_on];
         
     }failure:nil];
     
@@ -209,7 +208,7 @@
     } ItemsCount:limit];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
+    [hysteriaPlayer setPlayerRepeatMode:PlayerRepeatMode_off];
 }
 
 - (IBAction)play_pause:(id)sender
