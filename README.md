@@ -12,14 +12,13 @@ It provides:
 Features:
 
 - Supporting both local and remote media.
-- You don't need to write KVO again, setting up few blocks then you can handle player status.
-- Ability to play previous PlayerItem.
-- If player suspended bacause of high network latency in bad network, auto-resume the playback of your PlayerItem when buffered ready. 
-- Background playable enabled. (need to register your App supports background modes as "App plays audio")
+- Setting up HysteriaPlayer with few blocks, implementing delegation in your `UIView` and `UIViewController` subclasses to update UI when player event changed.
+- Ability to advance next/previous item.
+- If player suspended bacause of buffering issue, auto-resume the playback when buffered size reached 5 secs. 
+- Background playable. (check the background audio mode then everything works)
 - Using getHysteriaOrder: to get the index of your PlayerItems.
 - Extends long time buffering in background.
-- Returns playing item's current and duration timescale.
-- PlayModes: Repeat, RepeatOne, Shuffle.
+- Player modes support: Repeat, RepeatOne, Shuffle.
 
 Tutorials
 ---------------
