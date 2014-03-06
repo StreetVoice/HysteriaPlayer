@@ -29,7 +29,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-// Delegation
+// Delegate
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
