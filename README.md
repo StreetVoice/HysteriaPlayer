@@ -1,4 +1,4 @@
-![](https://raw.github.com/StreetVoice/HysteriaPlayer/master/docs/Hysteria.jpg)
+![](docs/Hysteria.jpg)
 Hysteria Player
 =========
 
@@ -12,14 +12,13 @@ It provides:
 Features:
 
 - Supporting both local and remote media.
-- You don't need to write KVO again, setting up few blocks then you can handle player status.
-- Ability to play previous PlayerItem.
-- If player suspended bacause of high network latency in bad network, auto-resume the playback of your PlayerItem when buffered ready. 
-- Background playable enabled. (need to register your App supports background modes as "App plays audio")
+- Setting up HysteriaPlayer with few blocks, implementing delegates in your `UIView` and `UIViewController` subclasses to update UI when player event changed.
+- Ability to advance next/previous item.
+- If player suspended bacause of buffering issue, auto-resume the playback when buffered size reached 5 secs. 
+- Background playable. (check the background audio mode then everything works)
 - Using getHysteriaOrder: to get the index of your PlayerItems.
 - Extends long time buffering in background.
-- Returns playing item's current and duration timescale.
-- PlayModes: Repeat, RepeatOne, Shuffle.
+- Player modes support: Repeat, RepeatOne, Shuffle.
 
 Tutorials
 ---------------
@@ -64,51 +63,63 @@ Add CoreMedia.framework, AudioToolbox.framework and AVFoundation.framework to yo
 
 Ability to play the __first__ PlayerItem when your application is resigned active but __first__ PlayerItem is still buffering. 
 
-Register your app's background modes
+Background modes for audio playback
 ----------
 
-Click your project and select your target app, going to the info tab find __Required background modes__ , if not exist create new one. In __Required background modes's item 0__ copy this string `App plays audio` into it.
+XCode providing GUI checkbox to enable various background modes. Enable **Audio and AirPlay**, you can find this section from `Project -> Capabilities -> Background Modes`.
 
-![](https://raw.github.com/StreetVoice/HysteriaPlayer/master/docs/SC_RegisterBG.png)
+![](docs/RegisterBGModesAudio.png)
 
-How to use - Setup
+How to use
 ---------------
-    
-Register Handlers of HysteriaPlayer, all Handlers are optional.
- 
+
+#### Delegates ####
+
+In the header files of `UIViewController` or `UIView` subclass that you have to update UI when player status changed, declare that it implements the `HysteriaPlayer` protocol.
 
 ```objective-c
 #import "HysteriaPlayer.h"
 
+@interface ViewController : UIViewController <HysteriaPlayerDelegate>
+```
+
+There are 4 optional delegates:
+- - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
+- - (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
+- - (void)hysteriaPlayerDidReachEnd;
+- - (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
+
+#### Setup ####
+
+Adding delegates by `- (void)addDelegate:` and removing it by `- (void)removeDelegate:`.  
+Setting up those optional event callback blocks.
+
+```objective-c
 ...
 
 - (void)setupHyseteriaPlayer
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+    [hysteriaPlayer addDelegate:self];
     
-    [hysteriaPlayer registerHandlerPlayerRateChanged:^{
-        
-    } CurrentItemChanged:^(AVPlayerItem *item) {
-        
-    } PlayerDidReachEnd:^{
-        
-    }];
-    
-    [hysteriaPlayer registerHandlerCurrentItemPreLoaded:^(CMTime time) {
-        NSLog(@"%f", CMTimeGetSeconds(time));
-    }];
-    
+    /*
+     Register Handlers of HysteriaPlayer
+     All Handlers are optional
+     */
     [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
         switch (identifier) {
-            case HysteriaPlayerReadyToPlayCurrentItem:
-                if ([hysteriaPlayer getHysteriaPlayerStatus] != HysteriaPlayerStatusForcePause) {
-                    [hysteriaPlayer play];
-                }
-                break;
             case HysteriaPlayerReadyToPlayPlayer:
-                [hysteriaPlayer play];
-                break;
+                // It will be called when Player is ready to play at the first time.
                 
+                // If you have any UI changes related to Player, should update here.
+                break;
+            
+            case HysteriaPlayerReadyToPlayCurrentItem:
+                // It will be called when current PlayerItem is ready to play.
+                
+                // HysteriaPlayer will automatic play it, if you don't like this behavior,
+                // You can pausePlayerForcibly:YES to stop it.
+                break;
             default:
                 break;
         }
@@ -116,46 +127,22 @@ Register Handlers of HysteriaPlayer, all Handlers are optional.
     
     [hysteriaPlayer registerHandlerFailed:^(HysteriaPlayerFailed identifier, NSError *error) {
         switch (identifier) {
-            case HysteriaPlayerFailedCurrentItem:
+            case HysteriaPlayerFailedPlayer:
                 break;
                 
+            case HysteriaPlayerFailedCurrentItem:
+                // Current Item failed, advanced to next.
+                [hysteriaPlayer playNext];
+                break;
             default:
                 break;
         }
+        NSLog(@"%@", [error localizedDescription]);
     }];
-    
-    [hysteriaPlayer setPlayerRepeatMode:RepeatMode_off];
-    [hysteriaPlayer enableMemoryCached:NO];
 }
 ```
 
-### Handlers: ###
-
-Specified event would trigger related callback blocks.
-
-#### __RateChanged:CurrentItemChanged:PlayerDidReachEnd:__ : ####
-
-**PlayerRateChanged**'s callback block will be called when player's rate changed, probely 1.0 to 0.0 or 0.0 to 1.0. You should update your UI to notice the user what's happening. HysteriaPlayer have __getHysteriaPlayerStatus:__ method helping you find out the informations. 
-- HysteriaPlayerStatusPlaying : Player is playing
-- HysteriaPlayerStatusForcePause : Player paused when Player's property `PAUSE_REASON_ForcePause = YES`.
-- HysteriaPlayerStatusBuffering : Player suspended because of no buffered.
-- HysteriaPlayerStatusUnknown : Player status unknown.
-
-**CurrentItemChanged**'s callback block will be called when player's currentItem changed. If you have UI elements related to Playing item, should update them.(i.e. title, artist, artwork ..)
-
-**PlayerDidReachEnd**'s callback block will be called when player stops, reaching the end of playing queue and repeat is disabled.
-
-#### __ReadyToPlay__ : ####
-It will be called when **Player** or **PlayerItem** ready to play.
-
-#### __CurrentItemPreLoaded__ : ####
-It will be called when receive new buffer data.
-
-#### __Failed__ : ####
-It will be called when **Player** or **PlayerItem** failed.
-
-
-## Setting up Source Getter ##
+#### Source Getter ####
 
 Before you starting play anything, you have to set up your data source for HysteriaPlayer.
 When Player gonna use (instantly play or pre-buffer) items, the source getter block will telling which index of your playing list is needed.
@@ -167,7 +154,7 @@ There are two methods to set up Source Getter.
 
 __ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
 
-#### 1. setupSourceGetter:ItemsCount: ####
+**1. setupSourceGetter:ItemsCount:**  
 The simplest way.  
 When player ask for an index that it would liked to use, return your source link as NSURL type inside the index given block.
 
@@ -179,8 +166,8 @@ example:
     } ItemsCount:[mp3Array count]];
 ```
 
-#### 2. asyncSetupSourceGetter:ItemsCount: ####
-For advanced usage, if you could use `setupSourceGetter:ItemsCount:` as well then no needs to use this method to setting up.
+**2. asyncSetupSourceGetter:ItemsCount:**  
+For advanced usage, if you could use `setupSourceGetter:ItemsCount:` as well then no needs to use this method.
 
 If you have to access your media link when player actually gonna play that item. 
 You probability take that media link by an asynchronous connection and HysteriaPlayer also needs an asynchronous block to transform the media link your provided to AVPlayerItem. There are no ways you can return values from an async block to another.

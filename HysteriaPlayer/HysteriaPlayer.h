@@ -26,10 +26,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
 #import <AVFoundation/AVFoundation.h>
 
-#define HYSTERIAPLAYER_CURRENT_TIME @"CurrentTime"
-#define HYSTERIAPLAYER_DURATION_TIME @"DurationTime"
+// Delegation
+@protocol HysteriaPlayerDelegate <NSObject>
+
+@optional
+- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
+- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
+- (void)hysteriaPlayerDidReachEnd;
+- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
+
+@end
 
 typedef NS_ENUM(NSUInteger, HysteriaPlayerReadyToPlay) {
     HysteriaPlayerReadyToPlayPlayer = 3000,
@@ -46,42 +55,24 @@ typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error);
 typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
 typedef void (^ SourceAsyncGetter)(NSUInteger index);
 typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
-typedef void (^ PlayerRateChanged)();
-typedef void (^ CurrentItemChanged)(AVPlayerItem *item);
-typedef void (^ PlayerDidReachEnd)();
-typedef void (^ CurrentItemPreLoaded)(CMTime time);
 
-// deprecated typedef
-typedef void (^PlayerPreLoaded)() __deprecated;
-typedef void (^ PlayerFailed)() __deprecated;
-typedef NSString *(^ SourceItemGetter) (NSUInteger) __deprecated;
-typedef void (^ PlayerReadyToPlay)() __deprecated;
-typedef void (^ ItemReadyToPlay)() __deprecated;
-
-typedef enum
-{
+typedef NS_ENUM(NSUInteger, HysteriaPlayerStatus) {
     HysteriaPlayerStatusPlaying = 0,
     HysteriaPlayerStatusForcePause,
     HysteriaPlayerStatusBuffering,
-    HysteriaPlayerStatusUnknown
-}
-HysteriaPlayerStatus;
+    HysteriaPlayerStatusUnknown,
+};
 
-typedef enum
-{
-    RepeatMode_on = 0,
-    RepeatMode_one,
-    RepeatMode_off
-}
-PlayerRepeatMode;
+typedef NS_ENUM(NSUInteger, HysteriaPlayerRepeatMode) {
+    HysteriaPlayerRepeatModeOn = 0,
+    HysteriaPlayerRepeatModeOnce,
+    HysteriaPlayerRepeatModeOff,
+};
 
-typedef enum
-{
-    ShuffleMode_on = 0,
-    ShuffleMode_off
-}
-PlayerShuffleMode;
-
+typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
+    HysteriaPlayerShuffleModeOn = 0,
+    HysteriaPlayerShuffleModeOff,
+};
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
@@ -91,9 +82,7 @@ PlayerShuffleMode;
 
 + (HysteriaPlayer *)sharedInstance;
 
-- (void)registerHandlerPlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd;
 - (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay;
-- (void)registerHandlerCurrentItemPreLoaded:(CurrentItemPreLoaded)currentItemPreLoaded;
 - (void)registerHandlerFailed:(Failed)failed;
 
 
@@ -123,39 +112,24 @@ PlayerShuffleMode;
 - (void)moveItemFromIndex:(NSUInteger)from toIndex:(NSUInteger)to;
 - (void)play;
 - (void)pause;
+- (void)pausePlayerForcibly:(BOOL)forcibly;
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double) CMTime;
 - (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(PlayerRepeatMode)mode;
-- (PlayerRepeatMode)getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(PlayerShuffleMode)mode;
-- (void)pausePlayerForcibly:(BOOL)forcibly;
+- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode;
+- (HysteriaPlayerRepeatMode)getPlayerRepeatMode;
+- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode;
+- (HysteriaPlayerShuffleMode)getPlayerShuffleMode;
 
-- (PlayerShuffleMode)getPlayerShuffleMode;
-- (NSDictionary *)getPlayerTime;
-- (float)getPlayerRate;
 - (BOOL)isPlaying;
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus;
 
-/*!
- DEPRECATED: Use getHysteriaPlayerStatus instead
- @method pauseReason
- */
-- (HysteriaPlayerStatus)pauseReason __deprecated;
-/*!
- DEPRECATED: Use setupSourceGetter:ItemsCount: instead
- @method setupWithGetterBlock:ItemsCount:
- */
-- (void)setupWithGetterBlock:(SourceItemGetter) itemBlock ItemsCount:(NSUInteger) count __deprecated;
+- (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate;
+- (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate;
 
-/*!
- DEPRECATED: Use registerHandler... instead
- @method initWithHandlerPlayerReadyToPlay:PlayerRateChanged:CurrentItemChanged:ItemReadyToPlay:PlayerPreLoaded:PlayerFailed:PlayerDidReachEnd:
- */
-- (instancetype)initWithHandlerPlayerReadyToPlay:(PlayerReadyToPlay)playerReadyToPlay PlayerRateChanged:(PlayerRateChanged)playerRateChanged CurrentItemChanged:(CurrentItemChanged)currentItemChanged ItemReadyToPlay:(ItemReadyToPlay)itemReadyToPlay PlayerPreLoaded:(PlayerPreLoaded)playerPreLoaded PlayerFailed:(PlayerFailed)playerFailed PlayerDidReachEnd:(PlayerDidReachEnd)playerDidReachEnd __deprecated;
 
 /*
  * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
@@ -172,3 +146,4 @@ PlayerShuffleMode;
 - (void)deprecatePlayer;
 
 @end
+
