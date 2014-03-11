@@ -565,14 +565,19 @@ static dispatch_once_t onceToken;
 
 - (float)getPlayingItemCurrentTime
 {
-    return CMTimeGetSeconds([audioPlayer currentTime]);
+    CMTime itemCurrentTime = [[audioPlayer currentItem] currentTime];
+    float current = CMTimeGetSeconds(itemCurrentTime);
+    if (CMTIME_IS_INVALID(itemCurrentTime) || !isfinite(current))
+        return 0.0f;
+    else
+        return current;
 }
 
 - (float)getPlayingItemDurationTime
 {
-    CMTime playerDuration = [self playerItemDuration];
-    float duration = CMTimeGetSeconds(playerDuration);
-    if (CMTIME_IS_INVALID(playerDuration) || !isfinite(duration))
+    CMTime itemDurationTime = [self playerItemDuration];
+    float duration = CMTimeGetSeconds(itemDurationTime);
+    if (CMTIME_IS_INVALID(itemDurationTime) || !isfinite(duration))
         return 0.0f;
     else
         return duration;
