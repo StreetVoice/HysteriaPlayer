@@ -645,7 +645,7 @@ static dispatch_once_t onceToken;
         if (!isInEmptySound) {
             for (id<HysteriaPlayerDelegate>delegate in delegates) {
                 if ([delegate respondsToSelector:@selector(hysteriaPlayerRateChanged:)]) {
-                    [delegate hysteriaPlayerRateChanged:[audioPlayer rate] == 0.0f];
+                    [delegate hysteriaPlayerRateChanged:[self isPlaying]];
                 }
             }
         } else if (isInEmptySound && [audioPlayer rate] == 0.0f)
