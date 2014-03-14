@@ -73,9 +73,9 @@ XCode providing GUI checkbox to enable various background modes. Enable **Audio 
 How to use
 ---------------
 
-#### Delegates ####
+#### Delegate ####
 
-In the header files of `UIViewController` or `UIView` subclass that you have to update UI when player status changed, declare that it implements the `HysteriaPlayer` protocol.
+In the header files of `UIViewController` or `UIView` subclass that you have to update UI when player status changed, declare that it implements the `HysteriaPlayerDelegate` protocol.
 
 ```objective-c
 #import "HysteriaPlayer.h"
