@@ -15,6 +15,8 @@
     
     UIBarButtonItem *mRefresh;
     
+    id mTimeObserver;
+    
     __block NSMutableArray *itunesPreviewUrls;
 }
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *playButton;
@@ -64,6 +66,19 @@
                 // It will be called when Player is ready to play at the first time.
                 
                 // If you have any UI changes related to Player, should update here.
+                
+                if ( mTimeObserver == nil ) {
+                    mTimeObserver = [hysteriaPlayer addPeriodicTimeObserverForInterval:CMTimeMake(100, 1000)
+                                                                                 queue:NULL // main queue
+                                                                            usingBlock:^(CMTime time) {
+                                                                                float totalSecond = CMTimeGetSeconds(time);
+                                                                                int minute = (int)totalSecond / 60;
+                                                                                int second = (int)totalSecond % 60;
+                                                                                self.currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", minute, second];
+                                                                            }];
+                }
+                
+                
                 break;
             
             case HysteriaPlayerReadyToPlayCurrentItem:
@@ -91,6 +106,7 @@
         }
         NSLog(@"%@", [error localizedDescription]);
     }];
+    
 }
 
 - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item

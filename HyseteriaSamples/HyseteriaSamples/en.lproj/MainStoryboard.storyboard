@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bEM-8T-La3">
-                                <rect key="frame" x="0.0" y="504" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="504" width="321" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="1EQ-vn-Gvt"/>
                                     <barButtonItem image="PreviousButton" style="plain" id="BKx-WL-zzn">
@@ -98,6 +98,13 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LD6-p6-Wdd">
+                                <rect key="frame" x="139" y="448" width="43" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -105,13 +112,14 @@
                             <constraint firstItem="1ky-ju-hz1" firstAttribute="trailing" secondItem="ZCt-IC-8d9" secondAttribute="trailing" type="user" id="8Ni-lO-3VQ"/>
                             <constraint firstItem="Bq3-gq-r9j" firstAttribute="top" secondItem="3" secondAttribute="top" constant="92" id="9Bp-sQ-HHI"/>
                             <constraint firstItem="jFy-Y0-bxM" firstAttribute="top" secondItem="3" secondAttribute="top" constant="66" id="ATj-Vq-gr7"/>
-                            <constraint firstItem="1ky-ju-hz1" firstAttribute="centerX" secondItem="bEM-8T-La3" secondAttribute="centerX" type="default" id="Q8o-fG-OKk"/>
+                            <constraint firstItem="LD6-p6-Wdd" firstAttribute="centerX" secondItem="1ky-ju-hz1" secondAttribute="centerX" type="default" id="JQE-fd-AAr"/>
                             <constraint firstItem="UZS-U4-a9q" firstAttribute="centerX" secondItem="ZCt-IC-8d9" secondAttribute="centerX" type="default" id="Qdn-wO-ool"/>
                             <constraint firstItem="UZS-U4-a9q" firstAttribute="top" secondItem="3" secondAttribute="top" constant="200" id="Qj4-P2-HvV"/>
                             <constraint firstItem="Bq3-gq-r9j" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="user" id="T44-nj-TSS"/>
                             <constraint firstItem="1ky-ju-hz1" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" type="user" id="T59-Nc-uD3"/>
                             <constraint firstItem="ZCt-IC-8d9" firstAttribute="top" secondItem="3" secondAttribute="top" constant="226" type="user" id="VKy-Jd-MS9"/>
                             <constraint firstItem="bEM-8T-La3" firstAttribute="bottom" secondItem="3" secondAttribute="bottom" type="default" id="VvQ-g1-c9B"/>
+                            <constraint firstItem="LD6-p6-Wdd" firstAttribute="centerX" secondItem="bEM-8T-La3" secondAttribute="centerX" type="default" id="WWD-Ql-9Ad"/>
                             <constraint firstAttribute="trailing" secondItem="Bq3-gq-r9j" secondAttribute="trailing" constant="20" symbolic="YES" type="user" id="Y5r-NS-u7S"/>
                             <constraint firstAttribute="trailing" secondItem="1ky-ju-hz1" secondAttribute="trailing" constant="20" type="user" id="a3P-wa-XpU"/>
                             <constraint firstAttribute="trailing" secondItem="ZCt-IC-8d9" secondAttribute="trailing" constant="20" type="user" id="drb-Nr-U8b"/>
@@ -121,9 +129,11 @@
                             <constraint firstItem="ZCt-IC-8d9" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" type="user" id="pln-3W-1yN"/>
                             <constraint firstItem="bEM-8T-La3" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="qCX-k2-vgH"/>
                             <constraint firstItem="1ky-ju-hz1" firstAttribute="leading" secondItem="ZCt-IC-8d9" secondAttribute="leading" type="user" id="sqQ-OL-Ln7"/>
+                            <constraint firstAttribute="bottom" secondItem="LD6-p6-Wdd" secondAttribute="bottom" constant="79" id="zOf-Jh-LQE"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="currentTimeLabel" destination="LD6-p6-Wdd" id="5sJ-dI-1Vi"/>
                         <outlet property="firstButton" destination="Bq3-gq-r9j" id="gXI-5I-yo3"/>
                         <outlet property="nextButton" destination="IAP-4w-sZg" id="WmC-HO-9Yg"/>
                         <outlet property="pauseButton" destination="ist-Jl-1F9" id="ewU-OJ-MlR"/>

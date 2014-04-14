@@ -132,7 +132,9 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 
 - (float)getPlayingItemCurrentTime;
 - (float)getPlayingItemDurationTime;
-
+- (id)addPeriodicTimeObserverForInterval:(CMTime)interval
+                                   queue:(dispatch_queue_t)queue
+                              usingBlock:(void (^)(CMTime time))block;
 
 /*
  * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
