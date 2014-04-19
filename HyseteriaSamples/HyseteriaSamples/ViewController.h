@@ -13,4 +13,7 @@
 @interface ViewController : UIViewController <AVAudioSessionDelegate, HysteriaPlayerDelegate>
 {
 }
+
+@property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
+
 @end

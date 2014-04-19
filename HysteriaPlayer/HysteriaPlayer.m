@@ -583,6 +583,16 @@ static dispatch_once_t onceToken;
         return duration;
 }
 
+- (id)addPeriodicTimeObserverForInterval:(CMTime)interval
+                                   queue:(dispatch_queue_t)queue
+                              usingBlock:(void (^)(CMTime time))block
+{
+    id mTimeObserver = [audioPlayer addPeriodicTimeObserverForInterval:interval queue:queue usingBlock:block];
+    NSLog(@"audioPlayer is %@", audioPlayer);
+    NSLog(@"inside HysterialPlayer: mTimeObserver is : %@", mTimeObserver);
+    return mTimeObserver;
+}
+
 #pragma mark -
 #pragma mark ===========  Interruption, Route changed  =========
 #pragma mark -
