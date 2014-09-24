@@ -368,7 +368,7 @@ static dispatch_once_t onceToken;
 
 - (void)removeAllItems
 {
-    for (AVPlayerItem *obj in playerItems) {
+    for (AVPlayerItem *obj in audioPlayer.items) {
         [obj seekToTime:kCMTimeZero];
         [obj removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
         [obj removeObserver:self forKeyPath:@"status" context:nil];
