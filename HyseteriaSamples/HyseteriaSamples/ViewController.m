@@ -156,7 +156,7 @@
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer removeAllItems];
-    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=5723&entity=song&limit=5&sort=recent";
+    NSString *urlString = @"https://itunes.apple.com/lookup?amgArtistId=5566&entity=song&limit=5&sort=recent";
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     itunesPreviewUrls = [NSMutableArray array];
@@ -199,7 +199,7 @@
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
     [hysteriaPlayer removeAllItems];
-    NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%i&sort=recent", limit];
+    NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long)limit];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     itunesPreviewUrls = [NSMutableArray array];
@@ -224,7 +224,7 @@
     } ItemsCount:limit];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
-    [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerShuffleModeOff];
+    [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerRepeatModeOff];
 }
 
 - (IBAction)play_pause:(id)sender
