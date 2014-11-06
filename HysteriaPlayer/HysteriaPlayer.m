@@ -292,8 +292,6 @@ static dispatch_once_t onceToken;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self setHysteriaOrder:item Key:[NSNumber numberWithInteger:index]];
-        [item addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-        [item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
         [playerItems addObject:item];
         [self insertPlayerItem:item];
     });
@@ -675,17 +673,18 @@ static dispatch_once_t onceToken;
     if(object == audioPlayer && [keyPath isEqualToString:@"currentItem"]){
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
         AVPlayerItem *lastPlayerItem = [change objectForKey:NSKeyValueChangeOldKey];
-        if (!isInEmptySound && lastPlayerItem != (id)[NSNull null]) {
-            @try{
+        if (lastPlayerItem != (id)[NSNull null]) {
+            isInEmptySound = NO;
+            @try {
                 [lastPlayerItem removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
                 [lastPlayerItem removeObserver:self forKeyPath:@"status" context:nil];
-            }@catch(id anException){
+            } @catch(id anException) {
                 //do nothing, obviously it wasn't attached because an exception was thrown
             }
-        } else if (lastPlayerItem && lastPlayerItem != (id)[NSNull null]) {
-            isInEmptySound = NO;
         }
         if (newPlayerItem != (id)[NSNull null]) {
+            [newPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+            [newPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             for (id<HysteriaPlayerDelegate>delegate in delegates) {
                 if ([delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
                     [delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
