@@ -798,6 +798,9 @@ static dispatch_once_t onceToken;
 
 - (void)deprecatePlayer
 {
+    NSError *error;
+    self.tookAudioFocus = NO;
+    [[AVAudioSession sharedInstance] setActive:NO error:&error];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     
