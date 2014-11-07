@@ -175,7 +175,6 @@
         
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
         [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerRepeatModeOn];
-        
     }failure:nil];
     
     [operation start];

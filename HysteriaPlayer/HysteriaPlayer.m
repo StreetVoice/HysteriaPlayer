@@ -255,12 +255,10 @@ static dispatch_once_t onceToken;
     
     BOOL findInPlayerItems = NO;
     
+    [self.playedItems addObject:@(startAt)];
+    
     [audioPlayer pause];
     [audioPlayer removeAllItems];
-    
-    // if in shuffle mode, record played songs.
-    if (_playedItems)
-        [self recordPlayedItems:startAt];
     
     findInPlayerItems = [self findSourceInPlayerItems:startAt];
     
@@ -310,14 +308,6 @@ static dispatch_once_t onceToken;
         }
     }
     return NO;
-}
-
-- (void) recordPlayedItems:(NSUInteger)order
-{
-    [_playedItems addObject:[NSNumber numberWithInteger:order]];
-    
-    if ([_playedItems count] == items_count)
-        _playedItems = [NSMutableSet set];
 }
 
 - (void) prepareNextPlayerItem
@@ -450,7 +440,17 @@ static dispatch_once_t onceToken;
 - (void)playNext
 {
     if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
-        [self fetchAndPlayPlayerItem:[self randomIndex]];
+        NSInteger nextIndex = [self randomIndex];
+        if (nextIndex != NSNotFound) {
+            [self fetchAndPlayPlayerItem:[self randomIndex]];
+        } else {
+            [self pausePlayerForcibly:YES];
+            for (id<HysteriaPlayerDelegate>delegate in delegates) {
+                if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
+                    [delegate hysteriaPlayerDidReachEnd];
+                }
+            }
+        }
     } else {
         NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
         if (nowIndex + 1 < items_count) {
@@ -524,7 +524,9 @@ static dispatch_once_t onceToken;
         case HysteriaPlayerShuffleModeOn:
             _shuffleMode = HysteriaPlayerShuffleModeOn;
             _playedItems = [NSMutableSet set];
-            [self recordPlayedItems:[[self getHysteriaOrder:audioPlayer.currentItem] integerValue]];
+            if (audioPlayer.currentItem) {
+                [self.playedItems addObject:[self getHysteriaOrder:audioPlayer.currentItem]];
+            }
             break;
         default:
             break;
@@ -759,8 +761,18 @@ static dispatch_once_t onceToken;
         if (_repeatMode == HysteriaPlayerRepeatModeOnce) {
             NSInteger currentIndex = [CHECK_Order integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
-        } else if (_shuffleMode == HysteriaPlayerShuffleModeOn){
-            [self fetchAndPlayPlayerItem:[self randomIndex]];
+        } else if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
+            NSInteger nextIndex = [self randomIndex];
+            if (nextIndex != NSNotFound) {
+                [self fetchAndPlayPlayerItem:[self randomIndex]];
+            } else {
+                [self pausePlayerForcibly:YES];
+                for (id<HysteriaPlayerDelegate>delegate in delegates) {
+                    if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
+                        [delegate hysteriaPlayerDidReachEnd];
+                    }
+                }
+            }
         } else {
             if (audioPlayer.items.count == 1 || !isPreBuffered) {
                 NSInteger nowIndex = [CHECK_Order integerValue];
@@ -784,6 +796,13 @@ static dispatch_once_t onceToken;
 
 - (NSUInteger)randomIndex
 {
+    if ([self.playedItems count] == items_count) {
+        self.playedItems = [NSMutableSet set];
+        if (_repeatMode == HysteriaPlayerRepeatModeOff) {
+            return NSNotFound;
+        }
+    }
+
     NSUInteger index;
     do {
         index = arc4random() % items_count;
