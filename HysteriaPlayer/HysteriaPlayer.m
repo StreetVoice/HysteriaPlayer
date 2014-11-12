@@ -45,6 +45,8 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
 @property (nonatomic, strong) NSMutableSet *playedItems;
 
+@property (nonatomic, strong) NSNumber *lastItemIndex;
+
 - (void)longTimeBufferBackground;
 - (void)longTimeBufferBackgroundCompleted;
 - (void)setHysteriaOrder:(AVPlayerItem *)item Key:(NSNumber *)order;
@@ -258,9 +260,16 @@ static dispatch_once_t onceToken;
     [self.playedItems addObject:@(startAt)];
     
     [audioPlayer pause];
+    self.lastItemIndex = [self getHysteriaOrder:audioPlayer.currentItem];
     [audioPlayer removeAllItems];
     
     findInPlayerItems = [self findSourceInPlayerItems:startAt];
+    
+    for (id<HysteriaPlayerDelegate>delegate in delegates) {
+        if ([delegate respondsToSelector:@selector(hysteriaPlayerWillChangedAtIndex:)]) {
+            [delegate hysteriaPlayerWillChangedAtIndex:startAt];
+        }
+    }
     
     if (!findInPlayerItems) {
         NSAssert((_sourceSyncGetter != nil) || (_sourceAsyncGetter != nil),
@@ -268,7 +277,7 @@ static dispatch_once_t onceToken;
         if (_sourceSyncGetter != nil)
             [self getAndInsertMediaSource:startAt];
         else if (_sourceAsyncGetter != nil)
-            _sourceAsyncGetter(startAt);
+            _sourceAsyncGetter(startAt, NO);
     } else if (audioPlayer.currentItem.status == AVPlayerStatusReadyToPlay) {
         [audioPlayer play];
     }
@@ -328,7 +337,7 @@ static dispatch_once_t onceToken;
                 if (_sourceSyncGetter != nil)
                     [self getAndInsertMediaSource:nowIndex + 1];
                 else if (_sourceAsyncGetter != nil)
-                    _sourceAsyncGetter(nowIndex + 1);
+                    _sourceAsyncGetter(nowIndex + 1, YES);
             }
         }else if (items_count > 1){
             if (_repeatMode == HysteriaPlayerRepeatModeOn) {
@@ -337,7 +346,7 @@ static dispatch_once_t onceToken;
                     if (_sourceSyncGetter != nil)
                         [self getAndInsertMediaSource:0];
                     else if (_sourceAsyncGetter != nil)
-                        _sourceAsyncGetter(0);
+                        _sourceAsyncGetter(0, YES);
                 }
             }
         }
@@ -442,7 +451,7 @@ static dispatch_once_t onceToken;
     if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
         NSInteger nextIndex = [self randomIndex];
         if (nextIndex != NSNotFound) {
-            [self fetchAndPlayPlayerItem:[self randomIndex]];
+            [self fetchAndPlayPlayerItem:nextIndex];
         } else {
             [self pausePlayerForcibly:YES];
             for (id<HysteriaPlayerDelegate>delegate in delegates) {
@@ -452,19 +461,28 @@ static dispatch_once_t onceToken;
             }
         }
     } else {
-        NSInteger nowIndex = [[self getHysteriaOrder:audioPlayer.currentItem] integerValue];
-        if (nowIndex + 1 < items_count) {
-            [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+        NSNumber *number = [self getHysteriaOrder:audioPlayer.currentItem];
+        if (number == nil) {
+            number = self.lastItemIndex;
+        }
+        if (number == nil) {
+            [self fetchAndPlayPlayerItem:0];
         } else {
-            if (_repeatMode == HysteriaPlayerRepeatModeOff) {
-                [self pausePlayerForcibly:YES];
-                for (id<HysteriaPlayerDelegate> delegate in delegates) {
-                    if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
-                        [delegate hysteriaPlayerDidReachEnd];
+            NSInteger nowIndex = [number integerValue];
+            
+            if (nowIndex + 1 < items_count) {
+                [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+            } else {
+                if (_repeatMode == HysteriaPlayerRepeatModeOff) {
+                    [self pausePlayerForcibly:YES];
+                    for (id<HysteriaPlayerDelegate> delegate in delegates) {
+                        if ([delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
+                            [delegate hysteriaPlayerDidReachEnd];
+                        }
                     }
                 }
+                [self fetchAndPlayPlayerItem:0];
             }
-            [self fetchAndPlayPlayerItem:0];
         }
     }
 }

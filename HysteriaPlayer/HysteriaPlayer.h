@@ -33,6 +33,7 @@
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
+- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index;
 - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
 - (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
 - (void)hysteriaPlayerDidReachEnd;
@@ -53,7 +54,7 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
 
 typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error);
 typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
-typedef void (^ SourceAsyncGetter)(NSUInteger index);
+typedef void (^ SourceAsyncGetter)(NSUInteger index, BOOL prepare);
 typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
 
 typedef NS_ENUM(NSUInteger, HysteriaPlayerStatus) {
