@@ -756,6 +756,11 @@ static dispatch_once_t onceToken;
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
+    AVPlayerItem *item = [notification object];
+    if(![item isEqual:audioPlayer.currentItem]){
+        return;
+    }
+
     NSNumber *CHECK_Order = [self getHysteriaOrder:audioPlayer.currentItem];
     if (CHECK_Order) {
         if (_repeatMode == HysteriaPlayerRepeatModeOnce) {
