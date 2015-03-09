@@ -146,7 +146,9 @@ static dispatch_once_t onceToken;
 - (void)playEmptySound
 {
     //play .1 sec empty sound
-    NSString *filepath = [[NSBundle mainBundle]pathForResource:@"point1sec" ofType:@"mp3"];
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    
+    NSString *filepath = [bundle pathForResource:@"point1sec" ofType:@"mp3"];
     if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
         isInEmptySound = YES;
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:filepath]];
