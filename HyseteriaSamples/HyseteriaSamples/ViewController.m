@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "AFJSONRequestOperation.h"
 
+@import MediaPlayer;
+
 @interface ViewController ()
 {
     NSArray *localMedias;
@@ -68,13 +70,21 @@
                 // If you have any UI changes related to Player, should update here.
                 
                 if ( mTimeObserver == nil ) {
+                    __weak typeof(self)weakSelf = self;
                     mTimeObserver = [hysteriaPlayer addPeriodicTimeObserverForInterval:CMTimeMake(100, 1000)
                                                                                  queue:NULL // main queue
                                                                             usingBlock:^(CMTime time) {
                                                                                 float totalSecond = CMTimeGetSeconds(time);
                                                                                 int minute = (int)totalSecond / 60;
                                                                                 int second = (int)totalSecond % 60;
-                                                                                self.currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", minute, second];
+                                                                                weakSelf.currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", minute, second];
+                                                                                
+                                                                                NSMutableDictionary *nowPlayingInfo = [[MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo mutableCopy];
+                                                                                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @([HysteriaPlayer sharedInstance].getPlayingItemCurrentTime);
+                                                                                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = @([HysteriaPlayer sharedInstance].getPlayingItemDurationTime);
+                                                                                
+                                                                                [[HysteriaPlayer sharedInstance] configureNowPlayingInfo:nowPlayingInfo];
+//                                                                                [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo = nowPlayingInfo;
                                                                             }];
                 }
                 
@@ -146,6 +156,13 @@
     } ItemsCount:[localMedias count]];
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
+    
+    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"300.jpeg"]];
+    [hysteriaPlayer configureNowPlayingInfo:@{MPMediaItemPropertyArtist : @"Artist",
+                                              MPMediaItemPropertyTitle : @"Title",
+                                              MPMediaItemPropertyPlaybackDuration : @(hysteriaPlayer.getPlayingItemDurationTime),
+                                              MPNowPlayingInfoPropertyElapsedPlaybackTime : @(hysteriaPlayer.getPlayingItemCurrentTime),
+                                              MPMediaItemPropertyArtwork : artwork}];
 }
 
 

@@ -11,6 +11,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+
     // Override point for customization after application launch.
     return YES;
 }

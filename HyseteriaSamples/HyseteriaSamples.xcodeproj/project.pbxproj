@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BB913631AB637E40021829E /* 300.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 3BB913621AB637E40021829E /* 300.jpeg */; };
 		5804BD7A174B5E1A00EE13AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */; };
 		586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
 		8308CB6A18B26E6000AA0C3A /* pain_is_temporary.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */; };
@@ -47,6 +48,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3BB913621AB637E40021829E /* 300.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 300.jpeg; path = ../../../../23divide/HysteriaPlayer/HyseteriaSamples/HyseteriaSamples/300.jpeg; sourceTree = "<group>"; };
 		5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
 		586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 		83AD5EA716A5CABD00604530 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3BB913621AB637E40021829E /* 300.jpeg */,
 				83AD5ED716A5D6A400604530 /* point1sec.mp3 */,
 				8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */,
 				8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */,
@@ -257,6 +260,11 @@
 			attributes = {
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = saiday;
+				TargetAttributes = {
+					83AD5E9B16A5CABD00604530 = {
+						DevelopmentTeam = KPQQPWT2UM;
+					};
+				};
 			};
 			buildConfigurationList = 83AD5E9616A5CABC00604530 /* Build configuration list for PBXProject "HyseteriaSamples" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -288,6 +296,7 @@
 				83AD5EB716A5CABD00604530 /* Default-568h@2x.png in Resources */,
 				83AD5EBA16A5CABD00604530 /* MainStoryboard.storyboard in Resources */,
 				83AD5EC716A5CB7A00604530 /* NextButton@2x.png in Resources */,
+				3BB913631AB637E40021829E /* 300.jpeg in Resources */,
 				83AD5ECD16A5CBA800604530 /* PreviousButton@2x.png in Resources */,
 				83AD5ED816A5D6A400604530 /* point1sec.mp3 in Resources */,
 				8363FCB816AC83E4009F7EAD /* pauseButton.png in Resources */,
@@ -397,6 +406,8 @@
 		83AD5EC116A5CABD00604530 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -412,6 +423,8 @@
 		83AD5EC216A5CABD00604530 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",

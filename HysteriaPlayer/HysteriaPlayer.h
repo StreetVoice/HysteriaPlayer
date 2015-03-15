@@ -29,6 +29,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+@class MPMediaItem;
+
 // Delegate
 @protocol HysteriaPlayerDelegate <NSObject>
 
@@ -135,6 +137,8 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 - (id)addPeriodicTimeObserverForInterval:(CMTime)interval
                                    queue:(dispatch_queue_t)queue
                               usingBlock:(void (^)(CMTime time))block;
+
+- (void)configureNowPlayingInfo:(NSDictionary *)properties;
 
 /*
  * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.

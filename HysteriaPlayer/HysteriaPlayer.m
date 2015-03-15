@@ -9,6 +9,8 @@
 #import <AudioToolbox/AudioSession.h>
 #import <objc/runtime.h>
 
+@import MediaPlayer;
+
 static const void *Hysteriatag = &Hysteriatag;
 
 @interface HysteriaPlayer ()
@@ -96,6 +98,8 @@ static dispatch_once_t onceToken;
         _readyToPlay = nil;
         _sourceAsyncGetter = nil;
         _sourceSyncGetter = nil;
+
+        [self setupRemoteControl];
     }
     
     return self;
@@ -602,6 +606,52 @@ static dispatch_once_t onceToken;
 }
 
 #pragma mark -
+#pragma mark ===========  Remote Control & Now Playing  =========
+#pragma mark -
+- (void)setupRemoteControl {
+    MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+    [commandCenter.playCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent *event) {
+        [self play];
+        
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+    
+    [commandCenter.pauseCommand addTargetWithHandler:^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent *event) {
+        [self pause];
+        
+        return MPRemoteCommandHandlerStatusSuccess;
+    }];
+}
+
+- (void)configureNowPlayingInfo:(NSDictionary *)properties {
+    MPNowPlayingInfoCenter *infoCenter = [MPNowPlayingInfoCenter defaultCenter];
+    
+    NSMutableDictionary *newInfo = [NSMutableDictionary dictionary];
+    
+    [properties enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
+        if ([obj isKindOfClass:[NSString class]]) {
+            if ([key isEqualToString:MPMediaItemPropertyArtist] ||
+                [key isEqualToString:MPMediaItemPropertyTitle]) {
+                newInfo[key] = obj;
+            }
+        }
+        else if ([obj isKindOfClass:[NSNumber class]]) {
+            if ([key isEqualToString:MPMediaItemPropertyPlaybackDuration] ||
+                [key isEqualToString:MPNowPlayingInfoPropertyElapsedPlaybackTime]) {
+                newInfo[key] = obj;
+            }
+        }
+        else if ([obj isKindOfClass:[MPMediaItemArtwork class]]) {
+            if ([key isEqualToString:MPMediaItemPropertyArtwork]) {
+                newInfo[key] = obj;
+            }
+        }
+    }];
+    
+    infoCenter.nowPlayingInfo = newInfo;
+}
+
+#pragma mark -
 #pragma mark ===========  Interruption, Route changed  =========
 #pragma mark -
 
@@ -739,18 +789,18 @@ static dispatch_once_t onceToken;
                 
                 [self longTimeBufferBackground];
                 
-                CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
-                CMTime milestone = CMTimeAdd(audioPlayer.currentTime, CMTimeMakeWithSeconds(5.0f, timerange.duration.timescale));
-                
-                if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
-                    if (![self isPlaying]) {
-                        NSLog(@"resume from buffering..");
-                        PAUSE_REASON_Buffering = NO;
-                        
-                        [audioPlayer play];
-                        [self longTimeBufferBackgroundCompleted];
-                    }
-                }
+//                CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
+//                CMTime milestone = CMTimeAdd(audioPlayer.currentTime, CMTimeMakeWithSeconds(5.0f, timerange.duration.timescale));
+//                
+//                if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
+//                    if (![self isPlaying]) {
+//                        NSLog(@"resume from buffering..");
+//                        PAUSE_REASON_Buffering = NO;
+//                        
+//                        [audioPlayer play];
+//                        [self longTimeBufferBackgroundCompleted];
+//                    }
+//                }
             }
         }
     }
