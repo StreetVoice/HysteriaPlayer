@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.source_files = 'HysteriaPlayer/**/*.{h,m}'
   s.resources    = 'HysteriaPlayer/point1sec.{mp3}'
-  s.frameworks   = 'CoreMedia', 'AudioToolbox', 'AVFoundation'
+  s.frameworks   = 'CoreMedia', 'AudioToolbox', 'AVFoundation', 'MediaPlayer'
   s.requires_arc = true
 end
