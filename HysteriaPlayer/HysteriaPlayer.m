@@ -651,6 +651,10 @@ static dispatch_once_t onceToken;
     infoCenter.nowPlayingInfo = newInfo;
 }
 
+- (NSDictionary *)nowPlayingInfo {
+    return [MPNowPlayingInfoCenter defaultCenter].nowPlayingInfo ?: @{};
+}
+
 #pragma mark -
 #pragma mark ===========  Interruption, Route changed  =========
 #pragma mark -
