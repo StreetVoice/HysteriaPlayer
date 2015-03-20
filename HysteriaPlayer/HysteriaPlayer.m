@@ -605,6 +605,10 @@ static dispatch_once_t onceToken;
     return mTimeObserver;
 }
 
+- (void)removePeriodicTimeObserver:(id)observer {
+    [audioPlayer removeTimeObserver:observer];
+}
+
 #pragma mark -
 #pragma mark ===========  Remote Control & Now Playing  =========
 #pragma mark -
