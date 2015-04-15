@@ -26,19 +26,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
+#import <AvailabilityMacros.h>
 #import <AVFoundation/AVFoundation.h>
-
-// Delegate
-@protocol HysteriaPlayerDelegate <NSObject>
-
-@optional
-- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
-- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
-- (void)hysteriaPlayerDidReachEnd;
-- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
-
-@end
 
 typedef NS_ENUM(NSUInteger, HysteriaPlayerReadyToPlay) {
     HysteriaPlayerReadyToPlayPlayer = 3000,
@@ -48,13 +37,44 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerReadyToPlay) {
 typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
     HysteriaPlayerFailedPlayer = 4000,
     HysteriaPlayerFailedCurrentItem = 4001,
-    
 };
 
-typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error);
-typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier);
-typedef void (^ SourceAsyncGetter)(NSUInteger index);
-typedef NSURL * (^ SourceSyncGetter)(NSUInteger index);
+// Delegate
+@protocol HysteriaPlayerDelegate <NSObject>
+
+@optional
+- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
+- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
+- (void)hysteriaPlayerDidReachEnd;
+- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
+- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
+- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier;
+
+@end
+
+@protocol HysteriaPlayerDataSource <NSObject>
+
+@optional
+- (NSUInteger)hysteriaPlayerNumberOfItems;
+/*!
+ Recommend you use this method to handle your source getter, setupSourceAsyncGetter:ItemsCount: is for advanced usage.
+ hysteriaPlayerURLForItemAtIndex:(NSUInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index provides for the use of alternatives.
+ @method HysteriaPlayerURLForItemAtIndex:(NSUInteger)index
+ */
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index;
+/*!
+ If you are using asynchronously handle your items use this method to tell HysteriaPlayer which URL you would use for index, will excute until you call setupPlayerItemWithUrl:index:
+ hysteriaPlayerURLForItemAtIndex:(NSUInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index provides for the use of alternatives.
+ @method HysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
+ */
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index;
+
+@end
+
+typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
+typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
+typedef void (^ SourceAsyncGetter)(NSUInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
+typedef NSURL * (^ SourceSyncGetter)(NSUInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
 
 typedef NS_ENUM(NSUInteger, HysteriaPlayerStatus) {
     HysteriaPlayerStatusPlaying = 0,
@@ -76,38 +96,36 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
-@property (nonatomic, strong, readonly) NSMutableArray *playerItems;
+@property (nonatomic) id<HysteriaPlayerDelegate> delegate;
+@property (nonatomic) id<HysteriaPlayerDataSource> datasource;
+@property (nonatomic) NSUInteger itemsCount;
+@property (nonatomic, strong, readonly) NSArray *playerItems;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 @property (nonatomic) BOOL showErrorMessages;
 
 + (HysteriaPlayer *)sharedInstance;
 
-- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay;
-- (void)registerHandlerFailed:(Failed)failed;
+- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDelegate instead");
+- (void)registerHandlerFailed:(Failed)failed DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDelegate instead");
 
 
-/*!
- Recommend you use this method to handle your source getter, setupSourceAsyncGetter:ItemsCount: is for advanced usage.
- @method setupSourceGetter:ItemsCount:
- */
-- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count;
-/*!
- If you are using Async block handle your item, make sure you call setupPlayerItemWithUrl:Order: at last
- @method asyncSetupSourceGetter:ItemsCount
- */
-- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count;
-- (void)setItemsCount:(NSUInteger)count;
+- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
+- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
+- (void)setItemsCount:(NSUInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
 
 /*!
  This method is necessary if you setting up AsyncGetter.
  After you your AVPlayerItem initialized should call this method on your asyncBlock.
  Should not call this method directly if you using setupSourceGetter:ItemsCount.
- @method setupPlayerItemWithUrl:Order:
+ @method setupPlayerItemWithUrl:index:
  */
-- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index;
+- (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSUInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSUInteger )startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
+/*!
+ Be sure you update hysteriaPlayerNumberOfItems or itemsCount when you remove items
+ */
 - (void)removeItemAtIndex:(NSUInteger)index;
 - (void)moveItemFromIndex:(NSUInteger)from toIndex:(NSUInteger)to;
 - (void)play;
@@ -127,8 +145,8 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus;
 
-- (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate;
-- (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate;
+- (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("set delegate property instead");
+- (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("Use delegate property instead");;
 
 - (float)getPlayingItemCurrentTime;
 - (float)getPlayingItemDurationTime;
@@ -144,9 +162,9 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 - (BOOL)isMemoryCached;
 
 /*
- * Indicating Playeritem's play order
+ * Indicating Playeritem's play index
  */
-- (NSNumber *)getHysteriaOrder:(AVPlayerItem *)item;
+- (NSNumber *)getHysteriaIndex:(AVPlayerItem *)item;
 
 - (void)deprecatePlayer;
 

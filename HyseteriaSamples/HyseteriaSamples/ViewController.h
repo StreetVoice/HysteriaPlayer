@@ -10,9 +10,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import "HysteriaPlayer.h"
 
-@interface ViewController : UIViewController <AVAudioSessionDelegate, HysteriaPlayerDelegate>
-{
-}
+typedef NS_ENUM(NSUInteger, PlayingType) {
+    PlayingTypeStaticItems,
+    PlayingTypeSync,
+    PlayingTypeAsync,
+};
+
+@interface ViewController : UIViewController <AVAudioSessionDelegate, HysteriaPlayerDelegate, HysteriaPlayerDataSource>
 
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
 

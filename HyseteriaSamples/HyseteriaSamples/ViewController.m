@@ -12,13 +12,16 @@
 @interface ViewController ()
 {
     NSArray *localMedias;
-    
     UIBarButtonItem *mRefresh;
     
     id mTimeObserver;
     
     __block NSMutableArray *itunesPreviewUrls;
 }
+
+@property (nonatomic) NSUInteger itemsCount;
+@property (nonatomic) PlayingType playingType;
+
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *playButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *pauseButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *nextButton;
@@ -32,8 +35,9 @@
 - (IBAction)playNext:(id)sender;
 - (IBAction)playPreviouse:(id)sender;
 - (IBAction)playStaticArray:(id)sender;
-- (IBAction)playJackJohnsonFromItunes:(id)sender;
-- (IBAction)playU2FromItunes:(id)sender;
+- (IBAction)playAsynchronouslyFromItunes:(id)sender;
+- (IBAction)playSyncFromItunes:(id)sender;
+
 @end
 
 @implementation ViewController
@@ -54,59 +58,57 @@
                 nil];
     
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    [hysteriaPlayer addDelegate:self];
-    
-    /*
-     Register Handlers of HysteriaPlayer
-     All Handlers are optional
-     */
-    [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
-        switch (identifier) {
-            case HysteriaPlayerReadyToPlayPlayer:
-                // It will be called when Player is ready to play at the first time.
-                
-                // If you have any UI changes related to Player, should update here.
-                
-                if ( mTimeObserver == nil ) {
-                    mTimeObserver = [hysteriaPlayer addPeriodicTimeObserverForInterval:CMTimeMake(100, 1000)
-                                                                                 queue:NULL // main queue
-                                                                            usingBlock:^(CMTime time) {
-                                                                                float totalSecond = CMTimeGetSeconds(time);
-                                                                                int minute = (int)totalSecond / 60;
-                                                                                int second = (int)totalSecond % 60;
-                                                                                self.currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", minute, second];
-                                                                            }];
-                }
-                
-                
-                break;
+    hysteriaPlayer.delegate = self;
+    hysteriaPlayer.datasource = self;
+}
+
+#pragma mark - HysteriaPlayerDelegate
+
+- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error
+{
+    switch (identifier) {
+        case HysteriaPlayerFailedPlayer:
+            break;
             
-            case HysteriaPlayerReadyToPlayCurrentItem:
-                // It will be called when current PlayerItem is ready to play.
-                
-                // HysteriaPlayer will automatic play it, if you don't like this behavior,
-                // You can pausePlayerForcibly:YES to stop it.
-                break;
-            default:
-                break;
-        }
-    }];
-    
-    [hysteriaPlayer registerHandlerFailed:^(HysteriaPlayerFailed identifier, NSError *error) {
-        switch (identifier) {
-            case HysteriaPlayerFailedPlayer:
-                break;
-                
-            case HysteriaPlayerFailedCurrentItem:
-                // Current Item failed, advanced to next.
-                [hysteriaPlayer playNext];
-                break;
-            default:
-                break;
-        }
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-    
+        case HysteriaPlayerFailedCurrentItem:
+            // Current Item failed, advanced to next.
+            [[HysteriaPlayer sharedInstance] playNext];
+            break;
+        default:
+            break;
+    }
+    NSLog(@"%@", [error localizedDescription]);
+}
+
+- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier
+{
+    switch (identifier) {
+        case HysteriaPlayerReadyToPlayPlayer:
+            // It will be called when Player is ready to play at the first time.
+            
+            // If you have any UI changes related to Player, should update here.
+            
+            if ( mTimeObserver == nil ) {
+                mTimeObserver = [[HysteriaPlayer sharedInstance] addPeriodicTimeObserverForInterval:CMTimeMake(100, 1000)
+                                                                             queue:NULL // main queue
+                                                                        usingBlock:^(CMTime time) {
+                                                                            float totalSecond = CMTimeGetSeconds(time);
+                                                                            int minute = (int)totalSecond / 60;
+                                                                            int second = (int)totalSecond % 60;
+                                                                            self.currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", minute, second];
+                                                                        }];
+            }
+            break;
+            
+        case HysteriaPlayerReadyToPlayCurrentItem:
+            // It will be called when current PlayerItem is ready to play.
+            
+            // HysteriaPlayer will automatic play it, if you don't like this behavior,
+            // You can pausePlayerForcibly:YES to stop it.
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item
@@ -135,15 +137,66 @@
     NSLog(@"player rate changed");
 }
 
+#pragma mark - HysteriaPlayerDataSource
+
+- (NSUInteger)hysteriaPlayerNumberOfItems
+{
+    return self.itemsCount;
+}
+
+
+/*!
+ Adopt one of
+ hysteriaPlayerURLForItemAtIndex:(NSUInteger)index
+ or
+ hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
+ which meets your requirements.
+ */
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index
+{
+    switch (self.playingType) {
+        case PlayingTypeStaticItems:
+            return [[NSURL alloc] initFileURLWithPath:[localMedias objectAtIndex:index]];
+        case PlayingTypeSync:
+            return [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
+            
+        default:
+            return nil; // 
+    }
+}
+
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
+{
+    if (self.playingType == PlayingTypeAsync) {
+        NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long) self.itemsCount];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        itunesPreviewUrls = [NSMutableArray array];
+        AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
+            NSArray *JSONArray = [JSON objectForKey:@"results"];
+            for (NSDictionary *obj in JSONArray) {
+                if ([obj objectForKey:@"previewUrl"] != nil) {
+                    [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
+                }
+            }
+            
+            // using async source getter, should call this method after you get the source.
+            NSURL *url = [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
+            [[HysteriaPlayer sharedInstance] setupPlayerItemWithUrl:url index:index];
+        }failure:nil];
+        
+        [operation start];
+    }
+}
+
+#pragma mark - Local files
+
 - (IBAction)playStaticArray:(id)sender
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
     [hysteriaPlayer removeAllItems];
-    
-    [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
-        return [[NSURL alloc] initFileURLWithPath:[localMedias objectAtIndex:index]];
-    } ItemsCount:[localMedias count]];
+    self.itemsCount = [localMedias count];
+    self.playingType = PlayingTypeStaticItems;
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
 }
@@ -151,7 +204,7 @@
 
 #pragma mark - Normal usage example, recommended.
 
-- (IBAction)playU2FromItunes:(id)sender
+- (IBAction)playSyncFromItunes:(id)sender
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
@@ -169,10 +222,8 @@
             }
         }
         
-        [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
-            return [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
-        } ItemsCount:[itunesPreviewUrls count]];
-        
+        self.playingType = PlayingTypeSync;
+        self.itemsCount = [itunesPreviewUrls count];
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
         [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerRepeatModeOn];
     }failure:nil];
@@ -180,7 +231,7 @@
     [operation start];
 }
 
-#pragma mark - Async source getter example, advanced usage.
+#pragma mark - Async source example, advanced usage.
 /*
  You need to know counts of items that you playing.
  
@@ -190,37 +241,13 @@
  This example shows how to use asyncSetupSourceGetter:ItemsCount:, 
  but in this situation that we had media links already, highly recommend you use setupSourceGetter:ItemsCount: instead.
  */
-
-- (IBAction)playJackJohnsonFromItunes:(id)sender
+- (IBAction)playAsynchronouslyFromItunes:(id)sender
 {
-    NSUInteger limit = 5;
-    
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
     [hysteriaPlayer removeAllItems];
-    NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long)limit];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    itunesPreviewUrls = [NSMutableArray array];
-    
-    
-    
-    [hysteriaPlayer asyncSetupSourceGetter:^(NSUInteger index) {
-        AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON){
-            NSArray *JSONArray = [JSON objectForKey:@"results"];
-            for (NSDictionary *obj in JSONArray) {
-                if ([obj objectForKey:@"previewUrl"] != nil) {
-                    [itunesPreviewUrls addObject:[obj objectForKey:@"previewUrl"]];
-                }
-            }
-
-            // using async source getter, should call this method after you get the source.
-            NSURL *url = [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
-            [hysteriaPlayer setupPlayerItemWithUrl:url Order:index];
-        }failure:nil];
-        
-        [operation start];
-    } ItemsCount:limit];
+   
+    self.playingType = PlayingTypeAsync;
+    self.itemsCount = 5;
     
     [hysteriaPlayer fetchAndPlayPlayerItem:0];
     [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerRepeatModeOff];
