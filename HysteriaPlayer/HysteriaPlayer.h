@@ -43,6 +43,7 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
+- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index;
 - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
 - (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
 - (void)hysteriaPlayerDidReachEnd;
@@ -61,13 +62,13 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerFailed) {
  hysteriaPlayerURLForItemAtIndex:(NSUInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index provides for the use of alternatives.
  @method HysteriaPlayerURLForItemAtIndex:(NSUInteger)index
  */
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index;
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer;
 /*!
  If you are using asynchronously handle your items use this method to tell HysteriaPlayer which URL you would use for index, will excute until you call setupPlayerItemWithUrl:index:
  hysteriaPlayerURLForItemAtIndex:(NSUInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index provides for the use of alternatives.
  @method HysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
  */
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index;
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer;
 
 @end
 

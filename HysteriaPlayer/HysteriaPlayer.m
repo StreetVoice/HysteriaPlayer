@@ -31,6 +31,7 @@ static const void *Hysteriatag = &Hysteriatag;
 
 @property (nonatomic, strong, readwrite) NSArray *playerItems;
 @property (nonatomic, readwrite) BOOL isInEmptySound;
+@property (nonatomic) NSUInteger lastItemIndex;
 
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic) HysteriaPlayerRepeatMode repeatMode;
@@ -213,20 +214,23 @@ static dispatch_once_t onceToken;
 
 - (void) fetchAndPlayPlayerItem: (NSUInteger )startAt
 {
-    if (!tookAudioFocus)
+    if (!tookAudioFocus) {
         [self preAction];
-    
+    }
+    self.lastItemIndex = startAt;
     BOOL findInPlayerItems = NO;
-    
     [self.playedItems addObject:@(startAt)];
     
     [self.audioPlayer pause];
     [self.audioPlayer removeAllItems];
     
-    findInPlayerItems = [self findSourceInPlayerItems:startAt];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerWillChangedAtIndex:)]) {
+        [self.delegate hysteriaPlayerWillChangedAtIndex:self.lastItemIndex];
+    }
     
+    findInPlayerItems = [self findSourceInPlayerItems:startAt];
     if (!findInPlayerItems) {
-        [self getSourceURLAtIndex:startAt];
+        [self getSourceURLAtIndex:startAt preBuffer:NO];
     } else if (self.audioPlayer.currentItem.status == AVPlayerStatusReadyToPlay) {
         [self.audioPlayer play];
     }
@@ -240,26 +244,20 @@ static dispatch_once_t onceToken;
     return self.itemsCount;
 }
 
-- (void)getSourceURLAtIndex:(NSUInteger)index
+- (void)getSourceURLAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
 {
-    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:)],
-             @"You don't provide URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:(NSUInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index provides for the use of alternatives.");
-    if ([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:)] && [self.datasource hysteriaPlayerURLForItemAtIndex:index]) {
-        [self getAndInsertMediaSource:index];
-    } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:)]) {
-        [self.datasource hysteriaPlayerAsyncSetUrlForItemAtIndex:index];
+    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)], @"You don't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
+    NSAssert([self hysteriaPlayerItemsCount] > index, ([NSString stringWithFormat:@"You are about to access index: %li URL when your HysteriaPlayer items count value is %li, please check hysteriaPlayerNumberOfItems or set itemsCount directly.", index, [self hysteriaPlayerItemsCount]]));
+    if ([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] && [self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer]) {
+        dispatch_async(HBGQueue, ^{
+            [self setupPlayerItemWithUrl:[self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer] index:index];
+        });
+    } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)]) {
+        [self.datasource hysteriaPlayerAsyncSetUrlForItemAtIndex:index preBuffer:preBuffer];
     } else {
         NSException *exception = [[NSException alloc] initWithName:@"HysteriaPlayer Error" reason:[NSString stringWithFormat:@"Cannot find item URL at index %li", index] userInfo:nil];
         @throw exception;
     }
-}
-
-- (void)getAndInsertMediaSource:(NSUInteger)index
-{
-    dispatch_async(HBGQueue, ^{
-        NSAssert([self hysteriaPlayerItemsCount], @"Your HysteriaPlayer items count is 0, please check hysteriaPlayerNumberOfItems or set itemsCount directly.");
-        [self setupPlayerItemWithUrl:[self.datasource hysteriaPlayerURLForItemAtIndex:index] index:index];
-    });
 }
 
 - (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSUInteger)index
@@ -308,13 +306,13 @@ static dispatch_once_t onceToken;
             findInPlayerItems = [self findSourceInPlayerItems:nowIndex + 1];
             
             if (!findInPlayerItems) {
-                [self getSourceURLAtIndex:nowIndex + 1];
+                [self getSourceURLAtIndex:nowIndex + 1 preBuffer:YES];
             }
         }else if (itemsCount > 1){
             if (_repeatMode == HysteriaPlayerRepeatModeOn) {
                 findInPlayerItems = [self findSourceInPlayerItems:0];
                 if (!findInPlayerItems) {
-                    [self getSourceURLAtIndex:0];
+                    [self getSourceURLAtIndex:0 preBuffer:YES];
                 }
             }
         }
@@ -419,7 +417,7 @@ static dispatch_once_t onceToken;
     if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
         NSInteger nextIndex = [self randomIndex];
         if (nextIndex != NSNotFound) {
-            [self fetchAndPlayPlayerItem:[self randomIndex]];
+            [self fetchAndPlayPlayerItem:nextIndex];
         } else {
             [self pausePlayerForcibly:YES];
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
@@ -427,7 +425,8 @@ static dispatch_once_t onceToken;
             }
         }
     } else {
-        NSInteger nowIndex = [[self getHysteriaIndex:self.audioPlayer.currentItem] integerValue];
+        NSNumber *nowIndexNumber = [self getHysteriaIndex:self.audioPlayer.currentItem];
+        NSUInteger nowIndex = nowIndexNumber ? [nowIndexNumber integerValue] : self.lastItemIndex;
         if (nowIndex + 1 < [self hysteriaPlayerItemsCount]) {
             [self fetchAndPlayPlayerItem:(nowIndex + 1)];
         } else {

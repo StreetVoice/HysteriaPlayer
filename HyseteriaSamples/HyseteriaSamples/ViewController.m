@@ -137,6 +137,11 @@
     NSLog(@"player rate changed");
 }
 
+- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index
+{
+    NSLog(@"index: %li is about to play", index);
+}
+
 #pragma mark - HysteriaPlayerDataSource
 
 - (NSUInteger)hysteriaPlayerNumberOfItems
@@ -152,7 +157,7 @@
  hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
  which meets your requirements.
  */
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
 {
     switch (self.playingType) {
         case PlayingTypeStaticItems:
@@ -165,7 +170,7 @@
     }
 }
 
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
 {
     if (self.playingType == PlayingTypeAsync) {
         NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long) self.itemsCount];
