@@ -1,5 +1,32 @@
-Current Version:
-* Version 2.0
+`Current Version`
+Version 2.1
+1. deprecate methods:
+```
+- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSUInteger) count;
+- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSUInteger)count;
+- (void)setItemsCount:(NSUInteger)count;
+- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay;
+- (void)registerHandlerFailed:(Failed)failed;
+```
+
+2. Rename `Order` to `Index`
+from
+`- (void)setupPlayerItemWithUrl:(NSURL *)url Order:(NSUInteger)index;`
+to
+`- (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSUInteger)index;
+`
+
+3. deprecate add, remove delegates method
+```
+- (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate;
+- (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate;
+```
+
+4. rename `showErrorMessages` to `popAlertWhenError`
+
+5. add `- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index;` in `HysteriaPlayerDelegate`
+
+Version 2.0
 * Deprecated UI related callback blocks, using delegate pattern instead.
 * Deprecated getPlayerTime method, added getPlayingItemCurrentTime and getPlayingItemDurationTime instead.
 * enums conform to the standard.(HysteriaPlayer prefix)
