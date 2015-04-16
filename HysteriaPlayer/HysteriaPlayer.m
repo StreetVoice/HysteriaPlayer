@@ -130,18 +130,24 @@ static dispatch_once_t onceToken;
                 NSError *aError = nil;
                 [audioSession setCategory:AVAudioSessionCategoryPlayback error:&aError];
                 if (aError) {
-                    NSLog(@"set category error:%@",[aError description]);
+                    if (!self.disableLogs) {
+                        NSLog(@"set category error:%@",[aError description]);
+                    }
                 }
                 aError = nil;
                 [audioSession setActive:YES error:&aError];
                 if (aError) {
-                    NSLog(@"set active error:%@",[aError description]);
+                    if (!self.disableLogs) {
+                        NSLog(@"set active error:%@",[aError description]);
+                    }
                 }
                 //audioSession.delegate = self;
             }
         }
     }else {
-        NSLog(@"unable to register background playback");
+        if (!self.disableLogs) {
+            NSLog(@"unable to register background playback");
+        }
     }
     
     [self longTimeBufferBackground];
@@ -586,7 +592,9 @@ static dispatch_once_t onceToken;
         [self pausePlayerForcibly:NO];
         [self play];
     }
-    NSLog(@"HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
+    if (!self.disableLogs) {
+        NSLog(@"HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
+    }
 }
 
 - (void)routeChange:(NSNotification *)notification
@@ -602,7 +610,9 @@ static dispatch_once_t onceToken;
         [self pausePlayerForcibly:NO];
         [self play];
     }
-    NSLog(@"HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
+    if (!self.disableLogs) {
+        NSLog(@"HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
+    }
 }
 
 #pragma mark -
@@ -620,7 +630,9 @@ static dispatch_once_t onceToken;
                 [self.audioPlayer play];
             }
         } else if (self.audioPlayer.status == AVPlayerStatusFailed) {
-            NSLog(@"%@", self.audioPlayer.error);
+            if (!self.disableLogs) {
+                NSLog(@"%@", self.audioPlayer.error);
+            }
             
             if (self.showErrorMessages) {
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.error];
@@ -708,7 +720,9 @@ static dispatch_once_t onceToken;
                 
                 if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
-                        NSLog(@"resume from buffering..");
+                        if (!self.disableLogs) {
+                            NSLog(@"resume from buffering..");
+                        }
                         pauseReasonBuffering = NO;
                         
                         [self.audioPlayer play];
