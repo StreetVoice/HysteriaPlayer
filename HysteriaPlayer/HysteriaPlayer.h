@@ -100,6 +100,7 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 @property (nonatomic) id<HysteriaPlayerDelegate> delegate;
 @property (nonatomic) id<HysteriaPlayerDataSource> datasource;
 @property (nonatomic) NSUInteger itemsCount;
+@property (nonatomic) BOOL gapless;
 @property (nonatomic, strong, readonly) NSArray *playerItems;
 @property (nonatomic, readonly) BOOL isInEmptySound;
 @property (nonatomic) BOOL showErrorMessages;

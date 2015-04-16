@@ -1,3 +1,4 @@
 *.xcuserstat
 *.xcuserstate
+xcuserdata
 .DS_Store

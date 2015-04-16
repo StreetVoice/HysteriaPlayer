@@ -212,22 +212,25 @@ static dispatch_once_t onceToken;
 #pragma mark ===========  Player Methods  =========
 #pragma mark -
 
-- (void) fetchAndPlayPlayerItem: (NSUInteger )startAt
+- (void)willPlayPlayerItemAtIndex:(NSUInteger)index
 {
     if (!tookAudioFocus) {
         [self preAction];
     }
-    self.lastItemIndex = startAt;
-    BOOL findInPlayerItems = NO;
-    [self.playedItems addObject:@(startAt)];
-    
-    [self.audioPlayer pause];
-    [self.audioPlayer removeAllItems];
-    
+    self.lastItemIndex = index;
+    [self.playedItems addObject:@(index)];
+
     if ([self.delegate respondsToSelector:@selector(hysteriaPlayerWillChangedAtIndex:)]) {
         [self.delegate hysteriaPlayerWillChangedAtIndex:self.lastItemIndex];
     }
-    
+}
+
+- (void)fetchAndPlayPlayerItem:(NSUInteger)startAt
+{
+    [self willPlayPlayerItemAtIndex:startAt];
+    [self.audioPlayer pause];
+    [self.audioPlayer removeAllItems];
+    BOOL findInPlayerItems = NO;
     findInPlayerItems = [self findSourceInPlayerItems:startAt];
     if (!findInPlayerItems) {
         [self getSourceURLAtIndex:startAt preBuffer:NO];
@@ -290,15 +293,15 @@ static dispatch_once_t onceToken;
     return NO;
 }
 
-- (void) prepareNextPlayerItem
+- (void)prepareNextPlayerItem
 {
     // check before added, prevent add the same songItem
-    NSNumber *CHECK_Order = [self getHysteriaIndex:self.audioPlayer.currentItem];
-    NSUInteger nowIndex = [CHECK_Order integerValue];
+    NSNumber *currentIndexNumber = [self getHysteriaIndex:self.audioPlayer.currentItem];
+    NSUInteger nowIndex = [currentIndexNumber integerValue];
     BOOL findInPlayerItems = NO;
     NSUInteger itemsCount = [self hysteriaPlayerItemsCount];
     
-    if (CHECK_Order) {
+    if (currentIndexNumber) {
         if (_shuffleMode == HysteriaPlayerShuffleModeOn || _repeatMode == HysteriaPlayerRepeatModeOnce) {
             return;
         }
@@ -307,13 +310,6 @@ static dispatch_once_t onceToken;
             
             if (!findInPlayerItems) {
                 [self getSourceURLAtIndex:nowIndex + 1 preBuffer:YES];
-            }
-        }else if (itemsCount > 1){
-            if (_repeatMode == HysteriaPlayerRepeatModeOn) {
-                findInPlayerItems = [self findSourceInPlayerItems:0];
-                if (!findInPlayerItems) {
-                    [self getSourceURLAtIndex:0 preBuffer:YES];
-                }
             }
         }
     }
@@ -428,7 +424,12 @@ static dispatch_once_t onceToken;
         NSNumber *nowIndexNumber = [self getHysteriaIndex:self.audioPlayer.currentItem];
         NSUInteger nowIndex = nowIndexNumber ? [nowIndexNumber integerValue] : self.lastItemIndex;
         if (nowIndex + 1 < [self hysteriaPlayerItemsCount]) {
-            [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+            if (self.audioPlayer.items.count > 1) {
+                [self willPlayPlayerItemAtIndex:nowIndex + 1];
+                [self.audioPlayer advanceToNextItem];
+            } else {
+                [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+            }
         } else {
             if (_repeatMode == HysteriaPlayerRepeatModeOff) {
                 [self pausePlayerForcibly:YES];
