@@ -73,26 +73,41 @@ XCode providing GUI checkbox to enable various background modes. Enable **Audio 
 How to use
 ---------------
 
-#### Delegate ####
+#### Delegate, DataSource ####
 
-In the header files of `UIViewController` or `UIView` subclass that you have to update UI when player status changed, declare that it implements the `HysteriaPlayerDelegate` protocol.
+Implement `HysteriaPlayerDelegate` and `HysteriaPlayerDataSource` in your own playback configurator model. (It can be an `UIViewController` subclass as well but make it a standalone model makes more sense.)
 
 ```objective-c
 #import "HysteriaPlayer.h"
 
-@interface ViewController : UIViewController <HysteriaPlayerDelegate>
+@interface ViewController : UIViewController <HysteriaPlayerDelegate, HysteriaPlayerDataSource>
 ```
 
-There are 4 optional delegates:
-- - (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
-- - (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
-- - (void)hysteriaPlayerDidReachEnd;
-- - (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
+There are 4 optional delegates in `HysteriaPlayerDelegate`:
+```objective-c
+@optional
+- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index;
+- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
+- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
+- (void)hysteriaPlayerDidReachEnd;
+- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
+- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
+- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier;
+```
+
+3 optional delegates in `HysteriaPlayerDataSource`:
+```objective-c
+@optional
+- (NSUInteger)hysteriaPlayerNumberOfItems;
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer;
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer;
+```
+
+If you don't implement `hysteriaPlayerNumberOfItems` delegate method, you have to set `itemsCount` property to HysteriaPlayer.
+
+And you must implement one of `hysteriaPlayerURLForItemAtIndex:preBuffer` or `hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer` delegate method.
 
 #### Setup ####
-
-Adding delegates by `- (void)addDelegate:` and removing it by `- (void)removeDelegate:`.  
-Setting up those optional event callback blocks.
 
 ```objective-c
 ...
@@ -100,93 +115,19 @@ Setting up those optional event callback blocks.
 - (void)setupHyseteriaPlayer
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    [hysteriaPlayer addDelegate:self];
-    
-    /*
-     Register Handlers of HysteriaPlayer
-     All Handlers are optional
-     */
-    [hysteriaPlayer registerHandlerReadyToPlay:^(HysteriaPlayerReadyToPlay identifier) {
-        switch (identifier) {
-            case HysteriaPlayerReadyToPlayPlayer:
-                // It will be called when Player is ready to play at the first time.
-                
-                // If you have any UI changes related to Player, should update here.
-                break;
-            
-            case HysteriaPlayerReadyToPlayCurrentItem:
-                // It will be called when current PlayerItem is ready to play.
-                
-                // HysteriaPlayer will automatic play it, if you don't like this behavior,
-                // You can pausePlayerForcibly:YES to stop it.
-                break;
-            default:
-                break;
-        }
-    }];
-    
-    [hysteriaPlayer registerHandlerFailed:^(HysteriaPlayerFailed identifier, NSError *error) {
-        switch (identifier) {
-            case HysteriaPlayerFailedPlayer:
-                break;
-                
-            case HysteriaPlayerFailedCurrentItem:
-                // Current Item failed, advanced to next.
-                [hysteriaPlayer playNext];
-                break;
-            default:
-                break;
-        }
-        NSLog(@"%@", [error localizedDescription]);
-    }];
+    hysteriaPlayer.delegate = self;
+    hysteriaPlayer.datasource = self;
 }
-```
 
-#### Source Getter ####
+- (NSUInteger)hysteriaPlayerNumberOfItems
+{
+    return self.itemsCount;
+}
 
-Before you starting play anything, you have to set up your data source for HysteriaPlayer.
-When Player gonna use (instantly play or pre-buffer) items, the source getter block will telling which index of your playing list is needed.
-
-There are two methods to set up Source Getter.
-
-1. __setupSourceGetter:ItemsCount:__
-2. __asyncSetupSourceGetter:ItemsCount:__
-
-__ItemsCount__ tells HysteriaPlayer the counts of your data source, you have to update it using `setItemsCount:(NSUInteger)count` if your datasource's count is changed.
-
-**1. setupSourceGetter:ItemsCount:**  
-The simplest way.  
-When player ask for an index that it would liked to use, return your source link as NSURL type inside the index given block.
-
-example:
-
-```objective-c
-    [hysteriaPlayer setupSourceGetter:^NSURL *(NSUInteger index) {
-        return [urlArray objectAtIndex:index];
-    } ItemsCount:[mp3Array count]];
-```
-
-**2. asyncSetupSourceGetter:ItemsCount:**  
-For advanced usage, if you could use `setupSourceGetter:ItemsCount:` as well then no needs to use this method.
-
-If you have to access your media link when player actually gonna play that item. 
-You probability take that media link by an asynchronous connection and HysteriaPlayer also needs an asynchronous block to transform the media link your provided to AVPlayerItem. There are no ways you can return values from an async block to another.
-
-So, you have to call `setupPlayerItem:Order:` by yourself when your async connection that getting media link is completion. And the Order parameter is what player asked for.
-
-example:
-```objective-c
-NSUInteger count = [listItems count];
-[hysteriaPlayer asyncSetupSourceGetter:^(NSUInteger index) {
-    asyncOperation^{
-        ..
-        operation
-        ..
-        NSString *mediaLink = source;
-        NSURL *url = [NSURL URLWithString:mediaLink];
-        [hysteriaPlayer setupPlayerItem:url Order:index];
-    }
-} ItemsCount:count];
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
+{
+    return [[NSURL alloc] initFileURLWithPath:[localMedias objectAtIndex:index]];
+}
 ```
 
 Snippets
