@@ -634,7 +634,7 @@ static dispatch_once_t onceToken;
                 NSLog(@"%@", self.audioPlayer.error);
             }
             
-            if (self.showErrorMessages) {
+            if (self.popAlertWhenError) {
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.error];
             }
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
@@ -675,7 +675,7 @@ static dispatch_once_t onceToken;
     if (object == self.audioPlayer.currentItem && [keyPath isEqualToString:@"status"]) {
         isPreBuffered = NO;
         if (self.audioPlayer.currentItem.status == AVPlayerItemStatusFailed) {
-            if (self.showErrorMessages) {
+            if (self.popAlertWhenError) {
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.currentItem.error];
             }
             
