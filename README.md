@@ -5,7 +5,6 @@ Hysteria Player
 HysteriaPlayer provides useful basic player functionalities.
 
 It provides:
-
 - PlayerItem cache management.
 - Pre-buffer next PlayerItem. 
 
