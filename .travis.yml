@@ -1,0 +1,9 @@
+language: objective-c
+before_install:
+    - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+    - gem install slather --no-rdoc --no-ri --no-document --quiet
+    - cd HysteriaPlayerTests && pod install
+script:
+    - xctool test -project HysteriaPlayerTests.xcodeproj -scheme HysteriaPlayerTests -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6' GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+after_success:
+    - cd $TRAVIS_BUILD_DIR && slather
