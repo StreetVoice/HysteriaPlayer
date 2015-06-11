@@ -567,6 +567,12 @@ static dispatch_once_t onceToken;
         return duration;
 }
 
+- (id)addBoundaryTimeObserverForTimes:(NSArray *)times queue:(dispatch_queue_t)queue usingBlock:(void (^)(void))block
+{
+    id boundaryObserver = [self.audioPlayer addBoundaryTimeObserverForTimes:times queue:queue usingBlock:block];
+    return boundaryObserver;
+}
+
 - (id)addPeriodicTimeObserverForInterval:(CMTime)interval
                                    queue:(dispatch_queue_t)queue
                               usingBlock:(void (^)(CMTime time))block
@@ -575,7 +581,7 @@ static dispatch_once_t onceToken;
     return mTimeObserver;
 }
 
-- (void)removePeriodicTimeObserver:(id)observer
+- (void)removeTimeObserver:(id)observer
 {
     [self.audioPlayer removeTimeObserver:observer];
 }

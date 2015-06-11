@@ -97,8 +97,8 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
-@property (nonatomic) id<HysteriaPlayerDelegate> delegate;
-@property (nonatomic) id<HysteriaPlayerDataSource> datasource;
+@property (nonatomic, weak) id<HysteriaPlayerDelegate> delegate;
+@property (nonatomic, weak) id<HysteriaPlayerDataSource> datasource;
 @property (nonatomic) NSUInteger itemsCount;
 @property (nonatomic) BOOL disableLogs;
 @property (nonatomic, strong, readonly) NSArray *playerItems;
@@ -152,10 +152,9 @@ typedef NS_ENUM(NSUInteger, HysteriaPlayerShuffleMode) {
 
 - (float)getPlayingItemCurrentTime;
 - (float)getPlayingItemDurationTime;
-- (id)addPeriodicTimeObserverForInterval:(CMTime)interval
-                                   queue:(dispatch_queue_t)queue
-                              usingBlock:(void (^)(CMTime time))block;
-- (void)removePeriodicTimeObserver:(id)observer;
+- (id)addBoundaryTimeObserverForTimes:(NSArray *)times queue:(dispatch_queue_t)queue usingBlock:(void (^)(void))block;
+- (id)addPeriodicTimeObserverForInterval:(CMTime)interval queue:(dispatch_queue_t)queue usingBlock:(void (^)(CMTime time))block;
+- (void)removeTimeObserver:(id)observer;
 
 /*
  * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
