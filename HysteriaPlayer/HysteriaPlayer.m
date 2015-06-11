@@ -257,7 +257,7 @@ static dispatch_once_t onceToken;
 - (void)getSourceURLAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
 {
     NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)], @"You don't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
-    NSAssert([self hysteriaPlayerItemsCount] > index, ([NSString stringWithFormat:@"You are about to access index: %li URL when your HysteriaPlayer items count value is %li, please check hysteriaPlayerNumberOfItems or set itemsCount directly.", index, [self hysteriaPlayerItemsCount]]));
+    NSAssert([self hysteriaPlayerItemsCount] > index, ([NSString stringWithFormat:@"You are about to access index: %li URL when your HysteriaPlayer items count value is %li, please check hysteriaPlayerNumberOfItems or set itemsCount directly.", (unsigned long)index, (unsigned long)[self hysteriaPlayerItemsCount]]));
     if ([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] && [self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer]) {
         dispatch_async(HBGQueue, ^{
             [self setupPlayerItemWithUrl:[self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer] index:index];
@@ -278,9 +278,11 @@ static dispatch_once_t onceToken;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self setHysteriaIndex:item Key:[NSNumber numberWithInteger:index]];
-        NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
-        [playerItems addObject:item];
-        self.playerItems = playerItems;
+        if (self.isMemoryCached) {
+            NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
+            [playerItems addObject:item];
+            self.playerItems = playerItems;
+        }
         [self insertPlayerItem:item];
     });
 }
@@ -835,16 +837,16 @@ static dispatch_once_t onceToken;
 #pragma mark ===========   Memory cached  =========
 #pragma mark -
 
-- (BOOL) isMemoryCached
+- (BOOL)isMemoryCached
 {
-    return (self.playerItems == nil);
+    return self.playerItems != nil;
 }
 
-- (void) enableMemoryCached:(BOOL)isMemoryCached
+- (void)enableMemoryCached:(BOOL)isMemoryCached
 {
     if (self.playerItems == nil && isMemoryCached) {
         self.playerItems = [NSArray array];
-    }else if (self.playerItems != nil && !isMemoryCached){
+    } else if (self.playerItems != nil && !isMemoryCached) {
         self.playerItems = nil;
     }
 }
