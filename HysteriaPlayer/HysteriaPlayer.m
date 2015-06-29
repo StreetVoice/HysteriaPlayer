@@ -256,7 +256,7 @@ static dispatch_once_t onceToken;
 
 - (void)getSourceURLAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
 {
-    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)], @"You don't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
+    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)], @"You didn't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
     NSAssert([self hysteriaPlayerItemsCount] > index, ([NSString stringWithFormat:@"You are about to access index: %li URL when your HysteriaPlayer items count value is %li, please check hysteriaPlayerNumberOfItems or set itemsCount directly.", (unsigned long)index, (unsigned long)[self hysteriaPlayerItemsCount]]));
     if ([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] && [self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer]) {
         dispatch_async(HBGQueue, ^{
@@ -304,22 +304,19 @@ static dispatch_once_t onceToken;
 
 - (void)prepareNextPlayerItem
 {
-    // check before added, prevent add the same songItem
-    NSNumber *currentIndexNumber = [self getHysteriaIndex:self.audioPlayer.currentItem];
-    NSUInteger nowIndex = [currentIndexNumber integerValue];
+    if (_shuffleMode == HysteriaPlayerShuffleModeOn || _repeatMode == HysteriaPlayerRepeatModeOnce) {
+        return;
+    }
+
+    NSUInteger nowIndex = self.lastItemIndex;
     BOOL findInPlayerItems = NO;
     NSUInteger itemsCount = [self hysteriaPlayerItemsCount];
     
-    if (currentIndexNumber) {
-        if (_shuffleMode == HysteriaPlayerShuffleModeOn || _repeatMode == HysteriaPlayerRepeatModeOnce) {
-            return;
-        }
-        if (nowIndex + 1 < itemsCount) {
-            findInPlayerItems = [self findSourceInPlayerItems:nowIndex + 1];
-            
-            if (!findInPlayerItems) {
-                [self getSourceURLAtIndex:nowIndex + 1 preBuffer:YES];
-            }
+    if (nowIndex + 1 < itemsCount) {
+        findInPlayerItems = [self findSourceInPlayerItems:nowIndex + 1];
+        
+        if (!findInPlayerItems) {
+            [self getSourceURLAtIndex:nowIndex + 1 preBuffer:YES];
         }
     }
 }
@@ -718,7 +715,7 @@ static dispatch_once_t onceToken;
         
         NSArray *timeRanges = (NSArray *)[change objectForKey:NSKeyValueChangeNewKey];
         if (timeRanges && [timeRanges count]) {
-            CMTimeRange timerange=[[timeRanges objectAtIndex:0]CMTimeRangeValue];
+            CMTimeRange timerange = [[timeRanges objectAtIndex:0] CMTimeRangeValue];
             
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemPreloaded:)]) {
                 [self.delegate hysteriaPlayerCurrentItemPreloaded:CMTimeAdd(timerange.start, timerange.duration)];
@@ -726,7 +723,6 @@ static dispatch_once_t onceToken;
             
             if (self.audioPlayer.rate == 0 && !pauseReasonForced) {
                 pauseReasonBuffering = YES;
-                
                 [self longTimeBufferBackground];
                 
                 CMTime bufferdTime = CMTimeAdd(timerange.start, timerange.duration);
