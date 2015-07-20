@@ -666,7 +666,6 @@ static dispatch_once_t onceToken;
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
         AVPlayerItem *lastPlayerItem = [change objectForKey:NSKeyValueChangeOldKey];
         if (lastPlayerItem != (id)[NSNull null]) {
-            self.isInEmptySound = NO;
             @try {
                 [lastPlayerItem removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
                 [lastPlayerItem removeObserver:self forKeyPath:@"status" context:nil];
@@ -680,6 +679,7 @@ static dispatch_once_t onceToken;
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
                 [self.delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
             }
+            self.isInEmptySound = NO;
         }
     }
     
