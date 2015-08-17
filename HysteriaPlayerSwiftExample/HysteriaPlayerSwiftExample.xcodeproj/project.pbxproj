@@ -1,0 +1,586 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		46E255AAFB37153A804573FB /* Pods_HysteriaPlayerSwiftExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		83634F631B817E0400A6FAE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F621B817E0400A6FAE1 /* AppDelegate.swift */; };
+		83634F651B817E0400A6FAE1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F641B817E0400A6FAE1 /* ViewController.swift */; };
+		83634F681B817E0400A6FAE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83634F661B817E0400A6FAE1 /* Main.storyboard */; };
+		83634F6A1B817E0400A6FAE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83634F691B817E0400A6FAE1 /* Assets.xcassets */; };
+		83634F6D1B817E0400A6FAE1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83634F6B1B817E0400A6FAE1 /* LaunchScreen.storyboard */; };
+		83634F781B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F771B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift */; };
+		83634F831B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F821B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		83634F741B817E0400A6FAE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83634F571B817E0400A6FAE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83634F5E1B817E0400A6FAE1;
+			remoteInfo = HysteriaPlayerSwiftExample;
+		};
+		83634F7F1B817E0400A6FAE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83634F571B817E0400A6FAE1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83634F5E1B817E0400A6FAE1;
+			remoteInfo = HysteriaPlayerSwiftExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		83634F5F1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HysteriaPlayerSwiftExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83634F621B817E0400A6FAE1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		83634F641B817E0400A6FAE1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		83634F671B817E0400A6FAE1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		83634F691B817E0400A6FAE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		83634F6C1B817E0400A6FAE1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		83634F6E1B817E0400A6FAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83634F731B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HysteriaPlayerSwiftExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83634F771B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HysteriaPlayerSwiftExampleTests.swift; sourceTree = "<group>"; };
+		83634F791B817E0400A6FAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83634F7E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HysteriaPlayerSwiftExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		83634F821B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HysteriaPlayerSwiftExampleUITests.swift; sourceTree = "<group>"; };
+		83634F841B817E0400A6FAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HysteriaPlayerSwiftExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample.debug.xcconfig"; sourceTree = "<group>"; };
+		E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HysteriaPlayerSwiftExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HysteriaPlayerSwiftExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		83634F5C1B817E0400A6FAE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				46E255AAFB37153A804573FB /* Pods_HysteriaPlayerSwiftExample.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F701B817E0400A6FAE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F7B1B817E0400A6FAE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		83634F561B817E0400A6FAE1 = {
+			isa = PBXGroup;
+			children = (
+				83634F611B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */,
+				83634F761B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests */,
+				83634F811B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests */,
+				83634F601B817E0400A6FAE1 /* Products */,
+				9E7BAD9E4F11AD4327DB11A2 /* Pods */,
+				C706318E511518466D70F4DA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		83634F601B817E0400A6FAE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				83634F5F1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample.app */,
+				83634F731B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.xctest */,
+				83634F7E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		83634F611B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */ = {
+			isa = PBXGroup;
+			children = (
+				83634F621B817E0400A6FAE1 /* AppDelegate.swift */,
+				83634F641B817E0400A6FAE1 /* ViewController.swift */,
+				83634F661B817E0400A6FAE1 /* Main.storyboard */,
+				83634F691B817E0400A6FAE1 /* Assets.xcassets */,
+				83634F6B1B817E0400A6FAE1 /* LaunchScreen.storyboard */,
+				83634F6E1B817E0400A6FAE1 /* Info.plist */,
+			);
+			path = HysteriaPlayerSwiftExample;
+			sourceTree = "<group>";
+		};
+		83634F761B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				83634F771B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift */,
+				83634F791B817E0400A6FAE1 /* Info.plist */,
+			);
+			path = HysteriaPlayerSwiftExampleTests;
+			sourceTree = "<group>";
+		};
+		83634F811B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				83634F821B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift */,
+				83634F841B817E0400A6FAE1 /* Info.plist */,
+			);
+			path = HysteriaPlayerSwiftExampleUITests;
+			sourceTree = "<group>";
+		};
+		9E7BAD9E4F11AD4327DB11A2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */,
+				FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C706318E511518466D70F4DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		83634F5E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83634F871B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExample" */;
+			buildPhases = (
+				D0F075CB1A378A2A35E1A0C6 /* Check Pods Manifest.lock */,
+				83634F5B1B817E0400A6FAE1 /* Sources */,
+				83634F5C1B817E0400A6FAE1 /* Frameworks */,
+				83634F5D1B817E0400A6FAE1 /* Resources */,
+				818CF3A3AD1029DACFDE86EB /* Embed Pods Frameworks */,
+				F7D2E3750B2681D81FD62F89 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HysteriaPlayerSwiftExample;
+			productName = HysteriaPlayerSwiftExample;
+			productReference = 83634F5F1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		83634F721B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83634F8A1B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExampleTests" */;
+			buildPhases = (
+				83634F6F1B817E0400A6FAE1 /* Sources */,
+				83634F701B817E0400A6FAE1 /* Frameworks */,
+				83634F711B817E0400A6FAE1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83634F751B817E0400A6FAE1 /* PBXTargetDependency */,
+			);
+			name = HysteriaPlayerSwiftExampleTests;
+			productName = HysteriaPlayerSwiftExampleTests;
+			productReference = 83634F731B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		83634F7D1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83634F8D1B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExampleUITests" */;
+			buildPhases = (
+				83634F7A1B817E0400A6FAE1 /* Sources */,
+				83634F7B1B817E0400A6FAE1 /* Frameworks */,
+				83634F7C1B817E0400A6FAE1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83634F801B817E0400A6FAE1 /* PBXTargetDependency */,
+			);
+			name = HysteriaPlayerSwiftExampleUITests;
+			productName = HysteriaPlayerSwiftExampleUITests;
+			productReference = 83634F7E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83634F571B817E0400A6FAE1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = saiday;
+				TargetAttributes = {
+					83634F5E1B817E0400A6FAE1 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					83634F721B817E0400A6FAE1 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 83634F5E1B817E0400A6FAE1;
+					};
+					83634F7D1B817E0400A6FAE1 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 83634F5E1B817E0400A6FAE1;
+					};
+				};
+			};
+			buildConfigurationList = 83634F5A1B817E0400A6FAE1 /* Build configuration list for PBXProject "HysteriaPlayerSwiftExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83634F561B817E0400A6FAE1;
+			productRefGroup = 83634F601B817E0400A6FAE1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				83634F5E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */,
+				83634F721B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests */,
+				83634F7D1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		83634F5D1B817E0400A6FAE1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83634F6D1B817E0400A6FAE1 /* LaunchScreen.storyboard in Resources */,
+				83634F6A1B817E0400A6FAE1 /* Assets.xcassets in Resources */,
+				83634F681B817E0400A6FAE1 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F711B817E0400A6FAE1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F7C1B817E0400A6FAE1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		818CF3A3AD1029DACFDE86EB /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D0F075CB1A378A2A35E1A0C6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F7D2E3750B2681D81FD62F89 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		83634F5B1B817E0400A6FAE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83634F651B817E0400A6FAE1 /* ViewController.swift in Sources */,
+				83634F631B817E0400A6FAE1 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F6F1B817E0400A6FAE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83634F781B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83634F7A1B817E0400A6FAE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83634F831B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		83634F751B817E0400A6FAE1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83634F5E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */;
+			targetProxy = 83634F741B817E0400A6FAE1 /* PBXContainerItemProxy */;
+		};
+		83634F801B817E0400A6FAE1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83634F5E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */;
+			targetProxy = 83634F7F1B817E0400A6FAE1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		83634F661B817E0400A6FAE1 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				83634F671B817E0400A6FAE1 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		83634F6B1B817E0400A6FAE1 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				83634F6C1B817E0400A6FAE1 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		83634F851B817E0400A6FAE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		83634F861B817E0400A6FAE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		83634F881B817E0400A6FAE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = HysteriaPlayerSwiftExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		83634F891B817E0400A6FAE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = HysteriaPlayerSwiftExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		83634F8B1B817E0400A6FAE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = HysteriaPlayerSwiftExampleTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HysteriaPlayerSwiftExample.app/HysteriaPlayerSwiftExample";
+			};
+			name = Debug;
+		};
+		83634F8C1B817E0400A6FAE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = HysteriaPlayerSwiftExampleTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HysteriaPlayerSwiftExample.app/HysteriaPlayerSwiftExample";
+			};
+			name = Release;
+		};
+		83634F8E1B817E0400A6FAE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = HysteriaPlayerSwiftExampleUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = HysteriaPlayerSwiftExample;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		83634F8F1B817E0400A6FAE1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = HysteriaPlayerSwiftExampleUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = HysteriaPlayerSwiftExample;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		83634F5A1B817E0400A6FAE1 /* Build configuration list for PBXProject "HysteriaPlayerSwiftExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83634F851B817E0400A6FAE1 /* Debug */,
+				83634F861B817E0400A6FAE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83634F871B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83634F881B817E0400A6FAE1 /* Debug */,
+				83634F891B817E0400A6FAE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83634F8A1B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83634F8B1B817E0400A6FAE1 /* Debug */,
+				83634F8C1B817E0400A6FAE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83634F8D1B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83634F8E1B817E0400A6FAE1 /* Debug */,
+				83634F8F1B817E0400A6FAE1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83634F571B817E0400A6FAE1 /* Project object */;
+}
