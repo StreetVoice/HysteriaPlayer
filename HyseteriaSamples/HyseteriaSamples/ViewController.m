@@ -19,7 +19,7 @@
     __block NSMutableArray *itunesPreviewUrls;
 }
 
-@property (nonatomic) NSUInteger itemsCount;
+@property (nonatomic) NSInteger itemsCount;
 @property (nonatomic) PlayingType playingType;
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *playButton;
@@ -137,14 +137,14 @@
     NSLog(@"player rate changed");
 }
 
-- (void)hysteriaPlayerWillChangedAtIndex:(NSUInteger)index
+- (void)hysteriaPlayerWillChangedAtIndex:(NSInteger)index
 {
     NSLog(@"index: %li is about to play", index);
 }
 
 #pragma mark - HysteriaPlayerDataSource
 
-- (NSUInteger)hysteriaPlayerNumberOfItems
+- (NSInteger)hysteriaPlayerNumberOfItems
 {
     return self.itemsCount;
 }
@@ -152,12 +152,12 @@
 
 /*!
  Adopt one of
- hysteriaPlayerURLForItemAtIndex:(NSUInteger)index
+ hysteriaPlayerURLForItemAtIndex:(NSInteger)index
  or
- hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index
+ hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index
  which meets your requirements.
  */
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
+- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
     switch (self.playingType) {
         case PlayingTypeStaticItems:
@@ -170,7 +170,7 @@
     }
 }
 
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSUInteger)index preBuffer:(BOOL)preBuffer
+- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
     if (self.playingType == PlayingTypeAsync) {
         NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long) self.itemsCount];
