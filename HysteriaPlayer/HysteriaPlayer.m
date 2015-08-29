@@ -811,7 +811,6 @@ static dispatch_once_t onceToken;
 {
     NSError *error;
     tookAudioFocus = NO;
-    [[AVAudioSession sharedInstance] setCategory:nil error:&error];
     [[AVAudioSession sharedInstance] setActive:NO error:&error];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
