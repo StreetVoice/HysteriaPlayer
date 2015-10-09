@@ -30,7 +30,7 @@ static const void *Hysteriatag = &Hysteriatag;
 
 
 @property (nonatomic, strong, readwrite) NSArray *playerItems;
-@property (nonatomic, readwrite) BOOL isInEmptySound;
+@property (nonatomic, readwrite) BOOL emptySoundPlaying;
 @property (nonatomic) NSInteger lastItemIndex;
 
 @property (nonatomic, strong) AVQueuePlayer *audioPlayer;
@@ -109,13 +109,17 @@ static dispatch_once_t onceToken;
 
 - (void)playEmptySound
 {
-    //play .1 sec empty sound
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSString *filepath = [bundle pathForResource:@"point1sec" ofType:@"mp3"];
-    if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
-        self.isInEmptySound = YES;
-        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:filepath]];
-        self.audioPlayer = [AVQueuePlayer queuePlayerWithItems:[NSArray arrayWithObject:playerItem]];
+    if (self.skipEmptySoundPlaying) {
+        self.audioPlayer = [[AVQueuePlayer alloc] init];
+    } else {
+        //play .1 sec empty sound
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        NSString *filepath = [bundle pathForResource:@"point1sec" ofType:@"mp3"];
+        if ([[NSFileManager defaultManager]fileExistsAtPath:filepath]) {
+            self.emptySoundPlaying = YES;
+            AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:filepath]];
+            self.audioPlayer = [AVQueuePlayer queuePlayerWithItems:[NSArray arrayWithObject:playerItem]];
+        }
     }
 }
 
@@ -132,22 +136,21 @@ static dispatch_once_t onceToken;
                 [audioSession setCategory:AVAudioSessionCategoryPlayback error:&aError];
                 if (aError) {
                     if (!self.disableLogs) {
-                        NSLog(@"set category error:%@",[aError description]);
+                        NSLog(@"HysteriaPlayer: set category error:%@",[aError description]);
                     }
                 }
                 aError = nil;
                 [audioSession setActive:YES error:&aError];
                 if (aError) {
                     if (!self.disableLogs) {
-                        NSLog(@"set active error:%@",[aError description]);
+                        NSLog(@"HysteriaPlayer: set active error:%@",[aError description]);
                     }
                 }
-                //audioSession.delegate = self;
             }
         }
     }else {
         if (!self.disableLogs) {
-            NSLog(@"unable to register background playback");
+            NSLog(@"HysteriaPlayer: unable to register background playback");
         }
     }
     
@@ -528,22 +531,20 @@ static dispatch_once_t onceToken;
 
 - (BOOL)isPlaying
 {
-    if (!self.isInEmptySound)
-        return [self.audioPlayer rate] != 0.f;
-    else
-        return NO;
+    return self.emptySoundPlaying ? NO : self.audioPlayer.rate != 0.f;
 }
 
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus
 {
-    if ([self isPlaying])
+    if ([self isPlaying]) {
         return HysteriaPlayerStatusPlaying;
-    else if (pauseReasonForced)
+    } else if (pauseReasonForced) {
         return HysteriaPlayerStatusForcePause;
-    else if (pauseReasonBuffering)
+    } else if (pauseReasonBuffering) {
         return HysteriaPlayerStatusBuffering;
-    else
+    } else {
         return HysteriaPlayerStatusUnknown;
+    }
 }
 
 - (float)getPlayingItemCurrentTime
@@ -604,7 +605,7 @@ static dispatch_once_t onceToken;
         [self play];
     }
     if (!self.disableLogs) {
-        NSLog(@"HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
+        NSLog(@"HysteriaPlayer: HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
     }
 }
 
@@ -622,7 +623,7 @@ static dispatch_once_t onceToken;
         [self play];
     }
     if (!self.disableLogs) {
-        NSLog(@"HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
+        NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
     }
 }
 
@@ -642,7 +643,7 @@ static dispatch_once_t onceToken;
             }
         } else if (self.audioPlayer.status == AVPlayerStatusFailed) {
             if (!self.disableLogs) {
-                NSLog(@"%@", self.audioPlayer.error);
+                NSLog(@"HysteriaPlayer: %@", self.audioPlayer.error);
             }
             
             if (self.popAlertWhenError) {
@@ -655,7 +656,7 @@ static dispatch_once_t onceToken;
     }
     
     if(object == self.audioPlayer && [keyPath isEqualToString:@"rate"]){
-        if (!self.isInEmptySound) {
+        if (!self.emptySoundPlaying) {
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerRateChanged:)]) {
                 [self.delegate hysteriaPlayerRateChanged:[self isPlaying]];
             }
@@ -679,7 +680,7 @@ static dispatch_once_t onceToken;
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
                 [self.delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
             }
-            self.isInEmptySound = NO;
+            self.emptySoundPlaying = NO;
         }
     }
     
@@ -731,7 +732,7 @@ static dispatch_once_t onceToken;
                 if (CMTIME_COMPARE_INLINE(bufferdTime , >, milestone) && self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay && !interruptedWhilePlaying && !routeChangedWhilePlaying) {
                     if (![self isPlaying]) {
                         if (!self.disableLogs) {
-                            NSLog(@"resume from buffering..");
+                            NSLog(@"HysteriaPlayer: resume from buffering..");
                         }
                         pauseReasonBuffering = NO;
                         
@@ -838,11 +839,11 @@ static dispatch_once_t onceToken;
     return self.playerItems != nil;
 }
 
-- (void)enableMemoryCached:(BOOL)isMemoryCached
+- (void)enableMemoryCached:(BOOL)memoryCache
 {
-    if (self.playerItems == nil && isMemoryCached) {
+    if (self.playerItems == nil && memoryCache) {
         self.playerItems = [NSArray array];
-    } else if (self.playerItems != nil && !isMemoryCached) {
+    } else if (self.playerItems != nil && !memoryCache) {
         self.playerItems = nil;
     }
 }

@@ -39,7 +39,9 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
     HysteriaPlayerFailedCurrentItem = 4001,
 };
 
-// Delegate
+/**
+ *  HysteriaPlayerDelegate, all delegate method is optional.
+ */
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
@@ -56,17 +58,29 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 @protocol HysteriaPlayerDataSource <NSObject>
 
 @optional
+
+/**
+ *  Asks the data source to return the number of items that HysteriaPlayer would play.
+ *
+ *  @return items count
+ */
 - (NSInteger)hysteriaPlayerNumberOfItems;
-/*!
- Recommend you use this method to handle your source getter, setupSourceAsyncGetter:ItemsCount: is for advanced usage.
- hysteriaPlayerURLForItemAtIndex:(NSInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index provides for the use of alternatives.
- @method HysteriaPlayerURLForItemAtIndex:(NSInteger)index
+
+/**
+ *  Source URL provider, hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: is for async task usage.
+ *
+ *  @param index     index of the item
+ *  @param preBuffer ask URL for pre buffer or not
+ *
+ *  @return source URL
  */
 - (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
-/*!
- If you are using asynchronously handle your items use this method to tell HysteriaPlayer which URL you would use for index, will excute until you call setupPlayerItemWithUrl:index:
- hysteriaPlayerURLForItemAtIndex:(NSInteger)index and hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index provides for the use of alternatives.
- @method HysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index
+
+/**
+ *  Source URL provider, would excute until you call setupPlayerItemWithUrl:index:
+ *
+ *  @param index     index of the item
+ *  @param preBuffer ask URL for pre buffer or not
  */
 - (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
@@ -102,7 +116,8 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 @property (nonatomic) NSInteger itemsCount;
 @property (nonatomic) BOOL disableLogs;
 @property (nonatomic, strong, readonly) NSArray *playerItems;
-@property (nonatomic, readonly) BOOL isInEmptySound;
+@property (nonatomic, readonly) BOOL emptySoundPlaying;
+@property (nonatomic) BOOL skipEmptySoundPlaying;
 @property (nonatomic) BOOL popAlertWhenError;
 
 + (HysteriaPlayer *)sharedInstance;
@@ -115,18 +130,23 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
 - (void)setItemsCount:(NSInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
 
-/*!
- This method is necessary if you setting up AsyncGetter.
- After you your AVPlayerItem initialized should call this method on your asyncBlock.
- Should not call this method directly if you using setupSourceGetter:ItemsCount.
- @method setupPlayerItemWithUrl:index:
+/**
+ *   This method is necessary if you implement hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: delegate method, 
+     provide source URL to HysteriaPlayer.
+     Should not use this method outside of hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: scope.
+ *
+ *  @param url   source URL
+ *  @param index index which hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: sent you
  */
 - (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSInteger)index;
 - (void)fetchAndPlayPlayerItem: (NSInteger )startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
-/*!
- Be sure you update hysteriaPlayerNumberOfItems or itemsCount when you remove items
+
+/**
+ *   Be sure you update hysteriaPlayerNumberOfItems or itemsCount when you remove items
+ *
+ *  @param index index to removed
  */
 - (void)removeItemAtIndex:(NSInteger)index;
 - (void)moveItemFromIndex:(NSInteger)from toIndex:(NSInteger)to;
@@ -156,15 +176,20 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (id)addPeriodicTimeObserverForInterval:(CMTime)interval queue:(dispatch_queue_t)queue usingBlock:(void (^)(CMTime time))block;
 - (void)removeTimeObserver:(id)observer;
 
-/*
- * Disable memory cache, player will run SourceItemGetter everytime even the media has been played.
- * Default is YES
+/**
+ *  Default is true
+ *
+ *  @param isMemoryCached cache
  */
-- (void)enableMemoryCached:(BOOL) isMemoryCached;
+- (void)enableMemoryCached:(BOOL)memoryCache;
 - (BOOL)isMemoryCached;
 
-/*
- * Indicating Playeritem's play index
+/**
+ *  Indicating Playeritem's play index
+ *
+ *  @param item item
+ *
+ *  @return index of the item
  */
 - (NSNumber *)getHysteriaIndex:(AVPlayerItem *)item;
 

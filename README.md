@@ -197,6 +197,14 @@ HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
 hysteriaPlayer = nil;
 ```
 
+## Known Issues
+If you going to play HTTP Live streaming on iOS 8 and below. (iOS 9+ is fine, no worries)  
+There's a property you had to set at very first time when HysteriaPlayer is initiated.
+```objective-c
+HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
+hysteriaPlayer.skipEmptySoundPlaying = YES;
+```
+
 ## Licenses ##
 
 All source code is licensed under the MIT License.

@@ -149,14 +149,11 @@
     return self.itemsCount;
 }
 
-
-/*!
- Adopt one of
- hysteriaPlayerURLForItemAtIndex:(NSInteger)index
- or
- hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index
- which meets your requirements.
- */
+// Adopt one of
+// hysteriaPlayerURLForItemAtIndex:(NSInteger)index
+// or
+// hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index
+// which meets your requirements.
 - (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
     switch (self.playingType) {
@@ -164,9 +161,8 @@
             return [[NSURL alloc] initFileURLWithPath:[localMedias objectAtIndex:index]];
         case PlayingTypeSync:
             return [NSURL URLWithString:[itunesPreviewUrls objectAtIndex:index]];
-            
         default:
-            return nil; // 
+            return nil;
     }
 }
 
