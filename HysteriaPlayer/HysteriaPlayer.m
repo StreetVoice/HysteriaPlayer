@@ -6,8 +6,11 @@
 //
 
 #import "HysteriaPlayer.h"
-#import <AudioToolbox/AudioSession.h>
 #import <objc/runtime.h>
+
+#if TARGET_OS_IPHONE
+    #import <AudioToolbox/AudioSession.h>
+#endif
 
 static const void *Hysteriatag = &Hysteriatag;
 
@@ -22,8 +25,10 @@ static const void *Hysteriatag = &Hysteriatag;
     
     NSInteger prepareingItemHash;
     
+    #if TARGET_OS_IPHONE
     UIBackgroundTaskIdentifier bgTaskId;
     UIBackgroundTaskIdentifier removedId;
+    #endif
     
     dispatch_queue_t HBGQueue;
 }
@@ -66,12 +71,14 @@ static dispatch_once_t onceToken;
 
 + (void)showAlertWithError:(NSError *)error
 {
+     #if TARGET_OS_IPHONE
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Player errors"
                                                     message:[error localizedDescription]
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil, nil];
     [alert show];
+     #endif
 }
 
 - (id)init {
@@ -125,6 +132,7 @@ static dispatch_once_t onceToken;
 
 - (void)backgroundPlayable
 {
+#if TARGET_OS_IPHONE
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     if (audioSession.category != AVAudioSessionCategoryPlayback) {
@@ -155,13 +163,16 @@ static dispatch_once_t onceToken;
     }
     
     [self longTimeBufferBackground];
+#endif
 }
+
 
 /*
  * Tells OS this application starts one or more long-running tasks, should end background task when completed.
  */
 -(void)longTimeBufferBackground
 {
+#if TARGET_OS_IPHONE
     bgTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[UIApplication sharedApplication] endBackgroundTask:removedId];
         bgTaskId = UIBackgroundTaskInvalid;
@@ -171,16 +182,19 @@ static dispatch_once_t onceToken;
         [[UIApplication sharedApplication] endBackgroundTask: removedId];
     }
     removedId = bgTaskId;
+#endif
 }
 
 -(void)longTimeBufferBackgroundCompleted
 {
+#if TARGET_OS_IPHONE
     if (bgTaskId != UIBackgroundTaskInvalid && removedId != bgTaskId) {
         [[UIApplication sharedApplication] endBackgroundTask: bgTaskId];
         removedId = bgTaskId;
     }
-    
+#endif
 }
+
 
 #pragma mark -
 #pragma mark ===========  Runtime AssociatedObject  =========
@@ -204,7 +218,7 @@ static dispatch_once_t onceToken;
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
-    
+#if TARGET_OS_IPHONE
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(interruption:)
                                                  name:AVAudioSessionInterruptionNotification object:nil];
@@ -212,6 +226,7 @@ static dispatch_once_t onceToken;
                                              selector:@selector(routeChange:)
                                                  name:AVAudioSessionRouteChangeNotification
                                                object:nil];
+#endif
     
     [self.audioPlayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:nil];
     [self.audioPlayer addObserver:self forKeyPath:@"rate" options:0 context:nil];
@@ -592,6 +607,7 @@ static dispatch_once_t onceToken;
 
 - (void)interruption:(NSNotification*)notification
 {
+#if TARGET_OS_IPHONE
     NSDictionary *interuptionDict = notification.userInfo;
     NSInteger interuptionType = [[interuptionDict valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
     
@@ -607,10 +623,12 @@ static dispatch_once_t onceToken;
     if (!self.disableLogs) {
         NSLog(@"HysteriaPlayer: HysteriaPlayer interruption: %@", interuptionType == AVAudioSessionInterruptionTypeBegan ? @"began" : @"end");
     }
+#endif
 }
 
 - (void)routeChange:(NSNotification *)notification
 {
+#if TARGET_OS_IPHONE
     NSDictionary *routeChangeDict = notification.userInfo;
     NSInteger routeChangeType = [[routeChangeDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
     
@@ -625,6 +643,7 @@ static dispatch_once_t onceToken;
     if (!self.disableLogs) {
         NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
     }
+#endif
 }
 
 #pragma mark -
@@ -812,8 +831,10 @@ static dispatch_once_t onceToken;
 {
     NSError *error;
     tookAudioFocus = NO;
+#if TARGET_OS_IPHONE
     [[AVAudioSession sharedInstance] setActive:NO error:&error];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+#endif
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     
     [self.audioPlayer removeObserver:self forKeyPath:@"status" context:nil];

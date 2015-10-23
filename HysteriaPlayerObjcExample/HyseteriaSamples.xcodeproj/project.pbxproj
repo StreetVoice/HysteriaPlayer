@@ -44,6 +44,31 @@
 		83AD5ED316A5D04C00604530 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83AD5ED216A5D04C00604530 /* AVFoundation.framework */; };
 		83AD5ED616A5D10300604530 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83AD5ED516A5D10300604530 /* CoreMedia.framework */; };
 		83AD5ED816A5D6A400604530 /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5ED716A5D6A400604530 /* point1sec.mp3 */; };
+		C1172EA61BD99F9A00B8A72C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C1172EA51BD99F9A00B8A72C /* AppDelegate.m */; };
+		C1172EA91BD99F9A00B8A72C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C1172EA81BD99F9A00B8A72C /* main.m */; };
+		C1172EAB1BD99F9A00B8A72C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C1172EAA1BD99F9A00B8A72C /* Assets.xcassets */; };
+		C1172EAE1BD99F9A00B8A72C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1172EAC1BD99F9A00B8A72C /* MainMenu.xib */; };
+		C1172EB31BD99FEF00B8A72C /* AFHTTPClient.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381316BBA0E10097D0F2 /* AFHTTPClient.h */; };
+		C1172EB41BD99FEF00B8A72C /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381416BBA0E10097D0F2 /* AFHTTPClient.m */; };
+		C1172EB51BD99FEF00B8A72C /* AFHTTPRequestOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381516BBA0E10097D0F2 /* AFHTTPRequestOperation.h */; };
+		C1172EB61BD99FEF00B8A72C /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381616BBA0E10097D0F2 /* AFHTTPRequestOperation.m */; };
+		C1172EB71BD99FEF00B8A72C /* AFImageRequestOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381716BBA0E10097D0F2 /* AFImageRequestOperation.h */; };
+		C1172EB81BD99FEF00B8A72C /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381816BBA0E10097D0F2 /* AFImageRequestOperation.m */; };
+		C1172EB91BD99FEF00B8A72C /* AFJSONRequestOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381916BBA0E10097D0F2 /* AFJSONRequestOperation.h */; };
+		C1172EBA1BD99FEF00B8A72C /* AFJSONRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381A16BBA0E10097D0F2 /* AFJSONRequestOperation.m */; };
+		C1172EBB1BD99FEF00B8A72C /* AFNetworkActivityIndicatorManager.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381B16BBA0E10097D0F2 /* AFNetworkActivityIndicatorManager.h */; };
+		C1172EBC1BD99FEF00B8A72C /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381C16BBA0E10097D0F2 /* AFNetworkActivityIndicatorManager.m */; };
+		C1172EBD1BD99FEF00B8A72C /* AFNetworking.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381D16BBA0E10097D0F2 /* AFNetworking.h */; };
+		C1172EBE1BD99FEF00B8A72C /* AFPropertyListRequestOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C381E16BBA0E10097D0F2 /* AFPropertyListRequestOperation.h */; };
+		C1172EBF1BD99FEF00B8A72C /* AFPropertyListRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381F16BBA0E10097D0F2 /* AFPropertyListRequestOperation.m */; };
+		C1172EC01BD99FEF00B8A72C /* AFURLConnectionOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C382016BBA0E10097D0F2 /* AFURLConnectionOperation.h */; };
+		C1172EC11BD99FEF00B8A72C /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C382116BBA0E10097D0F2 /* AFURLConnectionOperation.m */; };
+		C1172EC21BD99FEF00B8A72C /* AFXMLRequestOperation.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C382216BBA0E10097D0F2 /* AFXMLRequestOperation.h */; };
+		C1172EC31BD99FEF00B8A72C /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C382316BBA0E10097D0F2 /* AFXMLRequestOperation.m */; };
+		C1172EC41BD99FEF00B8A72C /* UIImageView+AFNetworking.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C382416BBA0E10097D0F2 /* UIImageView+AFNetworking.h */; };
+		C1172EC51BD99FEF00B8A72C /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C382516BBA0E10097D0F2 /* UIImageView+AFNetworking.m */; };
+		C1172EC61BD99FEF00B8A72C /* HysteriaPlayer.h in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */; };
+		C1172EC71BD99FEF00B8A72C /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +125,13 @@
 		83AD5ED216A5D04C00604530 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		83AD5ED516A5D10300604530 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		83AD5ED716A5D6A400604530 /* point1sec.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = point1sec.mp3; sourceTree = "<group>"; };
+		C1172EA21BD99F9A00B8A72C /* HyseteriaSamplesOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HyseteriaSamplesOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1172EA41BD99F9A00B8A72C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C1172EA51BD99F9A00B8A72C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C1172EA81BD99F9A00B8A72C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C1172EAA1BD99F9A00B8A72C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1172EAD1BD99F9A00B8A72C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		C1172EAF1BD99F9A00B8A72C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +147,13 @@
 				83AD5EA116A5CABD00604530 /* UIKit.framework in Frameworks */,
 				83AD5EA316A5CABD00604530 /* Foundation.framework in Frameworks */,
 				83AD5EA516A5CABD00604530 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1172E9F1BD99F9A00B8A72C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +202,7 @@
 				831C381216BBA0E10097D0F2 /* AFNetworking */,
 				586AA23C17F4731C00A7E557 /* HysteriaPlayer */,
 				83AD5EA616A5CABD00604530 /* HyseteriaSamples */,
+				C1172EA31BD99F9A00B8A72C /* HyseteriaSamplesOSX */,
 				83AD5E9F16A5CABD00604530 /* Frameworks */,
 				83AD5E9D16A5CABD00604530 /* Products */,
 			);
@@ -172,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				83AD5E9C16A5CABD00604530 /* HyseteriaSamples.app */,
+				C1172EA21BD99F9A00B8A72C /* HyseteriaSamplesOSX.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -229,6 +270,27 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		C1172EA31BD99F9A00B8A72C /* HyseteriaSamplesOSX */ = {
+			isa = PBXGroup;
+			children = (
+				C1172EA41BD99F9A00B8A72C /* AppDelegate.h */,
+				C1172EA51BD99F9A00B8A72C /* AppDelegate.m */,
+				C1172EAA1BD99F9A00B8A72C /* Assets.xcassets */,
+				C1172EAC1BD99F9A00B8A72C /* MainMenu.xib */,
+				C1172EAF1BD99F9A00B8A72C /* Info.plist */,
+				C1172EA71BD99F9A00B8A72C /* Supporting Files */,
+			);
+			path = HyseteriaSamplesOSX;
+			sourceTree = "<group>";
+		};
+		C1172EA71BD99F9A00B8A72C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C1172EA81BD99F9A00B8A72C /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -249,14 +311,36 @@
 			productReference = 83AD5E9C16A5CABD00604530 /* HyseteriaSamples.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C1172EA11BD99F9A00B8A72C /* HyseteriaSamplesOSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1172EB21BD99F9A00B8A72C /* Build configuration list for PBXNativeTarget "HyseteriaSamplesOSX" */;
+			buildPhases = (
+				C1172E9E1BD99F9A00B8A72C /* Sources */,
+				C1172E9F1BD99F9A00B8A72C /* Frameworks */,
+				C1172EA01BD99F9A00B8A72C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HyseteriaSamplesOSX;
+			productName = HyseteriaSamplesOSX;
+			productReference = C1172EA21BD99F9A00B8A72C /* HyseteriaSamplesOSX.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83AD5E9316A5CABC00604530 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = saiday;
+				TargetAttributes = {
+					C1172EA11BD99F9A00B8A72C = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+				};
 			};
 			buildConfigurationList = 83AD5E9616A5CABC00604530 /* Build configuration list for PBXProject "HyseteriaSamples" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -264,6 +348,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 83AD5E9116A5CABC00604530;
 			productRefGroup = 83AD5E9D16A5CABD00604530 /* Products */;
@@ -271,6 +356,7 @@
 			projectRoot = "";
 			targets = (
 				83AD5E9B16A5CABD00604530 /* HyseteriaSamples */,
+				C1172EA11BD99F9A00B8A72C /* HyseteriaSamplesOSX */,
 			);
 		};
 /* End PBXProject section */
@@ -299,6 +385,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C1172EA01BD99F9A00B8A72C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1172EAB1BD99F9A00B8A72C /* Assets.xcassets in Resources */,
+				C1172EAE1BD99F9A00B8A72C /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -322,6 +417,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C1172E9E1BD99F9A00B8A72C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1172EB31BD99FEF00B8A72C /* AFHTTPClient.h in Sources */,
+				C1172EB41BD99FEF00B8A72C /* AFHTTPClient.m in Sources */,
+				C1172EB51BD99FEF00B8A72C /* AFHTTPRequestOperation.h in Sources */,
+				C1172EB61BD99FEF00B8A72C /* AFHTTPRequestOperation.m in Sources */,
+				C1172EB71BD99FEF00B8A72C /* AFImageRequestOperation.h in Sources */,
+				C1172EB81BD99FEF00B8A72C /* AFImageRequestOperation.m in Sources */,
+				C1172EB91BD99FEF00B8A72C /* AFJSONRequestOperation.h in Sources */,
+				C1172EBA1BD99FEF00B8A72C /* AFJSONRequestOperation.m in Sources */,
+				C1172EBB1BD99FEF00B8A72C /* AFNetworkActivityIndicatorManager.h in Sources */,
+				C1172EBC1BD99FEF00B8A72C /* AFNetworkActivityIndicatorManager.m in Sources */,
+				C1172EBD1BD99FEF00B8A72C /* AFNetworking.h in Sources */,
+				C1172EBE1BD99FEF00B8A72C /* AFPropertyListRequestOperation.h in Sources */,
+				C1172EBF1BD99FEF00B8A72C /* AFPropertyListRequestOperation.m in Sources */,
+				C1172EC01BD99FEF00B8A72C /* AFURLConnectionOperation.h in Sources */,
+				C1172EC11BD99FEF00B8A72C /* AFURLConnectionOperation.m in Sources */,
+				C1172EC21BD99FEF00B8A72C /* AFXMLRequestOperation.h in Sources */,
+				C1172EC31BD99FEF00B8A72C /* AFXMLRequestOperation.m in Sources */,
+				C1172EC41BD99FEF00B8A72C /* UIImageView+AFNetworking.h in Sources */,
+				C1172EC51BD99FEF00B8A72C /* UIImageView+AFNetworking.m in Sources */,
+				C1172EC61BD99FEF00B8A72C /* HysteriaPlayer.h in Sources */,
+				C1172EC71BD99FEF00B8A72C /* HysteriaPlayer.m in Sources */,
+				C1172EA91BD99F9A00B8A72C /* main.m in Sources */,
+				C1172EA61BD99F9A00B8A72C /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -341,6 +466,14 @@
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
 		};
+		C1172EAC1BD99F9A00B8A72C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1172EAD1BD99F9A00B8A72C /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -355,6 +488,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -406,6 +540,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HyseteriaSamples/HyseteriaSamples-Prefix.pch";
 				INFOPLIST_FILE = "HyseteriaSamples/HyseteriaSamples-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "streetvoice.saiday.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -424,9 +559,77 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HyseteriaSamples/HyseteriaSamples-Prefix.pch";
 				INFOPLIST_FILE = "HyseteriaSamples/HyseteriaSamples-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "streetvoice.saiday.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C1172EB01BD99F9A00B8A72C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = HyseteriaSamplesOSX/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = streetvoice.saiday.HyseteriaSamples.HyseteriaSamplesOSX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C1172EB11BD99F9A00B8A72C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = HyseteriaSamplesOSX/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = streetvoice.saiday.HyseteriaSamples.HyseteriaSamplesOSX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -447,6 +650,15 @@
 			buildConfigurations = (
 				83AD5EC116A5CABD00604530 /* Debug */,
 				83AD5EC216A5CABD00604530 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1172EB21BD99F9A00B8A72C /* Build configuration list for PBXNativeTarget "HyseteriaSamplesOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1172EB01BD99F9A00B8A72C /* Debug */,
+				C1172EB11BD99F9A00B8A72C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
