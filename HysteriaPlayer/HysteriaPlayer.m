@@ -355,10 +355,10 @@ static dispatch_once_t onceToken;
 {
     for (AVPlayerItem *obj in self.audioPlayer.items) {
         [obj seekToTime:kCMTimeZero];
-        @try{
+        @try {
             [obj removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
             [obj removeObserver:self forKeyPath:@"status" context:nil];
-        }@catch(id anException){
+        } @catch(id anException) {
             //do nothing, obviously it wasn't attached because an exception was thrown
         }
     }
@@ -377,8 +377,8 @@ static dispatch_once_t onceToken;
 - (void)removeItemAtIndex:(NSInteger)order
 {
     for (AVPlayerItem *item in [NSArray arrayWithArray:self.playerItems]) {
-        NSInteger CHECK_order = [[self getHysteriaIndex:item] integerValue];
-        if (CHECK_order == order) {
+        NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
+        if (checkIndex == order) {
             NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
             [playerItems removeObject:item];
             self.playerItems = playerItems;
@@ -386,8 +386,8 @@ static dispatch_once_t onceToken;
             if ([self.audioPlayer.items indexOfObject:item] != NSNotFound) {
                 [self.audioPlayer removeItem:item];
             }
-        }else if (CHECK_order > order){
-            [self setHysteriaIndex:item Key:[NSNumber numberWithInteger:CHECK_order -1]];
+        } else if (checkIndex > order) {
+            [self setHysteriaIndex:item Key:[NSNumber numberWithInteger:checkIndex -1]];
         }
     }
 }
@@ -395,9 +395,9 @@ static dispatch_once_t onceToken;
 - (void)moveItemFromIndex:(NSInteger)from toIndex:(NSInteger)to
 {
     for (AVPlayerItem *item in self.playerItems) {
-        NSInteger CHECK_index = [[self getHysteriaIndex:item] integerValue];
-        if (CHECK_index == from || CHECK_index == to) {
-            NSNumber *replaceOrder = CHECK_index == from ? [NSNumber numberWithInteger:to] : [NSNumber numberWithInteger:from];
+        NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
+        if (checkIndex == from || checkIndex == to) {
+            NSNumber *replaceOrder = checkIndex == from ? [NSNumber numberWithInteger:to] : [NSNumber numberWithInteger:from];
             [self setHysteriaIndex:item Key:replaceOrder];
         }
     }
@@ -674,7 +674,7 @@ static dispatch_once_t onceToken;
         }
     }
     
-    if(object == self.audioPlayer && [keyPath isEqualToString:@"rate"]){
+    if (object == self.audioPlayer && [keyPath isEqualToString:@"rate"]) {
         if (!self.emptySoundPlaying) {
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerRateChanged:)]) {
                 [self.delegate hysteriaPlayerRateChanged:[self isPlaying]];
@@ -682,7 +682,7 @@ static dispatch_once_t onceToken;
         }
     }
     
-    if(object == self.audioPlayer && [keyPath isEqualToString:@"currentItem"]){
+    if (object == self.audioPlayer && [keyPath isEqualToString:@"currentItem"]) {
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
         AVPlayerItem *lastPlayerItem = [change objectForKey:NSKeyValueChangeOldKey];
         if (lastPlayerItem != (id)[NSNull null]) {
@@ -713,7 +713,7 @@ static dispatch_once_t onceToken;
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
                 [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedCurrentItem error:self.audioPlayer.currentItem.error];
             }
-        }else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
+        } else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerReadyToPlay:)]) {
                 [self.delegate hysteriaPlayerReadyToPlay:HysteriaPlayerReadyToPlayCurrentItem];
             }
@@ -727,7 +727,7 @@ static dispatch_once_t onceToken;
         isPreBuffered = YES;
     }
     
-    if(object == self.audioPlayer.currentItem && [keyPath isEqualToString:@"loadedTimeRanges"]){
+    if (object == self.audioPlayer.currentItem && [keyPath isEqualToString:@"loadedTimeRanges"]) {
         if (self.audioPlayer.currentItem.hash != prepareingItemHash) {
             [self prepareNextPlayerItem];
             prepareingItemHash = self.audioPlayer.currentItem.hash;
@@ -767,14 +767,14 @@ static dispatch_once_t onceToken;
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
     AVPlayerItem *item = [notification object];
-    if(![item isEqual:self.audioPlayer.currentItem]){
+    if (![item isEqual:self.audioPlayer.currentItem]) {
         return;
     }
 
-    NSNumber *CHECK_Order = [self getHysteriaIndex:self.audioPlayer.currentItem];
-    if (CHECK_Order) {
+    NSNumber *currentItemIndex = [self getHysteriaIndex:self.audioPlayer.currentItem];
+    if (currentItemIndex) {
         if (_repeatMode == HysteriaPlayerRepeatModeOnce) {
-            NSInteger currentIndex = [CHECK_Order integerValue];
+            NSInteger currentIndex = [currentItemIndex integerValue];
             [self fetchAndPlayPlayerItem:currentIndex];
         } else if (_shuffleMode == HysteriaPlayerShuffleModeOn) {
             NSInteger nextIndex = [self randomIndex];
@@ -788,7 +788,7 @@ static dispatch_once_t onceToken;
             }
         } else {
             if (self.audioPlayer.items.count == 1 || !isPreBuffered) {
-                NSInteger nowIndex = [CHECK_Order integerValue];
+                NSInteger nowIndex = [currentItemIndex integerValue];
                 if (nowIndex + 1 < [self hysteriaPlayerItemsCount]) {
                     [self playNext];
                 } else {
