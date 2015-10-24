@@ -24,7 +24,6 @@
     // Insert code here to initialize your application
     self.media = [[NSMutableArray alloc] init];
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    hysteriaPlayer.skipEmptySoundPlaying = YES;
     hysteriaPlayer.delegate = self;
     hysteriaPlayer.datasource = self;
 }

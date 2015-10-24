@@ -11,6 +11,7 @@
 		586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
 		8308CB6A18B26E6000AA0C3A /* pain_is_temporary.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */; };
 		8308CB6C18B26EA600AA0C3A /* new_noise.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */; };
+		83170A431BDB4BFC00F0B008 /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5ED716A5D6A400604530 /* point1sec.mp3 */; };
 		831C382616BBA0E10097D0F2 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381416BBA0E10097D0F2 /* AFHTTPClient.m */; };
 		831C382716BBA0E10097D0F2 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381616BBA0E10097D0F2 /* AFHTTPRequestOperation.m */; };
 		831C382816BBA0E10097D0F2 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C381816BBA0E10097D0F2 /* AFImageRequestOperation.m */; };
@@ -389,6 +390,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83170A431BDB4BFC00F0B008 /* point1sec.mp3 in Resources */,
 				C1172EAB1BD99F9A00B8A72C /* Assets.xcassets in Resources */,
 				C1172EAE1BD99F9A00B8A72C /* MainMenu.xib in Resources */,
 			);
