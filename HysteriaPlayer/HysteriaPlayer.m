@@ -218,6 +218,17 @@ static dispatch_once_t onceToken;
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemFailedToPlayEndTime:)
+                                                 name:AVPlayerItemFailedToPlayToEndTimeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemPlaybackStall:)
+                                                 name:AVPlayerItemPlaybackStalledNotification
+                                               object:nil];
+    
 #if TARGET_OS_IPHONE
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(interruption:)
@@ -415,6 +426,11 @@ static dispatch_once_t onceToken;
             completionBlock(finished);
         }
     }];
+}
+
+- (NSInteger)getLastItemIndex
+{
+    return self.lastItemIndex;
 }
 
 - (AVPlayerItem *)getCurrentItem
@@ -696,6 +712,7 @@ static dispatch_once_t onceToken;
         if (newPlayerItem != (id)[NSNull null]) {
             [newPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
             [newPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+            
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
                 [self.delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
             }
@@ -802,6 +819,28 @@ static dispatch_once_t onceToken;
                 }
             }
         }
+    }
+}
+
+- (void)playerItemFailedToPlayEndTime:(NSNotification *)notification {
+    AVPlayerItem *item = [notification object];
+    if (![item isEqual:self.audioPlayer.currentItem]) {
+        return;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerItemFailedToPlayEndTime:error:)]) {
+        [self.delegate hysteriaPlayerItemFailedToPlayEndTime:notification.object error:notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey]];
+    }
+}
+
+- (void)playerItemPlaybackStall:(NSNotification *)notification {
+    AVPlayerItem *item = [notification object];
+    if (![item isEqual:self.audioPlayer.currentItem]) {
+        return;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerItemPlaybackStall:)]) {
+        [self.delegate hysteriaPlayerItemPlaybackStall:notification.object];
     }
 }
 
