@@ -53,6 +53,9 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 - (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
 - (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier;
 
+- (void)hysteriaPlayerItemFailedToPlayEndTime:(AVPlayerItem *)item error:(NSError *)error;
+- (void)hysteriaPlayerItemPlaybackStall:(AVPlayerItem *)item;
+
 @end
 
 @protocol HysteriaPlayerDataSource <NSObject>
@@ -164,6 +167,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (HysteriaPlayerShuffleMode)getPlayerShuffleMode;
 
 - (BOOL)isPlaying;
+- (NSInteger)getLastItemIndex;
 - (AVPlayerItem *)getCurrentItem;
 - (HysteriaPlayerStatus)getHysteriaPlayerStatus;
 
