@@ -556,6 +556,11 @@ static dispatch_once_t onceToken;
     pauseReasonForced = forcibly;
 }
 
+- (AVQueuePlayer)getPlayer
+{
+    return self.audioPlayer;
+}
+
 #pragma mark -
 #pragma mark ===========  Player info  =========
 #pragma mark -
