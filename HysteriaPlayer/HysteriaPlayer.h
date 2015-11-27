@@ -114,6 +114,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
+@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic, weak) id<HysteriaPlayerDelegate> delegate;
 @property (nonatomic, weak) id<HysteriaPlayerDataSource> datasource;
 @property (nonatomic) NSInteger itemsCount;

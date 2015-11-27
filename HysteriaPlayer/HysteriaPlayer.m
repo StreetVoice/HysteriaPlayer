@@ -38,7 +38,6 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic, readwrite) BOOL emptySoundPlaying;
 @property (nonatomic) NSInteger lastItemIndex;
 
-@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic) HysteriaPlayerRepeatMode repeatMode;
 @property (nonatomic) HysteriaPlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
@@ -554,11 +553,6 @@ static dispatch_once_t onceToken;
 - (void)pausePlayerForcibly:(BOOL)forcibly
 {
     pauseReasonForced = forcibly;
-}
-
-- (AVQueuePlayer)getPlayer
-{
-    return self.audioPlayer;
 }
 
 #pragma mark -
