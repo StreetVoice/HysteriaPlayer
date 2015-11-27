@@ -38,7 +38,6 @@ static const void *Hysteriatag = &Hysteriatag;
 @property (nonatomic, readwrite) BOOL emptySoundPlaying;
 @property (nonatomic) NSInteger lastItemIndex;
 
-@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
 @property (nonatomic) HysteriaPlayerRepeatMode repeatMode;
 @property (nonatomic) HysteriaPlayerShuffleMode shuffleMode;
 @property (nonatomic) HysteriaPlayerStatus hysteriaPlayerStatus;
