@@ -45,7 +45,6 @@ static const void *Hysteriatag = &Hysteriatag;
 
 - (void)longTimeBufferBackground;
 - (void)longTimeBufferBackgroundCompleted;
-- (void)setHysteriaIndex:(AVPlayerItem *)item Key:(NSNumber *)order;
 
 @end
 
@@ -199,7 +198,7 @@ static dispatch_once_t onceToken;
 #pragma mark ===========  Runtime AssociatedObject  =========
 #pragma mark -
 
-- (void)setHysteriaIndex:(AVPlayerItem *)item Key:(NSNumber *)order {
+- (void)setHysteriaIndex:(AVPlayerItem *)item key:(NSNumber *)order {
     objc_setAssociatedObject(item, Hysteriatag, order, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -305,7 +304,7 @@ static dispatch_once_t onceToken;
         return;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self setHysteriaIndex:item Key:[NSNumber numberWithInteger:index]];
+        [self setHysteriaIndex:item key:[NSNumber numberWithInteger:index]];
         if (self.isMemoryCached) {
             NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
             [playerItems addObject:item];
@@ -373,7 +372,7 @@ static dispatch_once_t onceToken;
         }
     }
     
-    self.playerItems = nil;
+    self.playerItems = [self isMemoryCached] ? [NSArray array] : nil;
     [self.audioPlayer removeAllItems];
 }
 
@@ -397,7 +396,7 @@ static dispatch_once_t onceToken;
                 [self.audioPlayer removeItem:item];
             }
         } else if (checkIndex > order) {
-            [self setHysteriaIndex:item Key:[NSNumber numberWithInteger:checkIndex -1]];
+            [self setHysteriaIndex:item key:[NSNumber numberWithInteger:checkIndex -1]];
         }
     }
 }
@@ -408,7 +407,7 @@ static dispatch_once_t onceToken;
         NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
         if (checkIndex == from || checkIndex == to) {
             NSNumber *replaceOrder = checkIndex == from ? [NSNumber numberWithInteger:to] : [NSNumber numberWithInteger:from];
-            [self setHysteriaIndex:item Key:replaceOrder];
+            [self setHysteriaIndex:item key:replaceOrder];
         }
     }
 }
