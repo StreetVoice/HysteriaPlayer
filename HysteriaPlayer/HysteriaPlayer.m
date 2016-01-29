@@ -383,11 +383,11 @@ static dispatch_once_t onceToken;
     }
 }
 
-- (void)removeItemAtIndex:(NSInteger)order
+- (void)removeItemAtIndex:(NSInteger)index
 {
     for (AVPlayerItem *item in [NSArray arrayWithArray:self.playerItems]) {
         NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
-        if (checkIndex == order) {
+        if (checkIndex == index) {
             NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
             [playerItems removeObject:item];
             self.playerItems = playerItems;
@@ -395,7 +395,7 @@ static dispatch_once_t onceToken;
             if ([self.audioPlayer.items indexOfObject:item] != NSNotFound) {
                 [self.audioPlayer removeItem:item];
             }
-        } else if (checkIndex > order) {
+        } else if (checkIndex > index) {
             [self setHysteriaIndex:item key:[NSNumber numberWithInteger:checkIndex -1]];
         }
     }
@@ -404,12 +404,25 @@ static dispatch_once_t onceToken;
 - (void)moveItemFromIndex:(NSInteger)from toIndex:(NSInteger)to
 {
     for (AVPlayerItem *item in self.playerItems) {
-        NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
-        if (checkIndex == from || checkIndex == to) {
-            NSNumber *replaceOrder = checkIndex == from ? [NSNumber numberWithInteger:to] : [NSNumber numberWithInteger:from];
-            [self setHysteriaIndex:item key:replaceOrder];
+        [self resetItemIndexIfNeeds:item fromIndex:from toIndex:to];
+    }
+    
+    for (AVPlayerItem *item in self.audioPlayer.items) {
+        if ([self resetItemIndexIfNeeds:item fromIndex:from toIndex:to]) {
+            [self removeQueuesAtPlayer];
         }
     }
+}
+
+- (BOOL)resetItemIndexIfNeeds:(AVPlayerItem *)item fromIndex:(NSInteger)sourceIndex toIndex:(NSInteger)destinationIndex
+{
+    NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
+    if (checkIndex == sourceIndex || checkIndex == destinationIndex) {
+        NSNumber *replaceOrder = checkIndex == sourceIndex ? [NSNumber numberWithInteger:destinationIndex] : [NSNumber numberWithInteger:sourceIndex];
+        [self setHysteriaIndex:item key:replaceOrder];
+        return YES;
+    }
+    return NO;
 }
 
 - (void)seekToTime:(double)seconds
