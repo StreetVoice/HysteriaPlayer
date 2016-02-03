@@ -385,18 +385,29 @@ static dispatch_once_t onceToken;
 
 - (void)removeItemAtIndex:(NSInteger)index
 {
-    for (AVPlayerItem *item in [NSArray arrayWithArray:self.playerItems]) {
-        NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
-        if (checkIndex == index) {
-            NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
-            [playerItems removeObject:item];
-            self.playerItems = playerItems;
-            
-            if ([self.audioPlayer.items indexOfObject:item] != NSNotFound) {
-                [self.audioPlayer removeItem:item];
+    if ([self isMemoryCached]) {
+        for (AVPlayerItem *item in [NSArray arrayWithArray:self.playerItems]) {
+            NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
+            if (checkIndex == index) {
+                NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
+                [playerItems removeObject:item];
+                self.playerItems = playerItems;
+                
+                if ([self.audioPlayer.items indexOfObject:item] != NSNotFound) {
+                    [self.audioPlayer removeItem:item];
+                }
+            } else if (checkIndex > index) {
+                [self setHysteriaIndex:item key:[NSNumber numberWithInteger:checkIndex -1]];
             }
-        } else if (checkIndex > index) {
-            [self setHysteriaIndex:item key:[NSNumber numberWithInteger:checkIndex -1]];
+        }
+    } else {
+        for (AVPlayerItem *item in self.audioPlayer.items) {
+            NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
+            if (checkIndex == index) {
+                [self.audioPlayer removeItem:item];
+            } else if (checkIndex > index) {
+                [self setHysteriaIndex:item key:[NSNumber numberWithInteger:checkIndex -1]];
+            }
         }
     }
 }
