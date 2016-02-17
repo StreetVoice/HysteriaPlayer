@@ -65,7 +65,7 @@ Ability to play the __first__ PlayerItem when your application is resigned activ
 Background modes for audio playback
 ----------
 
-XCode providing GUI checkbox to enable various background modes. Enable **Audio and AirPlay**, you can find this section from `Project -> Capabilities -> Background Modes`.
+Xcode providing GUI checkbox to enable various background modes. Enable **Audio and AirPlay**, you can find this section from `Project -> Capabilities -> Background Modes`.
 
 ![](docs/RegisterBGModesAudio.png)
 
