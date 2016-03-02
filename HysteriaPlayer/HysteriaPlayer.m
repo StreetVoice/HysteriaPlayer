@@ -428,12 +428,17 @@ static dispatch_once_t onceToken;
 - (BOOL)resetItemIndexIfNeeds:(AVPlayerItem *)item fromIndex:(NSInteger)sourceIndex toIndex:(NSInteger)destinationIndex
 {
     NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
-    if (checkIndex == sourceIndex || checkIndex == destinationIndex) {
-        NSNumber *replaceOrder = checkIndex == sourceIndex ? [NSNumber numberWithInteger:destinationIndex] : [NSNumber numberWithInteger:sourceIndex];
+    BOOL found = NO;
+    if (checkIndex == sourceIndex) {
+        NSNumber *replaceOrder = [NSNumber numberWithInteger:destinationIndex];
         [self setHysteriaIndex:item key:replaceOrder];
-        return YES;
+        found = YES;
+    } else if (checkIndex >= destinationIndex) {
+        NSNumber *replaceOrder = [NSNumber numberWithInteger:(checkIndex + 1)];
+        [self setHysteriaIndex:item key:replaceOrder];
     }
-    return NO;
+
+    return found;
 }
 
 - (void)seekToTime:(double)seconds
