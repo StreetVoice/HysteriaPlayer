@@ -429,15 +429,27 @@ static dispatch_once_t onceToken;
 {
     NSInteger checkIndex = [[self getHysteriaIndex:item] integerValue];
     BOOL found = NO;
+    NSNumber *replaceOrder;
     if (checkIndex == sourceIndex) {
-        NSNumber *replaceOrder = [NSNumber numberWithInteger:destinationIndex];
-        [self setHysteriaIndex:item key:replaceOrder];
+        replaceOrder = [NSNumber numberWithInteger:destinationIndex];
         found = YES;
-    } else if (checkIndex >= destinationIndex) {
-        NSNumber *replaceOrder = [NSNumber numberWithInteger:(checkIndex + 1)];
-        [self setHysteriaIndex:item key:replaceOrder];
+    } else if (checkIndex == destinationIndex) {
+        replaceOrder = sourceIndex > checkIndex ? @(checkIndex + 1) : @(checkIndex - 1);
+        found = YES;
+    } else if (checkIndex > destinationIndex && checkIndex < sourceIndex) {
+        replaceOrder = [NSNumber numberWithInteger:(checkIndex + 1)];
+        found = YES;
+    } else if (checkIndex < destinationIndex && checkIndex > sourceIndex) {
+        replaceOrder = [NSNumber numberWithInteger:(checkIndex - 1)];
+        found = YES;
     }
-
+    
+    if (replaceOrder) {
+        [self setHysteriaIndex:item key:replaceOrder];
+        if (self.lastItemIndex == checkIndex) {
+            self.lastItemIndex = [replaceOrder integerValue];
+        }
+    }
     return found;
 }
 
