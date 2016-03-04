@@ -156,7 +156,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (void)moveItemFromIndex:(NSInteger)from toIndex:(NSInteger)to;
 - (void)play;
 - (void)pause;
-- (void)pausePlayerForcibly:(BOOL)forcibly;
+- (void)pausePlayerForcibly:(BOOL)forcibly DEPRECATED_MSG_ATTRIBUTE("use pause instead.");
 - (void)playPrevious;
 - (void)playNext;
 - (void)seekToTime:(double) CMTime;
