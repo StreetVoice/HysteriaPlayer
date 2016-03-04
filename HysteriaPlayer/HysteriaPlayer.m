@@ -515,8 +515,9 @@ static dispatch_once_t onceToken;
                 if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                     [self.delegate hysteriaPlayerDidReachEnd];
                 }
+            } else {
+                [self fetchAndPlayPlayerItem:0];
             }
-            [self fetchAndPlayPlayerItem:0];
         }
     }
 }
