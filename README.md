@@ -146,24 +146,6 @@ double durationTime = [[dict objectForKey:@"DurationTime"] doubleValue];
 double currentTime = [[dict objectForKey:@"CurrentTime"] doubleValue];
 ```
 
-### How to pause my playback forcibly? ###
-`pausePlayerForcibly:(BOOL)` method telling HysteriaPlayer to/not to force pause the playback(mostly when user tapped play/pause button)
-```objective-c
-- (IBAction)play_pauseButton:(id)sender
-{
-    HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
-    
-    if ([hysteriaPlayer isPlaying])
-    {
-        [hysteriaPlayer pausePlayerForcibly:YES];
-        [hysteriaPlayer pause];
-    }else{
-        [hysteriaPlayer pausePlayerForcibly:NO];
-        [hysteriaPlayer play];
-    }
-}
-```
-
 ### Get Player status ###
 ```objective-c
 switch ([hysteriaPlayer getHysteriaPlayerStatus]) {

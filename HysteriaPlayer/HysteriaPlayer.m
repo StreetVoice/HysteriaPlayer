@@ -7,6 +7,7 @@
 
 #import "HysteriaPlayer.h"
 #import <objc/runtime.h>
+#import <UIKit/UIKit.h>
 
 #if TARGET_OS_IPHONE
     #import <AudioToolbox/AudioSession.h>
@@ -479,11 +480,13 @@ static dispatch_once_t onceToken;
 
 - (void)play
 {
+    pauseReasonForced = NO;
     [self.audioPlayer play];
 }
 
 - (void)pause
 {
+    pauseReasonForced = YES;
     [self.audioPlayer pause];
 }
 
@@ -494,7 +497,7 @@ static dispatch_once_t onceToken;
         if (nextIndex != NSNotFound) {
             [self fetchAndPlayPlayerItem:nextIndex];
         } else {
-            [self pausePlayerForcibly:YES];
+            pauseReasonForced = YES;
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                 [self.delegate hysteriaPlayerDidReachEnd];
             }
@@ -511,7 +514,7 @@ static dispatch_once_t onceToken;
             }
         } else {
             if (_repeatMode == HysteriaPlayerRepeatModeOff) {
-                [self pausePlayerForcibly:YES];
+                pauseReasonForced = YES;
                 if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                     [self.delegate hysteriaPlayerDidReachEnd];
                 }
@@ -591,10 +594,7 @@ static dispatch_once_t onceToken;
     return _shuffleMode;
 }
 
-- (void)pausePlayerForcibly:(BOOL)forcibly
-{
-    pauseReasonForced = forcibly;
-}
+- (void)pausePlayerForcibly:(BOOL)forcibly {}
 
 #pragma mark -
 #pragma mark ===========  Player info  =========
@@ -669,11 +669,11 @@ static dispatch_once_t onceToken;
     
     if (interuptionType == AVAudioSessionInterruptionTypeBegan && !pauseReasonForced) {
         interruptedWhilePlaying = YES;
-        [self pausePlayerForcibly:YES];
+        pauseReasonForced = YES;
         [self pause];
     } else if (interuptionType == AVAudioSessionInterruptionTypeEnded && interruptedWhilePlaying) {
         interruptedWhilePlaying = NO;
-        [self pausePlayerForcibly:NO];
+        pauseReasonForced = NO;
         [self play];
     }
     if (!self.disableLogs) {
@@ -690,10 +690,10 @@ static dispatch_once_t onceToken;
     
     if (routeChangeType == AVAudioSessionRouteChangeReasonOldDeviceUnavailable && !pauseReasonForced) {
         routeChangedWhilePlaying = YES;
-        [self pausePlayerForcibly:YES];
+        pauseReasonForced = YES;
     } else if (routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying) {
         routeChangedWhilePlaying = NO;
-        [self pausePlayerForcibly:NO];
+        pauseReasonForced = NO;
         [self play];
     }
     if (!self.disableLogs) {
@@ -838,7 +838,7 @@ static dispatch_once_t onceToken;
             if (nextIndex != NSNotFound) {
                 [self fetchAndPlayPlayerItem:[self randomIndex]];
             } else {
-                [self pausePlayerForcibly:YES];
+                pauseReasonForced = YES;
                 if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                     [self.delegate hysteriaPlayerDidReachEnd];
                 }
@@ -850,12 +850,13 @@ static dispatch_once_t onceToken;
                     [self playNext];
                 } else {
                     if (_repeatMode == HysteriaPlayerRepeatModeOff) {
-                        [self pausePlayerForcibly:YES];
+                        pauseReasonForced = YES;
                         if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                             [self.delegate hysteriaPlayerDidReachEnd];
                         }
+                    }else {
+                        [self fetchAndPlayPlayerItem:0];
                     }
-                    [self fetchAndPlayPlayerItem:0];
                 }
             }
         }
