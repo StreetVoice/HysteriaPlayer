@@ -7,9 +7,9 @@
 
 #import "HysteriaPlayer.h"
 #import <objc/runtime.h>
-#import <UIKit/UIKit.h>
 
 #if TARGET_OS_IPHONE
+    #import <UIKit/UIKit.h>
     #import <AudioToolbox/AudioSession.h>
 #endif
 
