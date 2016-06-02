@@ -920,7 +920,7 @@ static dispatch_once_t onceToken;
     [[AVAudioSession sharedInstance] setActive:NO error:&error];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 #endif
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [self.audioPlayer removeObserver:self forKeyPath:@"status" context:nil];
     [self.audioPlayer removeObserver:self forKeyPath:@"rate" context:nil];
