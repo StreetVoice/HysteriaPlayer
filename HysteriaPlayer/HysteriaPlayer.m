@@ -305,19 +305,28 @@ static dispatch_once_t onceToken;
 
 - (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSInteger)index
 {
-    AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
-    if (!item)
-        return;
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:url options:nil];
+    NSArray *keys = @[@"playable"];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self setHysteriaIndex:item key:[NSNumber numberWithInteger:index]];
-        if (self.isMemoryCached) {
-            NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
-            [playerItems addObject:item];
-            self.playerItems = playerItems;
-        }
-        [self insertPlayerItem:item];
-    });
+    AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+    
+    [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [self setHysteriaIndex:item key:[NSNumber numberWithInteger:index]];
+            
+            if (self.isMemoryCached) {
+                NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
+                [playerItems addObject:item];
+                self.playerItems = playerItems;
+            }
+            
+            if ([self getLastItemIndex] == index) {
+                [self insertPlayerItem:item];
+            }
+        });
+    }];
 }
 
 
