@@ -227,7 +227,7 @@
         self.itemsCount = [itunesPreviewUrls count];
         [hysteriaPlayer fetchAndPlayPlayerItem:0];
         [hysteriaPlayer setPlayerRepeatMode:HysteriaPlayerRepeatModeOn];
-    }failure:nil];
+    } failure:nil];
     
     [operation start];
 }
@@ -258,12 +258,9 @@
 {
     HysteriaPlayer *hysteriaPlayer = [HysteriaPlayer sharedInstance];
     
-    if ([hysteriaPlayer isPlaying])
-    {
-        [hysteriaPlayer pausePlayerForcibly:YES];
+    if ([hysteriaPlayer isPlaying]) {
         [hysteriaPlayer pause];
-    }else{
-        [hysteriaPlayer pausePlayerForcibly:NO];
+    } else {
         [hysteriaPlayer play];
     }
 }
