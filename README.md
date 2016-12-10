@@ -27,9 +27,6 @@ In [part 1](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriap
 
 In [part 2](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-2/), making a simple player user interface. 
 
-In [part 3](http://imnotyourson.com/streaming-remote-audio-on-ios-with-hysteriaplayer-tutorial-3/), registering lock screen details and remote controls. 
-
-
 You can download tutorial source code [here](https://github.com/saiday/HysteriaPlayerTutorial)
 
 Installation
