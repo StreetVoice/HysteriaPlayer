@@ -132,6 +132,10 @@ static dispatch_once_t onceToken;
             self.audioPlayer = [AVQueuePlayer queuePlayerWithItems:[NSArray arrayWithObject:playerItem]];
         }
     }
+    
+    if ([self.audioPlayer respondsToSelector:@selector(automaticallyWaitsToMinimizeStalling)]) {
+        self.audioPlayer.automaticallyWaitsToMinimizeStalling = NO;
+    }
 }
 
 - (void)backgroundPlayable
@@ -914,11 +918,16 @@ static dispatch_once_t onceToken;
 
 - (void)deprecatePlayer
 {
-    NSError *error;
     tookAudioFocus = NO;
 #if TARGET_OS_IPHONE
+    NSError *error;
     [[AVAudioSession sharedInstance] setActive:NO error:&error];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    if (error) {
+        if (!self.disableLogs) {
+            NSLog(@"HysteriaPlayer: set category error:%@", [error localizedDescription]);
+        }
+    }
 #endif
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
