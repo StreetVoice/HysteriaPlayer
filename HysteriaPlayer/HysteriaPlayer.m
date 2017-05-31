@@ -848,7 +848,7 @@ static dispatch_once_t onceToken;
             if (nextIndex != NSNotFound) {
                 [self fetchAndPlayPlayerItem:[self randomIndex]];
             } else {
-                _pauseReason = PauseReasonForced;
+                [self pause];
                 if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                     [self.delegate hysteriaPlayerDidReachEnd];
                 }
@@ -860,7 +860,7 @@ static dispatch_once_t onceToken;
                     [self playNext];
                 } else {
                     if (_repeatMode == HysteriaPlayerRepeatModeOff) {
-                        _pauseReason = PauseReasonForced;
+                        [self pause];
                         if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
                             [self.delegate hysteriaPlayerDidReachEnd];
                         }
