@@ -765,7 +765,7 @@ static dispatch_once_t onceToken;
     if (object == self.audioPlayer && [keyPath isEqualToString:@"currentItem"]) {
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
         AVPlayerItem *lastPlayerItem = [change objectForKey:NSKeyValueChangeOldKey];
-        if (lastPlayerItem != (id)[NSNull null]) {
+        if (lastPlayerItem != (id)[NSNull null] && lastPlayerItem != nil) {
             @try {
                 [lastPlayerItem removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
                 [lastPlayerItem removeObserver:self forKeyPath:@"status" context:nil];
