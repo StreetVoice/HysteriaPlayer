@@ -760,13 +760,17 @@ static dispatch_once_t onceToken;
             } @catch(id anException) {
                 //do nothing, obviously it wasn't attached because an exception was thrown
             }
+            
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemUnavailable:)]) {
+                [self.delegate hysteriaPlayerCurrentItemUnavailable:lastPlayerItem];
+            }
         }
         if (newPlayerItem != (id)[NSNull null]) {
             [newPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
             [newPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
-                [self.delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemAvailable:)]) {
+                [self.delegate hysteriaPlayerCurrentItemAvailable:newPlayerItem];
             }
             self.emptySoundPlaying = NO;
         }
