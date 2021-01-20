@@ -46,8 +46,8 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 
 @optional
 - (void)hysteriaPlayerWillChangedAtIndex:(NSInteger)index;
-- (void)hysteriaPlayerCurrentItemAvailable:(AVPlayerItem *)item;
-- (void)hysteriaPlayerCurrentItemUnavailable:(nullable AVPlayerItem *)item;
+- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
+- (void)hysteriaPlayerCurrentItemEvicted:(AVPlayerItem *)item;
 - (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
 - (void)hysteriaPlayerDidReachEnd;
 - (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
