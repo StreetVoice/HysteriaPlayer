@@ -311,15 +311,27 @@ static dispatch_once_t onceToken;
     AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
     if (!item)
         return;
-    
+    [self setupPlayerItemWithAVPlayerItem:item index:index];
+}
+
+- (void)setupPlayerItemWithAVURLAsset:(AVURLAsset *)asset index:(NSInteger)index
+{
+    AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+    if (!item)
+        return;
+    [self setupPlayerItemWithAVPlayerItem:item index:index];
+}
+
+- (void)setupPlayerItemWithAVPlayerItem:(AVPlayerItem *)playerItem index:(NSInteger)index
+{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self setHysteriaIndex:item key:[NSNumber numberWithInteger:index]];
+        [self setHysteriaIndex:playerItem key:[NSNumber numberWithInteger:index]];
         if (self.isMemoryCached) {
             NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
-            [playerItems addObject:item];
+            [playerItems addObject:playerItem];
             self.playerItems = playerItems;
         }
-        [self insertPlayerItem:item];
+        [self insertPlayerItem:playerItem];
     });
 }
 
