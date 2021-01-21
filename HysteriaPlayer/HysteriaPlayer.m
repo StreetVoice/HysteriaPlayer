@@ -765,12 +765,16 @@ static dispatch_once_t onceToken;
     if (object == self.audioPlayer && [keyPath isEqualToString:@"currentItem"]) {
         AVPlayerItem *newPlayerItem = [change objectForKey:NSKeyValueChangeNewKey];
         AVPlayerItem *lastPlayerItem = [change objectForKey:NSKeyValueChangeOldKey];
-        if (lastPlayerItem != (id)[NSNull null]) {
+        if (lastPlayerItem != (id)[NSNull null] && lastPlayerItem != nil) {
             @try {
                 [lastPlayerItem removeObserver:self forKeyPath:@"loadedTimeRanges" context:nil];
                 [lastPlayerItem removeObserver:self forKeyPath:@"status" context:nil];
             } @catch(id anException) {
                 //do nothing, obviously it wasn't attached because an exception was thrown
+            }
+            
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemEvicted:)]) {
+                [self.delegate hysteriaPlayerCurrentItemEvicted:lastPlayerItem];
             }
         }
         if (newPlayerItem != (id)[NSNull null]) {
