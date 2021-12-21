@@ -41,23 +41,25 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
     HysteriaPlayerFailedCurrentItem = 4001,
 };
 
+@class HysteriaPlayer;
+
 /**
  *  HysteriaPlayerDelegate, all delegate method is optional.
  */
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
-- (void)hysteriaPlayerWillChangedAtIndex:(NSInteger)index;
-- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
-- (void)hysteriaPlayerCurrentItemEvicted:(AVPlayerItem *)item;
-- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
-- (void)hysteriaPlayerDidReachEnd;
-- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
-- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
-- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangedAtIndex:(NSInteger)index;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer currentItemChanged:(AVPlayerItem *)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer currentItemEvicted:(AVPlayerItem *)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateChanged:(BOOL)isPlaying;
+- (void)hysteriaPlayerDidReachEnd:(HysteriaPlayer *)hysteriaPlayer;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer currentItemPreloaded:(CMTime)time;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer readyToPlay:(HysteriaPlayerReadyToPlay)identifier;
 
-- (void)hysteriaPlayerItemFailedToPlayEndTime:(AVPlayerItem * _Nullable)item error:(NSError *)error;
-- (void)hysteriaPlayerItemPlaybackStall:(AVPlayerItem * _Nullable)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer itemFailedToPlayToEndTime:(AVPlayerItem * _Nullable)item error:(NSError *)error;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer itemPlaybackStall:(AVPlayerItem * _Nullable)item;
 
 @end
 
@@ -70,7 +72,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *
  *  @return items count
  */
-- (NSInteger)hysteriaPlayerNumberOfItems;
+- (NSInteger)numberOfItemsInHysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer;
 
 /**
  *  Source URL provider, hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: is for async task usage.
@@ -80,7 +82,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *
  *  @return source URL
  */
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
+- (NSURL *)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer URLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
 /**
  *  Source URL provider, would excute until you call setupPlayerItemWithUrl:index:
@@ -88,7 +90,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *  @param index     index of the item
  *  @param preBuffer ask URL for pre buffer or not
  */
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer asyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
 @end
 
