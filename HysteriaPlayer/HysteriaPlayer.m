@@ -14,6 +14,8 @@
 #endif
 
 static const void *Hysteriatag = &Hysteriatag;
+NSString *const kHysteriaPlayerErrorContext = @"Context";
+NSErrorDomain const HysteriaPlayerErrorDomain = @"com.streetvoice.HysteriaPlayer.error";
 
 typedef NS_ENUM(NSInteger, PauseReason) {
     PauseReasonNone,
@@ -481,7 +483,7 @@ static dispatch_once_t onceToken;
     [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC)];
 }
 
-- (void)seekToTime:(double)seconds withCompletionBlock:(void (^)(BOOL))completionBlock
+- (void)seekToTime:(double)seconds withCompletionBlock:(void (^ _Nullable)(BOOL))completionBlock
 {
     [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
         if (completionBlock) {
@@ -748,8 +750,10 @@ static dispatch_once_t onceToken;
             if (self.popAlertWhenError) {
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.error];
             }
+            
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
-                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedPlayer error:self.audioPlayer.error];
+                NSError *error = self.audioPlayer.error ? self.audioPlayer.error : [self unknownError];
+                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedPlayer error:error];
             }
         }
     }
@@ -796,7 +800,8 @@ static dispatch_once_t onceToken;
             }
             
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
-                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedCurrentItem error:self.audioPlayer.currentItem.error];
+                NSError *error = self.audioPlayer.currentItem.error ? self.audioPlayer.currentItem.error : [self unknownError];
+                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedCurrentItem error:error];
             }
         } else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayerReadyToPlay:)]) {
@@ -896,7 +901,9 @@ static dispatch_once_t onceToken;
     }
     
     if ([self.delegate respondsToSelector:@selector(hysteriaPlayerItemFailedToPlayEndTime:error:)]) {
-        [self.delegate hysteriaPlayerItemFailedToPlayEndTime:notification.object error:notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey]];
+        NSError *itemFailedToPlayToEndTimeError = notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey];
+        NSError *error = itemFailedToPlayToEndTimeError ? itemFailedToPlayToEndTimeError : [self unknownError];
+        [self.delegate hysteriaPlayerItemFailedToPlayEndTime:item error:error];
     }
 }
 
@@ -927,6 +934,11 @@ static dispatch_once_t onceToken;
     } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
     
     return index;
+}
+
+- (NSError *)unknownError
+{
+    return [[NSError alloc] initWithDomain:HysteriaPlayerErrorDomain code:0 userInfo:@{kHysteriaPlayerErrorContext : @"unknown error"}];
 }
 
 #pragma mark -
