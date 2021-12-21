@@ -166,21 +166,21 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (void)seekToTime:(double)CMTime;
 - (void)seekToTime:(double)CMTime withCompletionBlock:(void (^ _Nullable)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode;
-- (HysteriaPlayerRepeatMode)getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode;
-- (HysteriaPlayerShuffleMode)getPlayerShuffleMode;
+- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode NS_SWIFT_NAME(setRepeatMode(mode:));
+- (HysteriaPlayerRepeatMode)getPlayerRepeatMode NS_SWIFT_NAME(repeatMode());
+- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode NS_SWIFT_NAME(setShuffleMode(mode:));
+- (HysteriaPlayerShuffleMode)getPlayerShuffleMode NS_SWIFT_NAME(shuffleMode());
 
 - (BOOL)isPlaying;
-- (NSInteger)getLastItemIndex;
-- (AVPlayerItem * _Nullable)getCurrentItem;
-- (HysteriaPlayerStatus)getHysteriaPlayerStatus;
+- (NSInteger)getLastItemIndex NS_SWIFT_NAME(lastItemIndex());
+- (AVPlayerItem * _Nullable)getCurrentItem NS_SWIFT_NAME(currentItem());
+- (HysteriaPlayerStatus)getHysteriaPlayerStatus NS_SWIFT_NAME(status());
 
 - (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("set delegate property instead");
 - (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("Use delegate property instead");;
 
-- (float)getPlayingItemCurrentTime;
-- (float)getPlayingItemDurationTime;
+- (float)getPlayingItemCurrentTime NS_SWIFT_NAME(playingItemCurrentTime());
+- (float)getPlayingItemDurationTime NS_SWIFT_NAME(playingItemDurationTime());
 - (id)addBoundaryTimeObserverForTimes:(NSArray *)times queue:(dispatch_queue_t _Nullable)queue usingBlock:(void (^)(void))block;
 - (id)addPeriodicTimeObserverForInterval:(CMTime)interval queue:(dispatch_queue_t _Nullable)queue usingBlock:(void (^)(CMTime time))block;
 - (void)removeTimeObserver:(id)observer;
