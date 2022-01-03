@@ -266,8 +266,8 @@ static dispatch_once_t onceToken;
     self.lastItemIndex = index;
     [self.playedItems addObject:@(index)];
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:willChangedAtIndex:)]) {
-        [self.delegate hysteriaPlayer:self willChangedAtIndex:self.lastItemIndex];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:willChangePlayerItemAtIndex:)]) {
+        [self.delegate hysteriaPlayer:self willChangePlayerItemAtIndex:self.lastItemIndex];
     }
 }
 
@@ -737,7 +737,7 @@ static dispatch_once_t onceToken;
     if (object == self.audioPlayer && [keyPath isEqualToString:@"status"]) {
         if (self.audioPlayer.status == AVPlayerStatusReadyToPlay) {
             if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:readyToPlay:)]) {
-                [self.delegate hysteriaPlayer:self readyToPlay:HysteriaPlayerReadyToPlayPlayer];
+                [self.delegate hysteriaPlayer:self readyToPlayWithIdentifier:HysteriaPlayerReadyToPlayPlayer];
             }
             if (![self isPlaying]) {
                 [self.audioPlayer play];
@@ -751,9 +751,9 @@ static dispatch_once_t onceToken;
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.error];
             }
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailed:error:)]) {
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailWithIdentifier:error:)]) {
                 NSError *error = self.audioPlayer.error ? self.audioPlayer.error : [self unknownError];
-                [self.delegate hysteriaPlayer:self didFailed:HysteriaPlayerFailedPlayer error:error];
+                [self.delegate hysteriaPlayer:self didFailWithIdentifier:HysteriaPlayerFailedPlayer error:error];
             }
         }
     }
@@ -777,16 +777,16 @@ static dispatch_once_t onceToken;
                 //do nothing, obviously it wasn't attached because an exception was thrown
             }
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:currentItemEvicted:)]) {
-                [self.delegate hysteriaPlayer:self currentItemEvicted:lastPlayerItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didEvictCurrentItem:)]) {
+                [self.delegate hysteriaPlayer:self didEvictCurrentItem:lastPlayerItem];
             }
         }
         if (newPlayerItem != (id)[NSNull null]) {
             [newPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
             [newPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:currentItemChanged:)]) {
-                [self.delegate hysteriaPlayer:self currentItemChanged:newPlayerItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didChangeCurrentItem:)]) {
+                [self.delegate hysteriaPlayer:self didChangeCurrentItem:newPlayerItem];
             }
             self.emptySoundPlaying = NO;
         }
@@ -799,13 +799,13 @@ static dispatch_once_t onceToken;
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.currentItem.error];
             }
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailed:error:)]) {
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailWithIdentifier:error:)]) {
                 NSError *error = self.audioPlayer.currentItem.error ? self.audioPlayer.currentItem.error : [self unknownError];
-                [self.delegate hysteriaPlayer:self didFailed:HysteriaPlayerFailedCurrentItem error:error];
+                [self.delegate hysteriaPlayer:self didFailWithIdentifier:HysteriaPlayerFailedCurrentItem error:error];
             }
         } else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:readyToPlay:)]) {
-                [self.delegate hysteriaPlayer:self readyToPlay:HysteriaPlayerReadyToPlayCurrentItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:readyToPlayWithIdentifier:)]) {
+                [self.delegate hysteriaPlayer:self readyToPlayWithIdentifier:HysteriaPlayerReadyToPlayCurrentItem];
             }
             if (![self isPlaying] && _pauseReason != PauseReasonForced) {
                 [self.audioPlayer play];
@@ -827,8 +827,8 @@ static dispatch_once_t onceToken;
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange = [[timeRanges objectAtIndex:0] CMTimeRangeValue];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:currentItemPreloaded:)]) {
-                [self.delegate hysteriaPlayer:self currentItemPreloaded:CMTimeAdd(timerange.start, timerange.duration)];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didPreloadWithTime:)]) {
+                [self.delegate hysteriaPlayer:self didPreloadWithTime:CMTimeAdd(timerange.start, timerange.duration)];
             }
             
             if (self.audioPlayer.rate == 0 && _pauseReason != PauseReasonForced) {
@@ -913,8 +913,8 @@ static dispatch_once_t onceToken;
         return;
     }
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:itemPlaybackStall:)]) {
-        [self.delegate hysteriaPlayer:self itemPlaybackStall:item];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didStallWithPlayerItem:)]) {
+        [self.delegate hysteriaPlayer:self didStallWithPlayerItem:item];
     }
 }
 
