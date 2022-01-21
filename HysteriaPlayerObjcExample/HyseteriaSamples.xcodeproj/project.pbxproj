@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5804BD7A174B5E1A00EE13AA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */; };
-		586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
 		8308CB6A18B26E6000AA0C3A /* pain_is_temporary.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */; };
 		8308CB6C18B26EA600AA0C3A /* new_noise.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */; };
 		83170A431BDB4BFC00F0B008 /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 83AD5ED716A5D6A400604530 /* point1sec.mp3 */; };
@@ -68,14 +67,11 @@
 		C1172EC31BD99FEF00B8A72C /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C382316BBA0E10097D0F2 /* AFXMLRequestOperation.m */; };
 		C1172EC41BD99FEF00B8A72C /* UIImageView+AFNetworking.h in Sources */ = {isa = PBXBuildFile; fileRef = 831C382416BBA0E10097D0F2 /* UIImageView+AFNetworking.h */; };
 		C1172EC51BD99FEF00B8A72C /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C382516BBA0E10097D0F2 /* UIImageView+AFNetworking.m */; };
-		C1172EC61BD99FEF00B8A72C /* HysteriaPlayer.h in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */; };
-		C1172EC71BD99FEF00B8A72C /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */; };
+		F6F2B7A0279A9199002FE899 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F2B79F279A9199002FE899 /* HysteriaPlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5804BD79174B5E1A00EE13AA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
-		586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
 		8308CB6918B26E6000AA0C3A /* pain_is_temporary.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pain_is_temporary.mp3; sourceTree = "<group>"; };
 		8308CB6B18B26EA600AA0C3A /* new_noise.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = new_noise.mp3; sourceTree = "<group>"; };
 		831C381316BBA0E10097D0F2 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
@@ -133,6 +129,8 @@
 		C1172EAA1BD99F9A00B8A72C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1172EAD1BD99F9A00B8A72C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		C1172EAF1BD99F9A00B8A72C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F6F2B79E279A9199002FE899 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HysteriaPlayer.h; sourceTree = "<group>"; };
+		F6F2B79F279A9199002FE899 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HysteriaPlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,8 +162,8 @@
 		586AA23C17F4731C00A7E557 /* HysteriaPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				586AA23D17F4731C00A7E557 /* HysteriaPlayer.h */,
-				586AA23E17F4731C00A7E557 /* HysteriaPlayer.m */,
+				F6F2B79E279A9199002FE899 /* HysteriaPlayer.h */,
+				F6F2B79F279A9199002FE899 /* HysteriaPlayer.m */,
 			);
 			name = HysteriaPlayer;
 			path = ../HysteriaPlayer;
@@ -404,7 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83AD5EAD16A5CABD00604530 /* main.m in Sources */,
-				586AA24017F4731C00A7E557 /* HysteriaPlayer.m in Sources */,
+				F6F2B7A0279A9199002FE899 /* HysteriaPlayer.m in Sources */,
 				83AD5EB116A5CABD00604530 /* AppDelegate.m in Sources */,
 				83AD5EBD16A5CABD00604530 /* ViewController.m in Sources */,
 				831C382616BBA0E10097D0F2 /* AFHTTPClient.m in Sources */,
@@ -442,8 +440,6 @@
 				C1172EC31BD99FEF00B8A72C /* AFXMLRequestOperation.m in Sources */,
 				C1172EC41BD99FEF00B8A72C /* UIImageView+AFNetworking.h in Sources */,
 				C1172EC51BD99FEF00B8A72C /* UIImageView+AFNetworking.m in Sources */,
-				C1172EC61BD99FEF00B8A72C /* HysteriaPlayer.h in Sources */,
-				C1172EC71BD99FEF00B8A72C /* HysteriaPlayer.m in Sources */,
 				C1172EA91BD99F9A00B8A72C /* main.m in Sources */,
 				C1172EA61BD99F9A00B8A72C /* AppDelegate.m in Sources */,
 			);

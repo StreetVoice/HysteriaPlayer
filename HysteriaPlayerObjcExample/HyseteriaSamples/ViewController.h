@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
-#import "HysteriaPlayer.h"
 
 typedef NS_ENUM(NSUInteger, PlayingType) {
     PlayingTypeStaticItems,
@@ -16,7 +14,7 @@ typedef NS_ENUM(NSUInteger, PlayingType) {
     PlayingTypeAsync,
 };
 
-@interface ViewController : UIViewController <AVAudioSessionDelegate, HysteriaPlayerDelegate, HysteriaPlayerDataSource>
+@interface ViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeLabel;
 

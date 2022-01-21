@@ -52,13 +52,13 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didChangeCurrentItem:(AVPlayerItem *)item;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didEvictCurrentItem:(AVPlayerItem *)item;
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateChanged:(BOOL)isPlaying;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateDidChange:(float)rate;
 - (void)hysteriaPlayerDidReachEnd:(HysteriaPlayer *)hysteriaPlayer;
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didPreloadWithTime:(CMTime)time;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didPreloadCurrentItemWithTime:(CMTime)time;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailWithIdentifier:(HysteriaPlayerFailed)identifier error:(NSError *)error;
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer readyToPlayWithIdentifier:(HysteriaPlayerReadyToPlay)identifier;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didReadyToPlayWithIdentifier:(HysteriaPlayerReadyToPlay)identifier;
 
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer itemFailedToPlayToEndTime:(AVPlayerItem * _Nullable)item error:(NSError *)error;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailedWithPlayerItem:(AVPlayerItem * _Nullable)item toPlayToEndTimeWithError:(NSError *)error;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didStallWithPlayerItem:(AVPlayerItem * _Nullable)item;
 
 @end

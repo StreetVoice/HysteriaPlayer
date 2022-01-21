@@ -112,7 +112,7 @@ static dispatch_once_t onceToken;
 
 - (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay{}
 
--(void)registerHandlerFailed:(Failed)failed {}
+- (void)registerHandlerFailed:(Failed)failed {}
 
 - (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger)count {}
 
@@ -230,7 +230,7 @@ static dispatch_once_t onceToken;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemFailedToPlayEndTime:)
+                                             selector:@selector(playerItemFailedToPlayToEndTime:)
                                                  name:AVPlayerItemFailedToPlayToEndTimeNotification
                                                object:nil];
     
@@ -736,8 +736,8 @@ static dispatch_once_t onceToken;
                         change:(NSDictionary *)change context:(void *)context {
     if (object == self.audioPlayer && [keyPath isEqualToString:@"status"]) {
         if (self.audioPlayer.status == AVPlayerStatusReadyToPlay) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:readyToPlay:)]) {
-                [self.delegate hysteriaPlayer:self readyToPlayWithIdentifier:HysteriaPlayerReadyToPlayPlayer];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didReadyToPlayWithIdentifier:)]) {
+                [self.delegate hysteriaPlayer:self didReadyToPlayWithIdentifier:HysteriaPlayerReadyToPlayPlayer];
             }
             if (![self isPlaying]) {
                 [self.audioPlayer play];
@@ -760,8 +760,8 @@ static dispatch_once_t onceToken;
     
     if (object == self.audioPlayer && [keyPath isEqualToString:@"rate"]) {
         if (!self.emptySoundPlaying) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:rateChanged:)]) {
-                [self.delegate hysteriaPlayer:self rateChanged:[self isPlaying]];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:rateDidChange:)]) {
+                [self.delegate hysteriaPlayer:self rateDidChange:self.audioPlayer.rate];
             }
         }
     }
@@ -804,8 +804,8 @@ static dispatch_once_t onceToken;
                 [self.delegate hysteriaPlayer:self didFailWithIdentifier:HysteriaPlayerFailedCurrentItem error:error];
             }
         } else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:readyToPlayWithIdentifier:)]) {
-                [self.delegate hysteriaPlayer:self readyToPlayWithIdentifier:HysteriaPlayerReadyToPlayCurrentItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didReadyToPlayWithIdentifier:)]) {
+                [self.delegate hysteriaPlayer:self didReadyToPlayWithIdentifier:HysteriaPlayerReadyToPlayCurrentItem];
             }
             if (![self isPlaying] && _pauseReason != PauseReasonForced) {
                 [self.audioPlayer play];
@@ -827,8 +827,8 @@ static dispatch_once_t onceToken;
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange = [[timeRanges objectAtIndex:0] CMTimeRangeValue];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didPreloadWithTime:)]) {
-                [self.delegate hysteriaPlayer:self didPreloadWithTime:CMTimeAdd(timerange.start, timerange.duration)];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didPreloadCurrentItemWithTime:)]) {
+                [self.delegate hysteriaPlayer:self didPreloadCurrentItemWithTime:CMTimeAdd(timerange.start, timerange.duration)];
             }
             
             if (self.audioPlayer.rate == 0 && _pauseReason != PauseReasonForced) {
@@ -900,10 +900,10 @@ static dispatch_once_t onceToken;
         return;
     }
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:itemFailedToPlayToEndTime:error:)]) {
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailedWithPlayerItem:toPlayToEndTimeWithError:)]) {
         NSError *itemFailedToPlayToEndTimeError = notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey];
         NSError *error = itemFailedToPlayToEndTimeError ? itemFailedToPlayToEndTimeError : [self unknownError];
-        [self.delegate hysteriaPlayer:self itemFailedToPlayToEndTime:item error:error];
+        [self.delegate hysteriaPlayer:self didFailedWithPlayerItem:item toPlayToEndTimeWithError:error];
     }
 }
 
