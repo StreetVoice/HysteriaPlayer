@@ -29,6 +29,8 @@
 #import <AvailabilityMacros.h>
 #import <AVFoundation/AVFoundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_ENUM(NSInteger, HysteriaPlayerReadyToPlay) {
     HysteriaPlayerReadyToPlayPlayer = 3000,
     HysteriaPlayerReadyToPlayCurrentItem = 3001,
@@ -39,23 +41,25 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
     HysteriaPlayerFailedCurrentItem = 4001,
 };
 
+@class HysteriaPlayer;
+
 /**
  *  HysteriaPlayerDelegate, all delegate method is optional.
  */
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
-- (void)hysteriaPlayerWillChangedAtIndex:(NSInteger)index;
-- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item;
-- (void)hysteriaPlayerCurrentItemEvicted:(AVPlayerItem *)item;
-- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying;
-- (void)hysteriaPlayerDidReachEnd;
-- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time;
-- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error;
-- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didChangeCurrentItem:(AVPlayerItem *)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didEvictCurrentItem:(AVPlayerItem *)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateDidChange:(float)rate;
+- (void)hysteriaPlayerDidReachEnd:(HysteriaPlayer *)hysteriaPlayer;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didPreloadCurrentItemWithTime:(CMTime)time;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailWithIdentifier:(HysteriaPlayerFailed)identifier error:(NSError *)error;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didReadyToPlayWithIdentifier:(HysteriaPlayerReadyToPlay)identifier;
 
-- (void)hysteriaPlayerItemFailedToPlayEndTime:(AVPlayerItem *)item error:(NSError *)error;
-- (void)hysteriaPlayerItemPlaybackStall:(AVPlayerItem *)item;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailedWithPlayerItem:(AVPlayerItem * _Nullable)item toPlayToEndTimeWithError:(NSError *)error;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didStallWithPlayerItem:(AVPlayerItem * _Nullable)item;
 
 @end
 
@@ -68,7 +72,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *
  *  @return items count
  */
-- (NSInteger)hysteriaPlayerNumberOfItems;
+- (NSInteger)numberOfItemsInHysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer;
 
 /**
  *  Source URL provider, hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: is for async task usage.
@@ -78,7 +82,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *
  *  @return source URL
  */
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
+- (NSURL *)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer URLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
 /**
  *  Source URL provider, would excute until you call setupPlayerItemWithUrl:index:
@@ -86,14 +90,14 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
  *  @param index     index of the item
  *  @param preBuffer ask URL for pre buffer or not
  */
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer asyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
 @end
 
 typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
 typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
 typedef void (^ SourceAsyncGetter)(NSInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
-typedef NSURL * (^ SourceSyncGetter)(NSInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
+typedef NSURL * _Nonnull (^ SourceSyncGetter)(NSInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
 
 typedef NS_ENUM(NSInteger, HysteriaPlayerStatus) {
     HysteriaPlayerStatusPlaying = 0,
@@ -115,12 +119,12 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 
 @interface HysteriaPlayer : NSObject <AVAudioPlayerDelegate>
 
-@property (nonatomic, strong) AVQueuePlayer *audioPlayer;
-@property (nonatomic, weak) id<HysteriaPlayerDelegate> delegate;
-@property (nonatomic, weak) id<HysteriaPlayerDataSource> datasource;
+@property (nonatomic, strong, nullable) AVQueuePlayer *audioPlayer;
+@property (nonatomic, weak, nullable) id<HysteriaPlayerDelegate> delegate;
+@property (nonatomic, weak, nullable) id<HysteriaPlayerDataSource> datasource;
 @property (nonatomic) NSInteger itemsCount;
 @property (nonatomic) BOOL disableLogs;
-@property (nonatomic, strong, readonly) NSArray *playerItems;
+@property (nonatomic, strong, readonly, nullable) NSArray *playerItems;
 @property (nonatomic, readonly) BOOL emptySoundPlaying;
 @property (nonatomic) BOOL skipEmptySoundPlaying;
 @property (nonatomic) BOOL popAlertWhenError;
@@ -145,7 +149,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
  */
 - (void)setupPlayerItemWithUrl:(NSURL *)url index:(NSInteger)index;
 - (void)setupPlayerItemWithAVURLAsset:(AVURLAsset *)asset index:(NSInteger)index;
-- (void)fetchAndPlayPlayerItem: (NSInteger )startAt;
+- (void)fetchAndPlayPlayerItem:(NSInteger)startAt;
 - (void)removeAllItems;
 - (void)removeQueuesAtPlayer;
 
@@ -161,26 +165,26 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 - (void)pausePlayerForcibly:(BOOL)forcibly DEPRECATED_MSG_ATTRIBUTE("use pause instead.");
 - (void)playPrevious;
 - (void)playNext;
-- (void)seekToTime:(double) CMTime;
-- (void)seekToTime:(double) CMTime withCompletionBlock:(void (^)(BOOL finished))completionBlock;
+- (void)seekToTime:(double)CMTime;
+- (void)seekToTime:(double)CMTime withCompletionBlock:(void (^ _Nullable)(BOOL finished))completionBlock;
 
-- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode;
-- (HysteriaPlayerRepeatMode)getPlayerRepeatMode;
-- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode;
-- (HysteriaPlayerShuffleMode)getPlayerShuffleMode;
+- (void)setPlayerRepeatMode:(HysteriaPlayerRepeatMode)mode NS_SWIFT_NAME(setRepeatMode(mode:));
+- (HysteriaPlayerRepeatMode)getPlayerRepeatMode NS_SWIFT_NAME(repeatMode());
+- (void)setPlayerShuffleMode:(HysteriaPlayerShuffleMode)mode NS_SWIFT_NAME(setShuffleMode(mode:));
+- (HysteriaPlayerShuffleMode)getPlayerShuffleMode NS_SWIFT_NAME(shuffleMode());
 
 - (BOOL)isPlaying;
-- (NSInteger)getLastItemIndex;
-- (AVPlayerItem *)getCurrentItem;
-- (HysteriaPlayerStatus)getHysteriaPlayerStatus;
+- (NSInteger)getLastItemIndex NS_SWIFT_NAME(lastItemIndex());
+- (AVPlayerItem * _Nullable)getCurrentItem NS_SWIFT_NAME(currentItem());
+- (HysteriaPlayerStatus)getHysteriaPlayerStatus NS_SWIFT_NAME(status());
 
 - (void)addDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("set delegate property instead");
 - (void)removeDelegate:(id<HysteriaPlayerDelegate>)delegate DEPRECATED_MSG_ATTRIBUTE("Use delegate property instead");;
 
-- (float)getPlayingItemCurrentTime;
-- (float)getPlayingItemDurationTime;
-- (id)addBoundaryTimeObserverForTimes:(NSArray *)times queue:(dispatch_queue_t)queue usingBlock:(void (^)(void))block;
-- (id)addPeriodicTimeObserverForInterval:(CMTime)interval queue:(dispatch_queue_t)queue usingBlock:(void (^)(CMTime time))block;
+- (float)getPlayingItemCurrentTime NS_SWIFT_NAME(playingItemCurrentTime());
+- (float)getPlayingItemDurationTime NS_SWIFT_NAME(playingItemDurationTime());
+- (id)addBoundaryTimeObserverForTimes:(NSArray *)times queue:(dispatch_queue_t _Nullable)queue usingBlock:(void (^)(void))block;
+- (id)addPeriodicTimeObserverForInterval:(CMTime)interval queue:(dispatch_queue_t _Nullable)queue usingBlock:(void (^)(CMTime time))block;
 - (void)removeTimeObserver:(id)observer;
 
 /**
@@ -198,9 +202,10 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
  *
  *  @return index of the item
  */
-- (NSNumber *)getHysteriaIndex:(AVPlayerItem *)item;
+- (NSNumber * _Nullable)getHysteriaIndex:(AVPlayerItem *)item;
 
 - (void)deprecatePlayer;
 
 @end
 
+NS_ASSUME_NONNULL_END

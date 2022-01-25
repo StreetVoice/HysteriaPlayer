@@ -14,6 +14,8 @@
 #endif
 
 static const void *Hysteriatag = &Hysteriatag;
+NSString *const kHysteriaPlayerErrorContext = @"Context";
+NSErrorDomain const HysteriaPlayerErrorDomain = @"com.streetvoice.HysteriaPlayer.error";
 
 typedef NS_ENUM(NSInteger, PauseReason) {
     PauseReasonNone,
@@ -110,7 +112,7 @@ static dispatch_once_t onceToken;
 
 - (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay{}
 
--(void)registerHandlerFailed:(Failed)failed {}
+- (void)registerHandlerFailed:(Failed)failed {}
 
 - (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger)count {}
 
@@ -228,7 +230,7 @@ static dispatch_once_t onceToken;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemFailedToPlayEndTime:)
+                                             selector:@selector(playerItemFailedToPlayToEndTime:)
                                                  name:AVPlayerItemFailedToPlayToEndTimeNotification
                                                object:nil];
     
@@ -264,8 +266,8 @@ static dispatch_once_t onceToken;
     self.lastItemIndex = index;
     [self.playedItems addObject:@(index)];
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerWillChangedAtIndex:)]) {
-        [self.delegate hysteriaPlayerWillChangedAtIndex:self.lastItemIndex];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:willChangePlayerItemAtIndex:)]) {
+        [self.delegate hysteriaPlayer:self willChangePlayerItemAtIndex:self.lastItemIndex];
     }
 }
 
@@ -285,22 +287,22 @@ static dispatch_once_t onceToken;
 
 - (NSInteger)hysteriaPlayerItemsCount
 {
-    if ([self.datasource respondsToSelector:@selector(hysteriaPlayerNumberOfItems)]) {
-        return [self.datasource hysteriaPlayerNumberOfItems];
+    if ([self.datasource respondsToSelector:@selector(numberOfItemsInHysteriaPlayer:)]) {
+        return [self.datasource numberOfItemsInHysteriaPlayer:self];
     }
     return self.itemsCount;
 }
 
 - (void)getSourceURLAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
-    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)], @"You didn't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
+    NSAssert([self.datasource respondsToSelector:@selector(hysteriaPlayer:URLForItemAtIndex:preBuffer:)] || [self.datasource respondsToSelector:@selector(hysteriaPlayer:asyncSetUrlForItemAtIndex:preBuffer:)], @"You didn't implement URL getter delegate from HysteriaPlayerDelegate, hysteriaPlayerURLForItemAtIndex:preBuffer: and hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: provides for the use of alternatives.");
     NSAssert([self hysteriaPlayerItemsCount] > index, ([NSString stringWithFormat:@"You are about to access index: %li URL when your HysteriaPlayer items count value is %li, please check hysteriaPlayerNumberOfItems or set itemsCount directly.", (unsigned long)index, (unsigned long)[self hysteriaPlayerItemsCount]]));
-    if ([self.datasource respondsToSelector:@selector(hysteriaPlayerURLForItemAtIndex:preBuffer:)] && [self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer]) {
+    if ([self.datasource respondsToSelector:@selector(hysteriaPlayer:URLForItemAtIndex:preBuffer:)] && [self.datasource hysteriaPlayer:self URLForItemAtIndex:index preBuffer:preBuffer]) {
         dispatch_async(HBGQueue, ^{
-            [self setupPlayerItemWithUrl:[self.datasource hysteriaPlayerURLForItemAtIndex:index preBuffer:preBuffer] index:index];
+            [self setupPlayerItemWithUrl:[self.datasource hysteriaPlayer:self URLForItemAtIndex:index preBuffer:preBuffer] index:index];
         });
-    } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)]) {
-        [self.datasource hysteriaPlayerAsyncSetUrlForItemAtIndex:index preBuffer:preBuffer];
+    } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayer:asyncSetUrlForItemAtIndex:preBuffer:)]) {
+        [self.datasource hysteriaPlayer:self asyncSetUrlForItemAtIndex:index preBuffer:preBuffer];
     } else {
         NSLog(@"No HysteriaPlayer datasource detected at %li index", (unsigned long) index);
     }
@@ -481,7 +483,7 @@ static dispatch_once_t onceToken;
     [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC)];
 }
 
-- (void)seekToTime:(double)seconds withCompletionBlock:(void (^)(BOOL))completionBlock
+- (void)seekToTime:(double)seconds withCompletionBlock:(void (^ _Nullable)(BOOL))completionBlock
 {
     [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
         if (completionBlock) {
@@ -520,8 +522,8 @@ static dispatch_once_t onceToken;
             [self fetchAndPlayPlayerItem:nextIndex];
         } else {
             _pauseReason = PauseReasonForced;
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
-                [self.delegate hysteriaPlayerDidReachEnd];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd:)]) {
+                [self.delegate hysteriaPlayerDidReachEnd:self];
             }
         }
     } else {
@@ -537,8 +539,8 @@ static dispatch_once_t onceToken;
         } else {
             if (_repeatMode == HysteriaPlayerRepeatModeOff) {
                 _pauseReason = PauseReasonForced;
-                if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
-                    [self.delegate hysteriaPlayerDidReachEnd];
+                if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd:)]) {
+                    [self.delegate hysteriaPlayerDidReachEnd:self];
                 }
             } else {
                 [self fetchAndPlayPlayerItem:0];
@@ -734,8 +736,8 @@ static dispatch_once_t onceToken;
                         change:(NSDictionary *)change context:(void *)context {
     if (object == self.audioPlayer && [keyPath isEqualToString:@"status"]) {
         if (self.audioPlayer.status == AVPlayerStatusReadyToPlay) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerReadyToPlay:)]) {
-                [self.delegate hysteriaPlayerReadyToPlay:HysteriaPlayerReadyToPlayPlayer];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didReadyToPlayWithIdentifier:)]) {
+                [self.delegate hysteriaPlayer:self didReadyToPlayWithIdentifier:HysteriaPlayerReadyToPlayPlayer];
             }
             if (![self isPlaying]) {
                 [self.audioPlayer play];
@@ -748,16 +750,18 @@ static dispatch_once_t onceToken;
             if (self.popAlertWhenError) {
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.error];
             }
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
-                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedPlayer error:self.audioPlayer.error];
+            
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailWithIdentifier:error:)]) {
+                NSError *error = self.audioPlayer.error ? self.audioPlayer.error : [self unknownError];
+                [self.delegate hysteriaPlayer:self didFailWithIdentifier:HysteriaPlayerFailedPlayer error:error];
             }
         }
     }
     
     if (object == self.audioPlayer && [keyPath isEqualToString:@"rate"]) {
         if (!self.emptySoundPlaying) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerRateChanged:)]) {
-                [self.delegate hysteriaPlayerRateChanged:[self isPlaying]];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:rateDidChange:)]) {
+                [self.delegate hysteriaPlayer:self rateDidChange:self.audioPlayer.rate];
             }
         }
     }
@@ -773,16 +777,16 @@ static dispatch_once_t onceToken;
                 //do nothing, obviously it wasn't attached because an exception was thrown
             }
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemEvicted:)]) {
-                [self.delegate hysteriaPlayerCurrentItemEvicted:lastPlayerItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didEvictCurrentItem:)]) {
+                [self.delegate hysteriaPlayer:self didEvictCurrentItem:lastPlayerItem];
             }
         }
         if (newPlayerItem != (id)[NSNull null]) {
             [newPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
             [newPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemChanged:)]) {
-                [self.delegate hysteriaPlayerCurrentItemChanged:newPlayerItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didChangeCurrentItem:)]) {
+                [self.delegate hysteriaPlayer:self didChangeCurrentItem:newPlayerItem];
             }
             self.emptySoundPlaying = NO;
         }
@@ -795,12 +799,13 @@ static dispatch_once_t onceToken;
                 [HysteriaPlayer showAlertWithError:self.audioPlayer.currentItem.error];
             }
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidFailed:error:)]) {
-                [self.delegate hysteriaPlayerDidFailed:HysteriaPlayerFailedCurrentItem error:self.audioPlayer.currentItem.error];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailWithIdentifier:error:)]) {
+                NSError *error = self.audioPlayer.currentItem.error ? self.audioPlayer.currentItem.error : [self unknownError];
+                [self.delegate hysteriaPlayer:self didFailWithIdentifier:HysteriaPlayerFailedCurrentItem error:error];
             }
         } else if (self.audioPlayer.currentItem.status == AVPlayerItemStatusReadyToPlay) {
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerReadyToPlay:)]) {
-                [self.delegate hysteriaPlayerReadyToPlay:HysteriaPlayerReadyToPlayCurrentItem];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didReadyToPlayWithIdentifier:)]) {
+                [self.delegate hysteriaPlayer:self didReadyToPlayWithIdentifier:HysteriaPlayerReadyToPlayCurrentItem];
             }
             if (![self isPlaying] && _pauseReason != PauseReasonForced) {
                 [self.audioPlayer play];
@@ -822,8 +827,8 @@ static dispatch_once_t onceToken;
         if (timeRanges && [timeRanges count]) {
             CMTimeRange timerange = [[timeRanges objectAtIndex:0] CMTimeRangeValue];
             
-            if ([self.delegate respondsToSelector:@selector(hysteriaPlayerCurrentItemPreloaded:)]) {
-                [self.delegate hysteriaPlayerCurrentItemPreloaded:CMTimeAdd(timerange.start, timerange.duration)];
+            if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didPreloadCurrentItemWithTime:)]) {
+                [self.delegate hysteriaPlayer:self didPreloadCurrentItemWithTime:CMTimeAdd(timerange.start, timerange.duration)];
             }
             
             if (self.audioPlayer.rate == 0 && _pauseReason != PauseReasonForced) {
@@ -865,8 +870,8 @@ static dispatch_once_t onceToken;
                 [self fetchAndPlayPlayerItem:[self randomIndex]];
             } else {
                 [self pause];
-                if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
-                    [self.delegate hysteriaPlayerDidReachEnd];
+                if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd:)]) {
+                    [self.delegate hysteriaPlayerDidReachEnd:self];
                 }
             }
         } else {
@@ -877,8 +882,8 @@ static dispatch_once_t onceToken;
                 } else {
                     if (_repeatMode == HysteriaPlayerRepeatModeOff) {
                         [self pause];
-                        if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd)]) {
-                            [self.delegate hysteriaPlayerDidReachEnd];
+                        if ([self.delegate respondsToSelector:@selector(hysteriaPlayerDidReachEnd:)]) {
+                            [self.delegate hysteriaPlayerDidReachEnd:self];
                         }
                     }else {
                         [self fetchAndPlayPlayerItem:0];
@@ -889,14 +894,16 @@ static dispatch_once_t onceToken;
     }
 }
 
-- (void)playerItemFailedToPlayEndTime:(NSNotification *)notification {
+- (void)playerItemFailedToPlayToEndTime:(NSNotification *)notification {
     AVPlayerItem *item = [notification object];
     if (![item isEqual:self.audioPlayer.currentItem]) {
         return;
     }
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerItemFailedToPlayEndTime:error:)]) {
-        [self.delegate hysteriaPlayerItemFailedToPlayEndTime:notification.object error:notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey]];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didFailedWithPlayerItem:toPlayToEndTimeWithError:)]) {
+        NSError *itemFailedToPlayToEndTimeError = notification.userInfo[AVPlayerItemFailedToPlayToEndTimeErrorKey];
+        NSError *error = itemFailedToPlayToEndTimeError ? itemFailedToPlayToEndTimeError : [self unknownError];
+        [self.delegate hysteriaPlayer:self didFailedWithPlayerItem:item toPlayToEndTimeWithError:error];
     }
 }
 
@@ -906,8 +913,8 @@ static dispatch_once_t onceToken;
         return;
     }
     
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayerItemPlaybackStall:)]) {
-        [self.delegate hysteriaPlayerItemPlaybackStall:notification.object];
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:didStallWithPlayerItem:)]) {
+        [self.delegate hysteriaPlayer:self didStallWithPlayerItem:item];
     }
 }
 
@@ -927,6 +934,11 @@ static dispatch_once_t onceToken;
     } while ([_playedItems containsObject:[NSNumber numberWithInteger:index]]);
     
     return index;
+}
+
+- (NSError *)unknownError
+{
+    return [[NSError alloc] initWithDomain:HysteriaPlayerErrorDomain code:0 userInfo:@{kHysteriaPlayerErrorContext : @"unknown error"}];
 }
 
 #pragma mark -

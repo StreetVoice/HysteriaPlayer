@@ -7,9 +7,12 @@
 //
 
 #import "ViewController.h"
-#import "AFJSONRequestOperation.h"
 
-@interface ViewController ()
+#import "AFJSONRequestOperation.h"
+#import <AVFoundation/AVFoundation.h>
+#import "HysteriaPlayer.h"
+
+@interface ViewController () <HysteriaPlayerDelegate, HysteriaPlayerDataSource>
 {
     NSArray *localMedias;
     UIBarButtonItem *mRefresh;
@@ -64,7 +67,7 @@
 
 #pragma mark - HysteriaPlayerDelegate
 
-- (void)hysteriaPlayerDidFailed:(HysteriaPlayerFailed)identifier error:(NSError *)error
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didFailWithIdentifier:(HysteriaPlayerFailed)identifier error:(NSError *)error
 {
     switch (identifier) {
         case HysteriaPlayerFailedPlayer:
@@ -80,7 +83,7 @@
     NSLog(@"%@", [error localizedDescription]);
 }
 
-- (void)hysteriaPlayerReadyToPlay:(HysteriaPlayerReadyToPlay)identifier
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didReadyToPlayWithIdentifier:(HysteriaPlayerReadyToPlay)identifier
 {
     switch (identifier) {
         case HysteriaPlayerReadyToPlayPlayer:
@@ -111,17 +114,17 @@
     }
 }
 
-- (void)hysteriaPlayerCurrentItemChanged:(AVPlayerItem *)item
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didChangeCurrentItem:(AVPlayerItem *)item
 {
     NSLog(@"current item changed");
 }
 
-- (void)hysteriaPlayerCurrentItemPreloaded:(CMTime)time
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didPreloadCurrentItemWithTime:(CMTime)time
 {
     NSLog(@"current item pre-loaded time: %f", CMTimeGetSeconds(time));
 }
 
-- (void)hysteriaPlayerDidReachEnd
+- (void)hysteriaPlayerDidReachEnd:(HysteriaPlayer *)hysteriaPlayer
 {
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Player did reach end."
                                                    message:nil
@@ -131,20 +134,20 @@
     [alert show];
 }
 
-- (void)hysteriaPlayerRateChanged:(BOOL)isPlaying
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateDidChange:(float)rate;
 {
     [self syncPlayPauseButtons];
     NSLog(@"player rate changed");
 }
 
-- (void)hysteriaPlayerWillChangedAtIndex:(NSInteger)index
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index
 {
     NSLog(@"index: %li is about to play", index);
 }
 
 #pragma mark - HysteriaPlayerDataSource
 
-- (NSInteger)hysteriaPlayerNumberOfItems
+- (NSInteger)numberOfItemsInHysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer
 {
     return self.itemsCount;
 }
@@ -154,7 +157,7 @@
 // or
 // hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index
 // which meets your requirements.
-- (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
+- (NSURL *)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer URLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
     switch (self.playingType) {
         case PlayingTypeStaticItems:
@@ -166,7 +169,7 @@
     }
 }
 
-- (void)hysteriaPlayerAsyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer asyncSetUrlForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer
 {
     if (self.playingType == PlayingTypeAsync) {
         NSString *urlString = [NSString stringWithFormat:@"https://itunes.apple.com/lookup?amgArtistId=468749&entity=song&limit=%lu&sort=recent", (unsigned long) self.itemsCount];

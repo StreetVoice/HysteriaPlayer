@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		46E255AAFB37153A804573FB /* Pods_HysteriaPlayerSwiftExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		83634F631B817E0400A6FAE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F621B817E0400A6FAE1 /* AppDelegate.swift */; };
 		83634F651B817E0400A6FAE1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F641B817E0400A6FAE1 /* ViewController.swift */; };
 		83634F681B817E0400A6FAE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83634F661B817E0400A6FAE1 /* Main.storyboard */; };
@@ -15,6 +14,8 @@
 		83634F6D1B817E0400A6FAE1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83634F6B1B817E0400A6FAE1 /* LaunchScreen.storyboard */; };
 		83634F781B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F771B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests.swift */; };
 		83634F831B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83634F821B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift */; };
+		F649FD1A279BE45200E770E2 /* point1sec.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F649FD19279BE45200E770E2 /* point1sec.mp3 */; };
+		F6F2B7A7279AA852002FE899 /* HysteriaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F2B7A5279AA852002FE899 /* HysteriaPlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,9 +49,10 @@
 		83634F7E1B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HysteriaPlayerSwiftExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83634F821B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HysteriaPlayerSwiftExampleUITests.swift; sourceTree = "<group>"; };
 		83634F841B817E0400A6FAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HysteriaPlayerSwiftExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample.debug.xcconfig"; sourceTree = "<group>"; };
-		E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HysteriaPlayerSwiftExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HysteriaPlayerSwiftExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample.release.xcconfig"; sourceTree = "<group>"; };
+		F649FD19279BE45200E770E2 /* point1sec.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = point1sec.mp3; path = ../../HysteriaPlayer/point1sec.mp3; sourceTree = "<group>"; };
+		F6F2B7A4279AA851002FE899 /* HysteriaPlayerSwiftExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HysteriaPlayerSwiftExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		F6F2B7A5279AA852002FE899 /* HysteriaPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HysteriaPlayer.m; path = ../../HysteriaPlayer/HysteriaPlayer.m; sourceTree = "<group>"; };
+		F6F2B7A6279AA852002FE899 /* HysteriaPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HysteriaPlayer.h; path = ../../HysteriaPlayer/HysteriaPlayer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +60,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46E255AAFB37153A804573FB /* Pods_HysteriaPlayerSwiftExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,12 +83,11 @@
 		83634F561B817E0400A6FAE1 = {
 			isa = PBXGroup;
 			children = (
+				F6F2B7A3279AA832002FE899 /* HysteriaPlayer */,
 				83634F611B817E0400A6FAE1 /* HysteriaPlayerSwiftExample */,
 				83634F761B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleTests */,
 				83634F811B817E0400A6FAE1 /* HysteriaPlayerSwiftExampleUITests */,
 				83634F601B817E0400A6FAE1 /* Products */,
-				9E7BAD9E4F11AD4327DB11A2 /* Pods */,
-				C706318E511518466D70F4DA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -132,21 +132,15 @@
 			path = HysteriaPlayerSwiftExampleUITests;
 			sourceTree = "<group>";
 		};
-		9E7BAD9E4F11AD4327DB11A2 /* Pods */ = {
+		F6F2B7A3279AA832002FE899 /* HysteriaPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */,
-				FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */,
+				F6F2B7A6279AA852002FE899 /* HysteriaPlayer.h */,
+				F6F2B7A5279AA852002FE899 /* HysteriaPlayer.m */,
+				F6F2B7A4279AA851002FE899 /* HysteriaPlayerSwiftExample-Bridging-Header.h */,
+				F649FD19279BE45200E770E2 /* point1sec.mp3 */,
 			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		C706318E511518466D70F4DA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E45FBF2CB5F539ACCAA5AAB2 /* Pods_HysteriaPlayerSwiftExample.framework */,
-			);
-			name = Frameworks;
+			path = HysteriaPlayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,12 +150,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83634F871B817E0400A6FAE1 /* Build configuration list for PBXNativeTarget "HysteriaPlayerSwiftExample" */;
 			buildPhases = (
-				D0F075CB1A378A2A35E1A0C6 /* Check Pods Manifest.lock */,
 				83634F5B1B817E0400A6FAE1 /* Sources */,
 				83634F5C1B817E0400A6FAE1 /* Frameworks */,
 				83634F5D1B817E0400A6FAE1 /* Resources */,
-				818CF3A3AD1029DACFDE86EB /* Embed Pods Frameworks */,
-				F7D2E3750B2681D81FD62F89 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -219,6 +210,8 @@
 				TargetAttributes = {
 					83634F5E1B817E0400A6FAE1 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 84ZV2QN25Z;
+						LastSwiftMigration = 1250;
 					};
 					83634F721B817E0400A6FAE1 = {
 						CreatedOnToolsVersion = 7.0;
@@ -235,6 +228,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -256,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83634F6D1B817E0400A6FAE1 /* LaunchScreen.storyboard in Resources */,
+				F649FD1A279BE45200E770E2 /* point1sec.mp3 in Resources */,
 				83634F6A1B817E0400A6FAE1 /* Assets.xcassets in Resources */,
 				83634F681B817E0400A6FAE1 /* Main.storyboard in Resources */,
 			);
@@ -277,54 +272,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		818CF3A3AD1029DACFDE86EB /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D0F075CB1A378A2A35E1A0C6 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F7D2E3750B2681D81FD62F89 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HysteriaPlayerSwiftExample/Pods-HysteriaPlayerSwiftExample-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		83634F5B1B817E0400A6FAE1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -332,6 +279,7 @@
 			files = (
 				83634F651B817E0400A6FAE1 /* ViewController.swift in Sources */,
 				83634F631B817E0400A6FAE1 /* AppDelegate.swift in Sources */,
+				F6F2B7A7279AA852002FE899 /* HysteriaPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,25 +419,32 @@
 		};
 		83634F881B817E0400A6FAE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0AB84D0D50B30CE1F3C9DFC /* Pods-HysteriaPlayerSwiftExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = 84ZV2QN25Z;
 				INFOPLIST_FILE = HysteriaPlayerSwiftExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HysteriaPlayer/HysteriaPlayerSwiftExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
 		83634F891B817E0400A6FAE1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FDB29110EFCD9E68EB2B1CD7 /* Pods-HysteriaPlayerSwiftExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = 84ZV2QN25Z;
 				INFOPLIST_FILE = HysteriaPlayerSwiftExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saiday.HysteriaPlayerSwiftExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HysteriaPlayer/HysteriaPlayerSwiftExample-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
