@@ -140,9 +140,10 @@
     NSLog(@"player rate changed");
 }
 
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index
+- (BOOL)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer shouldChangePlayerItemAtIndex:(NSInteger)index
 {
     NSLog(@"index: %li is about to play", index);
+    return YES;
 }
 
 #pragma mark - HysteriaPlayerDataSource

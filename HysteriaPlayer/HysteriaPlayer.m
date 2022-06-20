@@ -265,14 +265,16 @@ static dispatch_once_t onceToken;
     }
     self.lastItemIndex = index;
     [self.playedItems addObject:@(index)];
-    
-    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:willChangePlayerItemAtIndex:)]) {
-        [self.delegate hysteriaPlayer:self willChangePlayerItemAtIndex:self.lastItemIndex];
-    }
 }
 
 - (void)fetchAndPlayPlayerItem:(NSInteger)startAt
 {
+    if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:shouldChangePlayerItemAtIndex:)]) {
+        if (![self.delegate hysteriaPlayer:self shouldChangePlayerItemAtIndex:startAt]) {
+            return;
+        }
+    }
+    
     [self willPlayPlayerItemAtIndex:startAt];
     [self.audioPlayer pause];
     [self.audioPlayer removeAllItems];
@@ -529,12 +531,19 @@ static dispatch_once_t onceToken;
     } else {
         NSNumber *nowIndexNumber = [self getHysteriaIndex:self.audioPlayer.currentItem];
         NSInteger nowIndex = nowIndexNumber ? [nowIndexNumber integerValue] : self.lastItemIndex;
-        if (nowIndex + 1 < [self hysteriaPlayerItemsCount]) {
+        NSInteger nextIndex = nowIndex + 1;
+        if (nextIndex < [self hysteriaPlayerItemsCount]) {
             if (self.audioPlayer.items.count > 1) {
-                [self willPlayPlayerItemAtIndex:nowIndex + 1];
+                if ([self.delegate respondsToSelector:@selector(hysteriaPlayer:shouldChangePlayerItemAtIndex:)]) {
+                    if (![self.delegate hysteriaPlayer:self shouldChangePlayerItemAtIndex:nextIndex]) {
+                        return;
+                    }
+                }
+                
+                [self willPlayPlayerItemAtIndex:nextIndex];
                 [self.audioPlayer advanceToNextItem];
             } else {
-                [self fetchAndPlayPlayerItem:(nowIndex + 1)];
+                [self fetchAndPlayPlayerItem:nextIndex];
             }
         } else {
             if (_repeatMode == HysteriaPlayerRepeatModeOff) {

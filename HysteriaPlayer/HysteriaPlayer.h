@@ -49,7 +49,8 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 @protocol HysteriaPlayerDelegate <NSObject>
 
 @optional
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index;
+- (BOOL)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer shouldChangePlayerItemAtIndex:(NSInteger)index;
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.2.5 version");
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didChangeCurrentItem:(AVPlayerItem *)item;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didEvictCurrentItem:(AVPlayerItem *)item;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateDidChange:(float)rate;
