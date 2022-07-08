@@ -138,6 +138,7 @@ static dispatch_once_t onceToken;
     if ([self.audioPlayer respondsToSelector:@selector(automaticallyWaitsToMinimizeStalling)]) {
         self.audioPlayer.automaticallyWaitsToMinimizeStalling = NO;
     }
+    self.audioPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 }
 
 - (void)backgroundPlayable
