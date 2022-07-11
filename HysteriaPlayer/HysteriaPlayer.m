@@ -127,16 +127,6 @@ static dispatch_once_t onceToken;
     [self AVAudioSessionNotification];
 }
 
-- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay{}
-
-- (void)registerHandlerFailed:(Failed)failed {}
-
-- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger)count {}
-
-- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSInteger)count{}
-
-- (void)setItemsCount:(NSInteger)count {}
-
 - (void)backgroundPlayable
 {
 #if TARGET_OS_IPHONE

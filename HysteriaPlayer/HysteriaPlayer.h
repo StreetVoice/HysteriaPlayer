@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 
 @optional
 - (BOOL)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer shouldChangePlayerItemAtIndex:(NSInteger)index;
-- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.2.5 version");
+- (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer willChangePlayerItemAtIndex:(NSInteger)index DEPRECATED_MSG_ATTRIBUTE("use shouldChangePlayerItemAtIndex: instead.");
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didChangeCurrentItem:(AVPlayerItem *)item;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer didEvictCurrentItem:(AVPlayerItem *)item;
 - (void)hysteriaPlayer:(HysteriaPlayer *)hysteriaPlayer rateDidChange:(float)rate;
@@ -95,11 +95,6 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 
 @end
 
-typedef void (^ Failed)(HysteriaPlayerFailed identifier, NSError *error) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
-typedef void (^ ReadyToPlay)(HysteriaPlayerReadyToPlay identifier) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
-typedef void (^ SourceAsyncGetter)(NSInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
-typedef NSURL * _Nonnull (^ SourceSyncGetter)(NSInteger index) DEPRECATED_MSG_ATTRIBUTE("deprecated since 2.5 version");
-
 typedef NS_ENUM(NSInteger, HysteriaPlayerStatus) {
     HysteriaPlayerStatusPlaying = 0,
     HysteriaPlayerStatusForcePause,
@@ -131,14 +126,6 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerShuffleMode) {
 @property (nonatomic) BOOL popAlertWhenError;
 
 + (HysteriaPlayer *)sharedInstance;
-
-- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDelegate instead");
-- (void)registerHandlerFailed:(Failed)failed DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDelegate instead");
-
-
-- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger) count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
-- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
-- (void)setItemsCount:(NSInteger)count DEPRECATED_MSG_ATTRIBUTE("use HysteriaPlayerDataSource instead.");
 
 /**
  *   This method is necessary if you implement hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer: delegate method, 
