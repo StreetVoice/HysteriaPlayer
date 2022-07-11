@@ -105,23 +105,6 @@ static dispatch_once_t onceToken;
 {
     tookAudioFocus = YES;
     
-    [self backgroundPlayable];
-    [self playEmptySound];
-    [self AVAudioSessionNotification];
-}
-
-- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay{}
-
-- (void)registerHandlerFailed:(Failed)failed {}
-
-- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger)count {}
-
-- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSInteger)count{}
-
-- (void)setItemsCount:(NSInteger)count {}
-
-- (void)playEmptySound
-{
     if (self.skipEmptySoundPlaying) {
         self.audioPlayer = [[AVQueuePlayer alloc] init];
     } else {
@@ -139,7 +122,20 @@ static dispatch_once_t onceToken;
         self.audioPlayer.automaticallyWaitsToMinimizeStalling = NO;
     }
     self.audioPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    
+    [self backgroundPlayable];
+    [self AVAudioSessionNotification];
 }
+
+- (void)registerHandlerReadyToPlay:(ReadyToPlay)readyToPlay{}
+
+- (void)registerHandlerFailed:(Failed)failed {}
+
+- (void)setupSourceGetter:(SourceSyncGetter)itemBlock ItemsCount:(NSInteger)count {}
+
+- (void)asyncSetupSourceGetter:(SourceAsyncGetter)asyncBlock ItemsCount:(NSInteger)count{}
+
+- (void)setItemsCount:(NSInteger)count {}
 
 - (void)backgroundPlayable
 {
