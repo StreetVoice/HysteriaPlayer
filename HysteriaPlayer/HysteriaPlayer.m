@@ -679,7 +679,11 @@ static dispatch_once_t onceToken;
 
 - (void)removeTimeObserver:(id)observer
 {
-    [self.audioPlayer removeTimeObserver:observer];
+    @try {
+        [self.audioPlayer removeTimeObserver:observer];
+    } @catch(id anException) {
+        //do nothing, this could be "An instance of AVPlayer cannot remove a time observer that was added by a different instance of AVPlayer."
+    }
 }
 
 #pragma mark -
