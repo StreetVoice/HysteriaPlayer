@@ -162,7 +162,6 @@ static dispatch_once_t onceToken;
         }
     }
     
-    [self longTimeBufferBackground];
     if (!self.disableLogs) {
         NSLog(@"HysteriaPlayer: current AVAudioSession category: %@", audioSession.category);
     }
