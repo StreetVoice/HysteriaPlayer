@@ -133,6 +133,9 @@ static dispatch_once_t onceToken;
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     if (audioSession.category != AVAudioSessionCategoryPlayback) {
+        if (!self.disableLogs) {
+            NSLog(@"HysteriaPlayer: current AVAudioSession category: %@, about to configureing AVAudioSession category", audioSession.category);
+        }
         UIDevice *device = [UIDevice currentDevice];
         if ([device respondsToSelector:@selector(isMultitaskingSupported)]) {
             if (device.multitaskingSupported) {
@@ -153,13 +156,12 @@ static dispatch_once_t onceToken;
                 }
             }
         }
-    }else {
-        if (!self.disableLogs) {
-            NSLog(@"HysteriaPlayer: unable to register background playback");
-        }
     }
     
     [self longTimeBufferBackground];
+    if (!self.disableLogs) {
+        NSLog(@"HysteriaPlayer: current AVAudioSession category: %@", audioSession.category);
+    }
 #endif
 }
 
@@ -723,7 +725,7 @@ static dispatch_once_t onceToken;
         [self play];
     }
     if (!self.disableLogs) {
-        NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
+        NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: (Raw Value: %ld)", (long)routeChangeType);
     }
 #endif
 }
@@ -972,6 +974,8 @@ static dispatch_once_t onceToken;
     self.audioPlayer = nil;
     
     onceToken = 0;
+    
+    NSLog(@"HysteriaPlayer: deprecate player successfully");
 }
 
 #pragma mark -
