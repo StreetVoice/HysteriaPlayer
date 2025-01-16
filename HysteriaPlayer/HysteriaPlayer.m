@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, PauseReason) {
     BOOL interruptedWhilePlaying;
     BOOL isPreBuffered;
     BOOL tookAudioFocus;
+    BOOL sessionCategoryBeenReset;
     
     NSInteger prepareingItemHash;
     
@@ -123,11 +124,11 @@ static dispatch_once_t onceToken;
     }
     self.audioPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     
-    [self backgroundPlayable];
+    [self registerSystemPlaybackAbilitiesIfNeeded];
     [self AVAudioSessionNotification];
 }
 
-- (void)backgroundPlayable
+- (void)registerSystemPlaybackAbilitiesIfNeeded
 {
 #if TARGET_OS_IPHONE
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -146,7 +147,10 @@ static dispatch_once_t onceToken;
                     if (!self.disableLogs) {
                         NSLog(@"HysteriaPlayer: set category error:%@",[aError description]);
                     }
+                } else {
+                    sessionCategoryBeenReset = NO;
                 }
+                
                 aError = nil;
                 [audioSession setActive:YES error:&aError];
                 if (aError) {
@@ -496,6 +500,9 @@ static dispatch_once_t onceToken;
 - (void)play
 {
     _pauseReason = PauseReasonNone;
+    if (sessionCategoryBeenReset) {
+        [self registerSystemPlaybackAbilitiesIfNeeded];
+    }
     [self.audioPlayer play];
 }
 
@@ -723,6 +730,8 @@ static dispatch_once_t onceToken;
     } else if (routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying) {
         routeChangedWhilePlaying = NO;
         [self play];
+    } else if (routeChangeType == AVAudioSessionRouteChangeReasonCategoryChange) {
+        sessionCategoryBeenReset = YES;
     }
     if (!self.disableLogs) {
         NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: (Raw Value: %ld)", (long)routeChangeType);
