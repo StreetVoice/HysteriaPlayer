@@ -160,6 +160,8 @@ static dispatch_once_t onceToken;
                 }
             }
         }
+    } else {
+        sessionCategoryBeenReset = NO;
     }
     
     if (!self.disableLogs) {
