@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, PauseReason) {
     BOOL interruptedWhilePlaying;
     BOOL isPreBuffered;
     BOOL tookAudioFocus;
+    BOOL sessionCategoryBeenReset;
     
     NSInteger prepareingItemHash;
     
@@ -123,16 +124,19 @@ static dispatch_once_t onceToken;
     }
     self.audioPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     
-    [self backgroundPlayable];
+    [self registerSystemPlaybackAbilitiesIfNeeded];
     [self AVAudioSessionNotification];
 }
 
-- (void)backgroundPlayable
+- (void)registerSystemPlaybackAbilitiesIfNeeded
 {
 #if TARGET_OS_IPHONE
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     if (audioSession.category != AVAudioSessionCategoryPlayback) {
+        if (!self.disableLogs) {
+            NSLog(@"HysteriaPlayer: current AVAudioSession category: %@, about to configureing AVAudioSession category", audioSession.category);
+        }
         UIDevice *device = [UIDevice currentDevice];
         if ([device respondsToSelector:@selector(isMultitaskingSupported)]) {
             if (device.multitaskingSupported) {
@@ -143,7 +147,10 @@ static dispatch_once_t onceToken;
                     if (!self.disableLogs) {
                         NSLog(@"HysteriaPlayer: set category error:%@",[aError description]);
                     }
+                } else {
+                    sessionCategoryBeenReset = NO;
                 }
+                
                 aError = nil;
                 [audioSession setActive:YES error:&aError];
                 if (aError) {
@@ -153,13 +160,13 @@ static dispatch_once_t onceToken;
                 }
             }
         }
-    }else {
-        if (!self.disableLogs) {
-            NSLog(@"HysteriaPlayer: unable to register background playback");
-        }
+    } else {
+        sessionCategoryBeenReset = NO;
     }
     
-    [self longTimeBufferBackground];
+    if (!self.disableLogs) {
+        NSLog(@"HysteriaPlayer: current AVAudioSession category: %@", audioSession.category);
+    }
 #endif
 }
 
@@ -494,6 +501,9 @@ static dispatch_once_t onceToken;
 - (void)play
 {
     _pauseReason = PauseReasonNone;
+    if (sessionCategoryBeenReset) {
+        [self registerSystemPlaybackAbilitiesIfNeeded];
+    }
     [self.audioPlayer play];
 }
 
@@ -721,9 +731,11 @@ static dispatch_once_t onceToken;
     } else if (routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable && routeChangedWhilePlaying) {
         routeChangedWhilePlaying = NO;
         [self play];
+    } else if (routeChangeType == AVAudioSessionRouteChangeReasonCategoryChange) {
+        sessionCategoryBeenReset = YES;
     }
     if (!self.disableLogs) {
-        NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: %@", routeChangeType == AVAudioSessionRouteChangeReasonNewDeviceAvailable ? @"New Device Available" : @"Old Device Unavailable");
+        NSLog(@"HysteriaPlayer: HysteriaPlayer routeChanged: (Raw Value: %ld)", (long)routeChangeType);
     }
 #endif
 }
@@ -972,6 +984,8 @@ static dispatch_once_t onceToken;
     self.audioPlayer = nil;
     
     onceToken = 0;
+    
+    NSLog(@"HysteriaPlayer: deprecate player successfully");
 }
 
 #pragma mark -
