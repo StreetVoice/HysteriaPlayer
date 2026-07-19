@@ -1,4 +1,10 @@
 `Current Version`
+Version 2.3.0
+* Handle AVAudioSessionRouteChangeReasonCategoryChange to re-configure AVAudioSession on route changes
+* Fix sessionCategoryBeenReset state
+* Remove unnecessary background task
+* Finer-grained logs
+
 Version 2.1
 1. deprecate methods:
 ```
